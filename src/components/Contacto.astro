@@ -1,6 +1,5 @@
 ---
-import { correoUrl, whatsappTexto, whatsappUrl } from '../data/contacto';
-// Mientras no haya número de WhatsApp (src/data/contacto.ts), el botón se ve igual pero no es un enlace.
+import { correoUrl } from '../data/contacto';
 ---
 
 <section id="contacto" class="contacto pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
@@ -13,19 +12,8 @@ import { correoUrl, whatsappTexto, whatsappUrl } from '../data/contacto';
     <p class="revela-2 m-0 max-w-[46ch] text-tinta-2">
       Cuéntanos el problema y te mostramos cómo lo resolvemos con software.
     </p>
-    <div class="revela-2 flex flex-wrap justify-center gap-3">
-      {
-        whatsappUrl ? (
-          <a class="btn" href={whatsappUrl} target="_blank" rel="noopener">
-            WhatsApp {whatsappTexto}
-          </a>
-        ) : (
-          <span class="btn" aria-disabled="true">
-            WhatsApp {whatsappTexto}
-          </span>
-        )
-      }
-      <a class="btn btn-claro" href={correoUrl}>Escríbenos un correo</a>
+    <div class="revela-2 flex justify-center">
+      <a class="btn" href={correoUrl}>Escríbenos un correo</a>
     </div>
   </div>
 </section>

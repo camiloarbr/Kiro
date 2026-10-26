@@ -54,6 +54,16 @@ import { servicios } from '../data/servicios';
     color: var(--color-blanco);
     background: radial-gradient(60% 50% at 50% 0%, #1e1233 0%, var(--color-negro) 70%);
   }
+  /* El brillo morado del fondo nace desvanecido: así el borde superior es negro puro y
+     empata sin línea con el final de la franja <Transicion> que viene de «Tu día» */
+  .servicios::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 240px;
+    background: linear-gradient(180deg, var(--color-negro), rgb(12 10 16 / 0));
+    pointer-events: none;
+  }
   .interior {
     position: relative;
     z-index: 1;

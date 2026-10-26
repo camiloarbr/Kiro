@@ -1,6 +1,6 @@
 ---
 import { enlaces } from '../data/navegacion';
-import { correo, whatsappTexto, whatsappUrl } from '../data/contacto';
+import { correo } from '../data/contacto';
 
 const anio = new Date().getFullYear();
 ---
@@ -32,15 +32,6 @@ const anio = new Date().getFullYear();
       <address class="col-span-12 flex flex-col gap-2 not-italic md:col-span-3 md:col-start-10">
         <span>Medellín, Colombia</span>
         <a href={`mailto:${correo}`} class="no-underline transition-colors hover:text-white">{correo}</a>
-        {
-          whatsappUrl ? (
-            <a href={whatsappUrl} class="no-underline transition-colors hover:text-white">
-              WhatsApp {whatsappTexto}
-            </a>
-          ) : (
-            <span>WhatsApp {whatsappTexto}</span>
-          )
-        }
       </address>
     </div>
 

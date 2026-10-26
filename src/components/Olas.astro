@@ -43,6 +43,9 @@ const lados = ['izq', 'der'] as const;
     position: absolute;
     inset: 0;
     pointer-events: none;
+    /* Desvanecidas arriba y abajo: la sección las recorta (overflow: hidden) y sin esto se veía
+       un corte recto al entrar desde «Tu día» y al pasar al demo */
+    mask-image: linear-gradient(180deg, transparent 0, #000 220px, #000 calc(100% - 260px), transparent 100%);
   }
 
   /*

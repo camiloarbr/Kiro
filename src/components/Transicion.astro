@@ -1,0 +1,64 @@
+---
+// Franja que suaviza el paso de una sección clara a una oscura.
+// Capa base: degradado fijo «desde → hacia» pasando por los morados de la marca (siempre visible).
+// Capa de encima: el color «desde» que se desvanece con el scroll, así el oscuro «va apareciendo».
+// Los bordes coinciden siempre con las secciones vecinas, así que nunca hay un corte.
+interface Props {
+  desde: string;
+  hacia: string;
+}
+
+const { desde, hacia } = Astro.props;
+---
+
+<div class="transicion" aria-hidden="true" style={`--desde: ${desde}; --hacia: ${hacia};`}>
+  <div class="velo"></div>
+</div>
+
+<style>
+  .transicion {
+    position: relative;
+    height: 180px;
+    /* «in oklab» mezcla los colores de forma más pareja y evita el gris sucio a mitad del degradado */
+    background: linear-gradient(
+      180deg in oklab,
+      var(--desde) 0%,
+      var(--color-lav-media) 28%,
+      var(--color-profundo-1) 68%,
+      var(--hacia) 100%
+    );
+  }
+  .velo {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--desde) 0%, var(--desde) 30%, transparent 100%);
+    opacity: 0;
+  }
+
+  @media (width >= 56.25rem) {
+    .transicion {
+      height: 280px;
+    }
+  }
+
+  /* Al entrar la franja el velo claro la cubre; mientras sube por la pantalla se desvanece */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .velo {
+        will-change: opacity;
+        animation: aclarar linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 60%;
+      }
+    }
+  }
+
+  @keyframes aclarar {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+</style>

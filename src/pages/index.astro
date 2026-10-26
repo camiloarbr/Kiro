@@ -9,6 +9,7 @@ import DemoKiroBot from '../components/DemoKiroBot.astro';
 import ComoTrabajamos from '../components/ComoTrabajamos.astro';
 import Contacto from '../components/Contacto.astro';
 import Footer from '../components/Footer.astro';
+import Transicion from '../components/Transicion.astro';
 ---
 
 <BaseLayout>
@@ -18,12 +19,14 @@ import Footer from '../components/Footer.astro';
     <Hero />
     <div class="flujo">
       <TuDia />
+      <Transicion desde="#f7f2ff" hacia="var(--color-negro)" />
       <Servicios />
       <DemoKiroBot />
       <ComoTrabajamos />
       <Contacto />
     </div>
   </main>
+  <Transicion desde="var(--color-lav)" hacia="var(--color-negro)" />
   <Footer />
 </BaseLayout>
 
