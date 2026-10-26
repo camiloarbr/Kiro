@@ -5,11 +5,11 @@ import Hero from '../components/Hero.astro';
 import CuboViajero from '../components/CuboViajero.astro';
 import TuDia from '../components/TuDia.astro';
 import Servicios from '../components/Servicios.astro';
+import DemoKiroBot from '../components/DemoKiroBot.astro';
 import Footer from '../components/Footer.astro';
 
-// PROVISIONAL: secciones de relleno con los id reales; cada una se reemplaza en los pasos 7 y 8.
+// PROVISIONAL: secciones de relleno con los id reales; se reemplazan en el paso 8.
 const relleno = [
-  { id: 'demo', nombre: 'Demo de Kiro Bot', paso: 7 },
   { id: 'como', nombre: 'Cómo trabajamos', paso: 8 },
   { id: 'contacto', nombre: 'Contacto', paso: 8 },
 ];
@@ -23,6 +23,7 @@ const relleno = [
     <div class="flujo">
       <TuDia />
       <Servicios />
+      <DemoKiroBot />
       {
         relleno.map((s, i) => (
           <section id={s.id} class:list={['flex min-h-[560px] items-center', i % 2 ? 'bg-lav' : 'bg-lav-2']}>
