@@ -1,0 +1,572 @@
+---
+const etiquetas = ['Software a la medida', 'Agentes de IA', 'Automatización', 'Integraciones'];
+
+const paneles = [
+  { titulo: 'Entendemos', texto: 'Mapeamos cómo opera tu negocio hoy.' },
+  { titulo: 'Construimos', texto: 'Software a la medida, con módulos propios e IA.' },
+  { titulo: 'Acompañamos', texto: 'Ajustamos contigo mientras tu negocio crece.' },
+];
+---
+
+<section id="inicio" class="portada">
+  <div class="escena-fija">
+    <div class="contenedor marco">
+      <div class="suelo" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>
+
+      <div class="texto-hero">
+        <h1 class="titulo h1">Software a la medida que <span class="text-violeta">trabaja por ti.</span></h1>
+        <p class="sub">Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.</p>
+        <div><a class="btn btn-hero" href="#servicios">Conoce más <span aria-hidden="true">→</span></a></div>
+        <ul class="etiquetas">{etiquetas.map((e) => <li>{e}</li>)}</ul>
+      </div>
+
+      <div class="escena">
+        <div class="sol" aria-hidden="true"></div>
+        <ul class="paneles">
+          {
+            paneles.map((p, i) => (
+              <li class={`panel p${i}`}>
+                <div class="t">
+                  <strong>{p.titulo}</strong>
+                  <span>{p.texto}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="frase">
+        <h2 class="titulo">Tecnología que se adapta <span class="text-violeta">a tu negocio.</span></h2>
+        <p>Automatizamos lo repetitivo para que tu equipo se enfoque en lo importante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* =========================================================================
+     1. VERSIÓN ESTÁTICA (base)
+     Es lo que ven Firefox, los navegadores sin scroll-driven animations y quien
+     pide «reducir movimiento»: todo visible y en orden de lectura.
+     ========================================================================= */
+  .portada {
+    --pad: 24px;
+    position: relative;
+    background: linear-gradient(180deg, var(--color-lav) 0%, var(--color-lav-2) 55%, var(--color-lav-3) 100%);
+  }
+  .escena-fija {
+    padding: 40px 0 96px;
+  }
+
+  .texto-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .h1 {
+    font-size: clamp(34px, 9vw, 48px);
+    line-height: 1;
+  }
+  .sub {
+    margin: 0;
+    font-size: 18px;
+    color: var(--color-tinta-2);
+    max-width: 36ch;
+  }
+  .etiquetas {
+    display: none;
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-tenue);
+  }
+  .etiquetas::after {
+    content: '';
+    width: 28px;
+    height: 2px;
+    margin-top: 6px;
+    background: var(--color-violeta);
+  }
+
+  .paneles {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .panel {
+    position: relative;
+    min-height: 168px;
+    box-sizing: border-box;
+    padding: 20px 22px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--color-white);
+    border: 1px solid rgb(255 255 255 / 0.55);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.6),
+      0 40px 80px rgb(91 23 184 / 0.25);
+  }
+  .p0 {
+    background: linear-gradient(150deg, rgb(176 124 255 / 0.94), rgb(124 38 232 / 0.88));
+  }
+  .p1 {
+    background: linear-gradient(150deg, rgb(155 69 247 / 0.9), rgb(110 34 214 / 0.78));
+  }
+  .p2 {
+    background: linear-gradient(150deg, rgb(123 35 224 / 0.92), rgb(74 18 150 / 0.85));
+  }
+  /* Degradado oscuro abajo para que el texto blanco se lea sobre el vidrio */
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(0deg, rgb(32 8 74 / 0.62) 0%, rgb(32 8 74 / 0.25) 45%, rgb(32 8 74 / 0) 70%);
+    pointer-events: none;
+  }
+  .t {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-shadow: 0 1px 14px rgb(28 6 64 / 0.55);
+  }
+  .t strong {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #f3eaff;
+  }
+  .t span {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .frase {
+    margin: 56px auto 0;
+    max-width: 760px;
+    text-align: center;
+  }
+  .frase h2 {
+    font-size: 30px;
+    line-height: 1.06;
+  }
+  .frase p {
+    margin: 14px 0 0;
+    color: var(--color-tinta-2);
+  }
+
+  .sol,
+  .suelo {
+    display: none;
+  }
+
+  @media (width >= 56.25rem) {
+    .portada {
+      --pad: 32px;
+    }
+    .texto-hero {
+      gap: 32px;
+      width: min(760px, 52%);
+    }
+    .h1 {
+      font-size: clamp(44px, 5.4vw, 104px);
+    }
+    .sub {
+      font-size: clamp(20px, 1.45vw, 26px);
+    }
+    .btn-hero {
+      min-height: 60px;
+      padding: 0 34px;
+      font-size: 18px;
+    }
+    .etiquetas {
+      display: flex;
+    }
+    .paneles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .panel {
+      min-height: 300px;
+      padding: 30px 28px;
+      border-radius: 26px;
+    }
+    .t span {
+      font-size: 22px;
+    }
+    .frase h2 {
+      font-size: clamp(32px, 3.6vw, 52px);
+    }
+  }
+
+  /* =========================================================================
+     2. ESCENA ANIMADA CON EL SCROLL
+     Solo si el navegador entiende animation-timeline y timeline-scope, y la
+     persona no pidió reducir movimiento.
+     ========================================================================= */
+  @supports (animation-timeline: view()) and (timeline-scope: none) {
+    @media (prefers-reduced-motion: no-preference) {
+      /*
+        La sección mide 2600 px pero la escena mide una pantalla y se queda pegada
+        (sticky). view-timeline crea la línea de tiempo «--hero»: 0 % cuando la
+        portada toca el borde de arriba y 100 % cuando su final llega abajo.
+      */
+      .portada {
+        height: 2600px;
+        view-timeline: --hero block;
+      }
+      .escena-fija {
+        position: sticky;
+        top: 76px;
+        height: calc(100vh - 76px);
+        min-height: 620px;
+        max-height: 980px;
+        overflow: hidden;
+        padding: 0;
+      }
+      .marco {
+        position: relative;
+        height: 100%;
+      }
+
+      .suelo {
+        display: block;
+        position: absolute;
+        left: -10%;
+        right: -10%;
+        bottom: -120px;
+        height: 420px;
+        pointer-events: none;
+      }
+      .suelo i {
+        position: absolute;
+        border-radius: 50%;
+      }
+      .suelo .a {
+        left: 20%;
+        bottom: 40px;
+        width: 900px;
+        height: 300px;
+        background: radial-gradient(closest-side, #b07cff, rgb(176 124 255 / 0));
+        opacity: 0.9;
+      }
+      .suelo .b {
+        right: 0;
+        bottom: -40px;
+        width: 1100px;
+        height: 360px;
+        background: radial-gradient(closest-side, #8b2cf5, rgb(139 44 245 / 0));
+        opacity: 0.75;
+      }
+      .suelo .c {
+        left: -5%;
+        bottom: -80px;
+        width: 900px;
+        height: 300px;
+        background: radial-gradient(closest-side, #5b17b8, rgb(91 23 184 / 0));
+        opacity: 0.55;
+      }
+
+      /* Texto del héroe: se va hacia la izquierda entre el 10 % y el 30 % */
+      .texto-hero {
+        position: absolute;
+        left: var(--pad);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 3;
+        animation: salida-hero linear both;
+        animation-timeline: --hero;
+        animation-range: contain 10% contain 30%;
+      }
+
+      /*
+        La escena 3D. perspective da profundidad a los paneles. Las variables
+        --cx/--cy son la distancia del centro de la escena al cubo del carril
+        derecho: ahí terminan los paneles para «convertirse» en ese cubo.
+      */
+      .escena {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        perspective: 1400px;
+        --W: min(100cqw, 1400px);
+        --H: clamp(620px, 100vh - 76px, 980px);
+        --cx: calc(50cqw - max(20px, 50cqw - 680px) - 60px);
+        --cy: calc(50vh - 76px - var(--H) / 2);
+        --tz: 35px;
+        --sx: 0.1944;
+        --sy: 0.1522;
+        --pf: 700px;
+        animation: perspectiva linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+      .paneles {
+        display: block;
+        margin: 0;
+      }
+      .panel {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 360px;
+        height: 460px;
+        margin: -230px 0 0 -180px;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+        animation: var(--anim) linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+      .p0 {
+        --anim: panel-0;
+      }
+      .p1 {
+        --anim: panel-1;
+      }
+      .p2 {
+        --anim: panel-2;
+      }
+      .t {
+        animation: texto-panel linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+
+      /* La luz: parte abajo a la derecha y termina como núcleo del cubo */
+      .sol {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 70px;
+        height: 70px;
+        margin: -35px 0 0 -35px;
+        border-radius: 50%;
+        background: var(--color-white);
+        box-shadow:
+          0 0 60px 30px rgb(217 196 255 / 0.9),
+          0 0 140px 70px rgb(176 124 255 / 0.55);
+        animation: sol linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+
+      .frase {
+        position: absolute;
+        left: 50%;
+        top: 9%;
+        width: min(760px, 90%);
+        margin: 0;
+        transform: translateX(-50%);
+        z-index: 4;
+        animation: frase linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+    }
+  }
+
+  /* =========================================================================
+     3. ESCENA ANIMADA EN CELULAR (< 900 px)
+     ========================================================================= */
+  @supports (animation-timeline: view()) and (timeline-scope: none) {
+    @media (prefers-reduced-motion: no-preference) and (width < 56.25rem) {
+      .portada {
+        height: 2300px;
+      }
+      .escena-fija {
+        top: 64px;
+        height: calc(100vh - 64px);
+        min-height: 600px;
+        max-height: 760px;
+      }
+      .suelo {
+        bottom: -180px;
+      }
+      .texto-hero {
+        top: 20px;
+        width: calc(100% - 2 * var(--pad));
+        transform: none;
+        animation-name: salida-hero-movil;
+      }
+      .escena {
+        --W: 100cqw;
+        --H: clamp(600px, 100vh - 64px, 760px);
+        --cx: calc(50cqw - 28px);
+        --cy: calc(100vh - 118px - 64px - var(--H) / 2);
+        --tz: 16px;
+        --sx: 0.112;
+        --sy: 0.19;
+        --pf: 500px;
+      }
+      .panel {
+        width: 286px;
+        height: 168px;
+        min-height: 0;
+        margin: -84px 0 0 -143px;
+      }
+      .p0 {
+        --anim: panel-0-movil;
+      }
+      .p1 {
+        --anim: panel-1-movil;
+      }
+      .p2 {
+        --anim: panel-2-movil;
+      }
+      .sol {
+        width: 44px;
+        height: 44px;
+        margin: -22px 0 0 -22px;
+      }
+      .frase {
+        top: 6%;
+        width: 92%;
+      }
+    }
+  }
+
+  /* =========================================================================
+     KEYFRAMES
+     Los porcentajes son el avance del scroll dentro de la portada.
+     Todas mueven solo transform y opacity (perspectiva aparte: ver «perspectiva»).
+     ========================================================================= */
+  @keyframes salida-hero {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-80px, -50%);
+    }
+  }
+  @keyframes salida-hero-movil {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-70px);
+    }
+  }
+
+  /* Al final la cámara se acerca al carril del cubo para que las 3 caras coincidan con él */
+  @keyframes perspectiva {
+    0%,
+    64% {
+      perspective: 1400px;
+      perspective-origin: 50% 50%;
+    }
+    88%,
+    100% {
+      perspective: var(--pf);
+      perspective-origin: calc(50% + var(--cx)) calc(50% + var(--cy));
+    }
+  }
+
+  /*
+    Coreografía de cada panel:
+    0–8 % apilados y girados · 24 % se separan en profundidad · 40–64 % en fila
+    (52 % el central avanza) · 76 % se encogen · 88–93 % armados como cubo · 97 % se apagan.
+    En el cubo: p0 = frente, p1 = lado (rotateY 90° más) y p2 = tapa (rotateX 90° extra).
+  */
+  @keyframes panel-0 {
+    0%, 8% { transform:translate3d(250px,-70px,0px) rotateX(0deg) rotateY(-28deg) rotateZ(-2deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    24% { transform:translate3d(-120px,-150px,120px) rotateX(18deg) rotateY(-50deg) rotateZ(-10deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    40% { transform:translate3d(-390px,0px,0px) rotateX(0deg) rotateY(12deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(-404px,-16px,40px) rotateX(0deg) rotateY(8deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.03,1.03); opacity:1; }
+    64% { transform:translate3d(-390px,0px,0px) rotateX(0deg) rotateY(12deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(-200px,60px,-80px) rotateX(0deg) rotateY(60deg) rotateZ(-8deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+  @keyframes panel-1 {
+    0%, 8% { transform:translate3d(340px,-20px,0px) rotateX(0deg) rotateY(-28deg) rotateZ(-1deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    24% { transform:translate3d(60px,160px,160px) rotateX(-20deg) rotateY(-40deg) rotateZ(6deg) rotateX(0deg) translateZ(0px) scale(1.05,1.05); opacity:1; }
+    40% { transform:translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(0px,-18px,90px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.06,1.06); opacity:1; }
+    64% { transform:translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(0px,80px,-60px) rotateX(40deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(55deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(55deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+  @keyframes panel-2 {
+    0%, 8% { transform:translate3d(430px,40px,0px) rotateX(0deg) rotateY(-28deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    24% { transform:translate3d(300px,-120px,100px) rotateX(25deg) rotateY(-70deg) rotateZ(12deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    40% { transform:translate3d(390px,0px,0px) rotateX(0deg) rotateY(-12deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(404px,-16px,40px) rotateX(0deg) rotateY(-8deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.03,1.03); opacity:1; }
+    64% { transform:translate3d(390px,0px,0px) rotateX(0deg) rotateY(-12deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(200px,60px,-80px) rotateX(0deg) rotateY(-60deg) rotateZ(8deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(90deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(90deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+  /* Celular: los paneles quedan en columna (arriba, centro, abajo) en vez de en fila */
+  @keyframes panel-0-movil {
+    0%, 8% { transform:translate3d(-26px,150px,0px) rotateX(0deg) rotateY(-18deg) rotateZ(-4deg) rotateX(0deg) translateZ(0px) scale(0.86,0.86); opacity:1; }
+    24% { transform:translate3d(-60px,-60px,120px) rotateX(30deg) rotateY(-40deg) rotateZ(-12deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    40% { transform:translate3d(0px,-190px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(0px,-202px,40px) rotateX(-6deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.03,1.03); opacity:1; }
+    64% { transform:translate3d(0px,-190px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(-80px,-20px,-60px) rotateX(0deg) rotateY(50deg) rotateZ(-10deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+  @keyframes panel-1-movil {
+    0%, 8% { transform:translate3d(0px,180px,0px) rotateX(0deg) rotateY(-18deg) rotateZ(-2deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    24% { transform:translate3d(60px,60px,140px) rotateX(-25deg) rotateY(35deg) rotateZ(8deg) rotateX(0deg) translateZ(0px) scale(1.05,1.05); opacity:1; }
+    40% { transform:translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(0px,-10px,60px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.04,1.04); opacity:1; }
+    64% { transform:translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(60px,60px,-60px) rotateX(40deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(55deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(55deg) rotateZ(0deg) rotateX(0deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+  @keyframes panel-2-movil {
+    0%, 8% { transform:translate3d(26px,210px,0px) rotateX(0deg) rotateY(-18deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(0.94,0.94); opacity:1; }
+    24% { transform:translate3d(40px,260px,100px) rotateX(20deg) rotateY(-50deg) rotateZ(10deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    40% { transform:translate3d(0px,190px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    52% { transform:translate3d(0px,180px,40px) rotateX(6deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1.03,1.03); opacity:1; }
+    64% { transform:translate3d(0px,190px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) rotateX(0deg) translateZ(0px) scale(1,1); opacity:1; }
+    76% { transform:translate3d(40px,160px,-60px) rotateX(0deg) rotateY(-50deg) rotateZ(6deg) rotateX(0deg) translateZ(0px) scale(0.9,0.9); opacity:1; }
+    88%, 93% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(90deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:1; }
+    97%, 100% { transform:translate3d(var(--cx),var(--cy),0px) rotateX(-24deg) rotateY(-35deg) rotateZ(0deg) rotateX(90deg) translateZ(var(--tz)) scale(var(--sx),var(--sy)); opacity:0; }
+  }
+
+  /* El texto de los paneles solo se lee mientras están en fila */
+  @keyframes texto-panel {
+    0%, 30% { opacity: 0; transform: translateY(18px); }
+    37%, 72% { opacity: 1; transform: none; }
+    78%, 100% { opacity: 0; transform: translateY(-12px); }
+  }
+
+  /*
+    La referencia movía la luz con left/top (recalcula el layout en cada cuadro).
+    Aquí la misma ruta va con translate: --W y --H son el ancho y el alto de la escena,
+    así que «68 % del ancho» equivale a 18 % desde el centro (0.18 * W).
+  */
+  @keyframes sol {
+    0%, 20% { transform: translate(calc(var(--W) * 0.18), calc(var(--H) * 0.16)) scale(1); opacity: 1; }
+    55% { transform: translate(0px, calc(var(--H) * 0.36)) scale(1); }
+    76% { transform: translate(0px, calc(var(--H) * 0.22)) scale(1); }
+    88% { transform: translate(var(--cx), var(--cy)) scale(0.35); opacity: 1; }
+    95%, 100% { transform: translate(var(--cx), var(--cy)) scale(0.2); opacity: 0; }
+  }
+
+  @keyframes frase {
+    0%, 74% { opacity: 0; visibility: hidden; transform: translate(-50%, 24px); }
+    86%, 100% { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  }
+</style>

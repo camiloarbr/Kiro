@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import CuboViajero from '../components/CuboViajero.astro';
 import Footer from '../components/Footer.astro';
 
-// PROVISIONAL (paso 2): secciones de relleno con los id reales para probar los enlaces.
-// Cada una se reemplaza por su componente en los pasos 3 a 8.
+// PROVISIONAL: secciones de relleno con los id reales; cada una se reemplaza en los pasos 5 a 8.
 const relleno = [
-  { id: 'inicio', nombre: 'Portada', paso: 3 },
   { id: 'dia', nombre: 'Tu día, con y sin Kiro', paso: 5 },
   { id: 'servicios', nombre: 'Servicios', paso: 6 },
   { id: 'demo', nombre: 'Demo de Kiro Bot', paso: 7 },
@@ -17,17 +17,39 @@ const relleno = [
 
 <BaseLayout>
   <Header />
-  <main>
-    {
-      relleno.map((s, i) => (
-        <section id={s.id} class:list={['flex min-h-[560px] items-center', i % 2 ? 'bg-lav-2' : 'bg-lav']}>
-          <div class="contenedor w-full">
-            <p class="eyebrow">Paso {s.paso}</p>
-            <h2 class="titulo mt-4 text-[clamp(34px,4vw,56px)]">{s.nombre}</h2>
-          </div>
-        </section>
-      ))
-    }
+  <main class="recorrido">
+    <CuboViajero />
+    <Hero />
+    <div class="flujo">
+      {
+        relleno.map((s, i) => (
+          <section id={s.id} class:list={['flex min-h-[560px] items-center', i % 2 ? 'bg-lav' : 'bg-lav-2']}>
+            <div class="contenedor w-full">
+              <p class="eyebrow">Paso {s.paso}</p>
+              <h2 class="titulo mt-4 text-[clamp(34px,4vw,56px)]">{s.nombre}</h2>
+            </div>
+          </section>
+        ))
+      }
+    </div>
   </main>
   <Footer />
 </BaseLayout>
+
+<style>
+  /*
+    .recorrido es el «escenario» del cubo:
+    - container-type permite medir en cqw (ancho de este contenedor) para ubicar el carril.
+    - timeline-scope sube las líneas de tiempo --hero (portada) y --flujo (secciones)
+      hasta aquí, para que el cubo, que es hermano de ellas, pueda usarlas.
+  */
+  .recorrido {
+    position: relative;
+    container-type: inline-size;
+    timeline-scope: --hero, --flujo;
+  }
+  .flujo {
+    position: relative;
+    view-timeline: --flujo block;
+  }
+</style>

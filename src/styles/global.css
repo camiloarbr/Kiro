@@ -4,8 +4,9 @@
   Tokens de marca (docs/marca/MANUAL-DE-MARCA.md, secciones 4 y 5).
   Cada variable --color-* genera utilidades: bg-violeta, text-negro, border-lav-media…
   Borramos la paleta por defecto de Tailwind para que solo existan los colores del manual.
+  «static» emite siempre todas las variables, porque los componentes las usan con var() en su <style>.
 */
-@theme {
+@theme static {
   --color-*: initial;
 
   /* Paleta oficial */
@@ -85,6 +86,13 @@
   padding-inline: 24px;
   @variant md {
     padding-inline: 32px;
+  }
+}
+
+/* Secciones que recorre el cubo: en computador dejan 164 px a la derecha para su carril */
+.flujo > section .contenedor {
+  @variant md {
+    padding-right: 164px;
   }
 }
 
