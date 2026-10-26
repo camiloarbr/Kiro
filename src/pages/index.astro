@@ -6,13 +6,9 @@ import CuboViajero from '../components/CuboViajero.astro';
 import TuDia from '../components/TuDia.astro';
 import Servicios from '../components/Servicios.astro';
 import DemoKiroBot from '../components/DemoKiroBot.astro';
+import ComoTrabajamos from '../components/ComoTrabajamos.astro';
+import Contacto from '../components/Contacto.astro';
 import Footer from '../components/Footer.astro';
-
-// PROVISIONAL: secciones de relleno con los id reales; se reemplazan en el paso 8.
-const relleno = [
-  { id: 'como', nombre: 'Cómo trabajamos', paso: 8 },
-  { id: 'contacto', nombre: 'Contacto', paso: 8 },
-];
 ---
 
 <BaseLayout>
@@ -24,16 +20,8 @@ const relleno = [
       <TuDia />
       <Servicios />
       <DemoKiroBot />
-      {
-        relleno.map((s, i) => (
-          <section id={s.id} class:list={['flex min-h-[560px] items-center', i % 2 ? 'bg-lav' : 'bg-lav-2']}>
-            <div class="contenedor w-full">
-              <p class="eyebrow">Paso {s.paso}</p>
-              <h2 class="titulo mt-4 text-[clamp(34px,4vw,56px)]">{s.nombre}</h2>
-            </div>
-          </section>
-        ))
-      }
+      <ComoTrabajamos />
+      <Contacto />
     </div>
   </main>
   <Footer />

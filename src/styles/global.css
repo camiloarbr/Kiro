@@ -192,6 +192,14 @@
     transform: translateY(-2px);
     background: var(--color-violeta-hover);
   }
+  /* Botón sin destino todavía (p. ej. WhatsApp sin número): no reacciona al mouse */
+  .btn[aria-disabled='true'] {
+    cursor: default;
+  }
+  .btn[aria-disabled='true']:hover {
+    transform: none;
+    background: var(--color-violeta);
+  }
   .btn-claro {
     background: rgb(255 255 255 / 0.7);
     color: var(--color-negro);

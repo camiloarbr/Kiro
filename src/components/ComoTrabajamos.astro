@@ -1,0 +1,100 @@
+---
+const pasos = [
+  { nombre: 'Diagnóstico', texto: 'Conversamos y mapeamos cómo opera tu negocio hoy.' },
+  { nombre: 'Prototipo', texto: 'Ves y pruebas una versión funcional antes de decidir.' },
+  { nombre: 'Entrega', texto: 'Lo ponemos a funcionar en semanas, con tu equipo.' },
+  { nombre: 'Acompañamiento', texto: 'Ajustamos contigo a medida que tu negocio crece.' },
+];
+---
+
+<section id="como" class="como pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
+  <div class="contenedor max-w-[980px]">
+    <span class="eyebrow revela">Cómo trabajamos</span>
+    <h2 class="titulo revela mt-[18px] text-[clamp(32px,3.8vw,52px)] leading-[1.08]">
+      No solo construimos software. Lo hacemos funcionar contigo.
+    </h2>
+    <ol class="pasos">
+      {
+        pasos.map((p) => (
+          <li data-io>
+            <b>— {p.nombre}.</b>
+            <span>{p.texto}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .como {
+    color: var(--color-white);
+    background: linear-gradient(180deg, var(--color-profundo-3) 0%, var(--color-violeta-oscuro) 35%, var(--color-violeta) 70%, var(--color-violeta-claro) 100%);
+  }
+  .como .eyebrow {
+    color: #f3eaff;
+  }
+
+  /* Filas de vidrio translúcido sobre el degradado */
+  .pasos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pasos li {
+    padding: 20px 24px;
+    border-radius: 16px;
+    background: rgb(255 255 255 / 0.14);
+    border: 1px solid rgb(255 255 255 / 0.35);
+    transition:
+      background-color 0.3s,
+      translate 0.3s;
+  }
+  /* translate (no transform) para que el hover no lo bloquee la animación de entrada */
+  .pasos li:hover {
+    background: rgb(255 255 255 / 0.22);
+    translate: 6px 0;
+  }
+  .pasos b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .pasos span {
+    color: #ede3ff;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .pasos li {
+        animation: paso-entra linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+    }
+  }
+
+  /* Alternativa con IntersectionObserver (Firefox) */
+  :global(.io) .pasos li {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+    transition:
+      opacity 0.6s var(--ease-kiro),
+      transform 0.6s var(--ease-kiro),
+      background-color 0.3s,
+      translate 0.3s;
+  }
+  :global(.io) .pasos li:global(.visible) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes paso-entra {
+    from { opacity: 0; transform: translateY(40px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
