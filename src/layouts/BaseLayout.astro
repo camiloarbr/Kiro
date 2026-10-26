@@ -1,0 +1,38 @@
+---
+// Fuentes autoalojadas: Vite copia los .woff2 a dist/, no se pide nada a Google Fonts.
+import '@fontsource-variable/montserrat';
+import '@fontsource-variable/geist';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Kiro Solutions · Software a la medida en Medellín',
+  description = 'Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio. Software a la medida para hoteles, consultorios y pymes.',
+} = Astro.props;
+
+// Solo hay URL canónica cuando `site` está definido en astro.config.mjs.
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#F4EFFF" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

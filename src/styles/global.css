@@ -1,0 +1,143 @@
+@import 'tailwindcss';
+
+/*
+  Tokens de marca (docs/marca/MANUAL-DE-MARCA.md, secciones 4 y 5).
+  Cada variable --color-* genera utilidades: bg-violeta, text-negro, border-lav-media…
+  Borramos la paleta por defecto de Tailwind para que solo existan los colores del manual.
+*/
+@theme {
+  --color-*: initial;
+
+  /* Paleta oficial */
+  --color-violeta: #8b2cf5; /* Kiro Violet: acento, máx. 10 % */
+  --color-violeta-oscuro: #5b17b8;
+  --color-violeta-claro: #b07cff; /* texto de acento sobre negro */
+  --color-violeta-hover: #9b45f7; /* hover del botón principal (diseño aprobado) */
+  --color-negro: #0c0a10; /* Kiro Black */
+  --color-grafito: #1f1a27;
+  --color-gris: #918a9e;
+  --color-blanco: #f6f4fa;
+  --color-white: #ffffff;
+
+  /* Extensión web «estilo vidrio» */
+  --color-lav: #f4efff;
+  --color-lav-media: #d9c4ff;
+  --color-lav-2: #eaddff;
+  --color-lav-3: #e4d3ff;
+  --color-lav-4: #efe6ff;
+  --color-tinta-2: #3b3346; /* texto secundario sobre lavanda */
+  --color-tenue: #5e566b; /* texto terciario sobre lavanda */
+  --color-profundo-1: #3a1677;
+  --color-profundo-2: #6e22d6;
+  --color-profundo-3: #1a1030;
+
+  /* Tipografía */
+  --font-display: 'Montserrat Variable', Montserrat, sans-serif;
+  --font-sans: 'Geist Variable', Geist, system-ui, sans-serif;
+
+  /* El diseño cambia a celular por debajo de ~900 px: md: = computador */
+  --breakpoint-md: 56.25rem;
+
+  --ease-kiro: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html {
+    /* Compensa el header sticky (76 px) al saltar a #servicios, #contacto… */
+    scroll-padding-top: 76px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-lav);
+    color: var(--color-negro);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.55;
+    /* clip (no hidden) para no romper position: sticky de la portada y el cubo */
+    overflow-x: clip;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-violeta);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* Contenedor de 1400 px con 24 px de margen en celular y 32 px en computador */
+@utility contenedor {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  @variant md {
+    padding-inline: 32px;
+  }
+}
+
+/* Títulos: Montserrat 700 con tracking cerrado */
+@utility titulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+@layer components {
+  /* Etiqueta en mayúsculas con la rayita violeta debajo */
+  .eyebrow {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-violeta);
+  }
+  .eyebrow::after {
+    content: '';
+    width: 36px;
+    height: 2px;
+    background: currentColor;
+  }
+
+  /* Botón píldora principal; .btn-claro es la variante blanca translúcida */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 28px;
+    border-radius: 999px;
+    background: var(--color-violeta);
+    color: var(--color-white);
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition:
+      transform 0.25s var(--ease-kiro),
+      background-color 0.25s;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    background: var(--color-violeta-hover);
+  }
+  .btn-claro {
+    background: rgb(255 255 255 / 0.7);
+    color: var(--color-negro);
+  }
+  .btn-claro:hover {
+    background: var(--color-white);
+  }
+}

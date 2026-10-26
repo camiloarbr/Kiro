@@ -12,13 +12,13 @@ Kiro Solutions es una empresa de software de Medellín, Colombia, fundada por es
 - `docs/diseno/capturas/`: capturas de computador y celular.
 
 ## Stack
-- **Astro 5** (sitio estático, sin framework de UI), **TypeScript** estricto.
+- **Astro 7** (sitio estático, sin framework de UI), **TypeScript** estricto. Se usa `typescript@6` porque `@astrojs/check` todavía no acepta TypeScript 7.
 - **Tailwind CSS v4** vía `@tailwindcss/vite`. Los tokens de marca van en `@theme` dentro de `src/styles/global.css`.
 - **Animaciones con CSS nativo:**
   - Scroll-driven animations (`animation-timeline`, `view-timeline`, `timeline-scope`) y keyframes 3D.
   - Sin librerías de animación.
   - JS vanilla mínimo, solo para el selector Hotel/Consultorio y la alternativa con `IntersectionObserver` en navegadores sin scroll-driven animations.
-- **Fuentes autoalojadas** con Fontsource (Montserrat, y Geist si está disponible; si no, el paquete `geist`). Verificar el nombre del paquete antes de instalar.
+- **Fuentes autoalojadas** con Fontsource, versiones variables: `@fontsource-variable/montserrat` y `@fontsource-variable/geist` (familias `'Montserrat Variable'` y `'Geist Variable'`).
 - **Gestor de paquetes:** pnpm.
 - **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build: `pnpm astro build`; deploy: `npx wrangler deploy`, conectado al repo con Workers Builds. Dominio propio (comprado en Cloudflare Registrar), por definir.
 

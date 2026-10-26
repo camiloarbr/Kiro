@@ -1,0 +1,66 @@
+---
+// Página provisional del paso 1: muestra los tokens de marca para revisarlos.
+// Se reemplaza por las secciones reales a partir del paso 2.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const colores = [
+  { nombre: 'violeta', hex: '#8B2CF5', clase: 'bg-violeta' },
+  { nombre: 'violeta-oscuro', hex: '#5B17B8', clase: 'bg-violeta-oscuro' },
+  { nombre: 'violeta-claro', hex: '#B07CFF', clase: 'bg-violeta-claro' },
+  { nombre: 'negro', hex: '#0C0A10', clase: 'bg-negro' },
+  { nombre: 'grafito', hex: '#1F1A27', clase: 'bg-grafito' },
+  { nombre: 'gris', hex: '#918A9E', clase: 'bg-gris' },
+  { nombre: 'blanco', hex: '#F6F4FA', clase: 'bg-blanco' },
+  { nombre: 'lav', hex: '#F4EFFF', clase: 'bg-lav' },
+  { nombre: 'lav-media', hex: '#D9C4FF', clase: 'bg-lav-media' },
+  { nombre: 'lav-2', hex: '#EADDFF', clase: 'bg-lav-2' },
+  { nombre: 'tinta-2', hex: '#3B3346', clase: 'bg-tinta-2' },
+  { nombre: 'tenue', hex: '#5E566B', clase: 'bg-tenue' },
+  { nombre: 'profundo-1', hex: '#3A1677', clase: 'bg-profundo-1' },
+  { nombre: 'profundo-2', hex: '#6E22D6', clase: 'bg-profundo-2' },
+  { nombre: 'profundo-3', hex: '#1A1030', clase: 'bg-profundo-3' },
+];
+---
+
+<BaseLayout title="Kiro · tokens (provisional)">
+  <main class="contenedor py-16">
+    <img src="/logos/kiro-logotipo-corto.svg" alt="Kiro" width="63" height="33" />
+
+    <p class="eyebrow mt-12">Paso 1 · tokens de marca</p>
+    <h1 class="titulo mt-4 text-[clamp(44px,5.4vw,104px)] leading-none">
+      Software a la medida que <span class="text-violeta">trabaja por ti.</span>
+    </h1>
+    <p class="mt-6 max-w-xl text-tinta-2">
+      Texto en Geist 18 px. Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu
+      negocio.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a class="btn" href="#colores">Conoce más →</a>
+      <a class="btn btn-claro" href="#colores">Botón claro</a>
+    </div>
+
+    <h2 id="colores" class="titulo mt-20 text-[clamp(34px,4vw,56px)]">Colores</h2>
+    <ul class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+      {
+        colores.map((c) => (
+          <li class="overflow-hidden rounded-2xl bg-white">
+            <div class:list={['h-20 border-b border-lav-media', c.clase]} />
+            <p class="px-3 py-2 text-sm">
+              <strong>{c.nombre}</strong>
+              <br />
+              <span class="text-tenue">{c.hex}</span>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-16 rounded-3xl bg-negro p-10 text-blanco">
+      <img src="/logos/kiro-logo-principal-negativo.svg" alt="Kiro Solutions" width="180" height="116" />
+      <p class="titulo mt-6 text-4xl">
+        Sobre negro, el acento va en <span class="text-violeta-claro">morado claro.</span>
+      </p>
+    </div>
+  </main>
+</BaseLayout>
