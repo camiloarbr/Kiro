@@ -31,7 +31,7 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 
 - **Altura y escena:** la sección mide 2900 px en computador y 2600 px en celular. Dentro hay una escena `position: sticky` que se queda fija mientras se hace scroll.
 - **Textos:**
-  - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado) y, al final, el **cursor de la marca**: un cuadrado morado de 0,32 em que parpadea (1,05 s).
+  - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado). Sin el cursor parpadeante de la referencia (decisión de Gallo, oct 2026).
   - Sub: «Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.»
   - Botón: «Conoce más →» (56 px de alto), que lleva a `#servicios`.
 - **27 bloques-cursor:** mini cubos de **62 px** con 6 caras: frente/atrás, tapa clara y costados oscuros. Sus posiciones se generan en `src/data/bloques.ts`.

@@ -10,7 +10,7 @@ import { bloques, pasos } from '../data/bloques';
 
       <div class="texto-hero">
         <h1 class="titulo h1">
-          Software a la medida que <span class="text-violeta">trabaja por ti.</span><span class="cursor" aria-hidden="true"></span>
+          Software a la medida que <span class="text-violeta">trabaja por ti.</span>
         </h1>
         <p class="sub">Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.</p>
         <div><a class="btn btn-hero" href="#servicios">Conoce más <span aria-hidden="true">→</span></a></div>
@@ -94,15 +94,6 @@ import { bloques, pasos } from '../data/bloques';
   .h1 {
     font-size: clamp(36px, 10vw, 52px);
     line-height: 1;
-  }
-  /* El cursor de la marca al final del título */
-  .cursor {
-    display: inline-block;
-    width: 0.32em;
-    height: 0.32em;
-    margin-left: 0.08em;
-    vertical-align: 0.02em;
-    background: var(--color-violeta);
   }
   .sub {
     margin: 0;
@@ -230,12 +221,6 @@ import { bloques, pasos } from '../data/bloques';
     }
     .frase h2 {
       font-size: clamp(32px, 3.6vw, 52px);
-    }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .cursor {
-      animation: portada-parpadeo 1.05s steps(1) infinite;
     }
   }
 
@@ -429,9 +414,6 @@ import { bloques, pasos } from '../data/bloques';
   /* =========================================================================
      KEYFRAMES (valores de docs/diseno/referencia/portada-bloques-cursor.dc.html)
      ========================================================================= */
-  @keyframes portada-parpadeo {
-    50% { opacity: 0; }
-  }
   @keyframes portada-salida-hero {
     to { opacity: 0; visibility: hidden; transform: translate(-80px, -50%); }
   }
