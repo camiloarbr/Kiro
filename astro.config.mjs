@@ -3,8 +3,9 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  // TODO: poner aquí el dominio propio cuando esté comprado (lo usan el canonical y Open Graph).
-  // site: 'https://<dominio>',
+  // URL pública del sitio: la usan el canonical y Open Graph (og:url, og:image).
+  // Cambiar al dominio propio cuando esté comprado y conectado.
+  site: 'https://kiro.kirosolutionsco.workers.dev',
   vite: {
     plugins: [tailwindcss()],
     build: {

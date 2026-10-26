@@ -20,7 +20,9 @@ Kiro Solutions es una empresa de software de Medellín, Colombia, fundada por es
   - JS vanilla mínimo, solo para el selector Hotel/Consultorio y la alternativa con `IntersectionObserver` en navegadores sin scroll-driven animations.
 - **Fuentes autoalojadas** con Fontsource, versiones variables: `@fontsource-variable/montserrat` y `@fontsource-variable/geist` (familias `'Montserrat Variable'` y `'Geist Variable'`).
 - **Gestor de paquetes:** pnpm.
-- **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build: `pnpm astro build`; deploy: `npx wrangler deploy`, conectado al repo con Workers Builds. Dominio propio (comprado en Cloudflare Registrar), por definir.
+- **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build y deploy en un paso: `pnpm deploy` (`astro build` + `wrangler deploy`).
+  - Cuenta de Cloudflare de la empresa (KiroSolutionsCol@gmail.com), Worker `kiro`, publicado en **https://kiro.kirosolutionsco.workers.dev** (`site` en `astro.config.mjs`).
+  - Pendiente: dominio propio (Cloudflare Registrar). Al tenerlo: `"routes": [{ "pattern": "<dominio>", "custom_domain": true }]` en `wrangler.jsonc`, `site` al dominio y volver a publicar. Opcional: Workers Builds para publicar en cada push.
 
 ## Estructura esperada
 ```
