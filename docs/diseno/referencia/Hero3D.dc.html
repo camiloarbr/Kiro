@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Hero animado · chat, Kiro Bot y panel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;family=Geist:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+.h-root{container:hero / inline-size;width:100%}
+.h-stage{position:relative;width:100%;max-width:600px;margin:0 auto;height:620px;perspective:1300px;perspective-origin:50% 45%;font-family:Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.h-tilt{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.h-cam{position:absolute;inset:0;transform-style:preserve-3d;animation:h-cam 19.2s cubic-bezier(.45,0,.25,1) infinite both}
+@keyframes h-cam{0%,16.67%{transform:rotateY(0deg)}28.33%,50%{transform:rotateY(-4deg)}78.33%,95%{transform:rotateY(3deg)}100%{transform:rotateY(0deg)}}
+.h-c{position:absolute;left:50%;top:50%;transform-style:preserve-3d}
+/* acto 1: alguien escribe */
+.h-bar{width:480px;margin:-32px 0 0 -240px;display:flex;align-items:center;gap:12px;transform-origin:50% 50%;animation:h-bar 19.2s cubic-bezier(.55,0,.25,1) infinite both}
+@keyframes h-bar{0%{opacity:0;transform:translateY(30px) scale(.96)}2.5%,17.5%{opacity:1;transform:none}25%{opacity:1;transform:translateY(238px) scale(.47)}26.67%,100%{opacity:0;transform:translateY(238px) scale(.47)}}
+.h-field{flex:1;min-width:0;height:64px;background:#F6F4FA;border-radius:32px;padding:0 24px;display:flex;align-items:center;box-sizing:border-box;overflow:hidden}
+.h-tw{position:relative;display:inline-block;white-space:nowrap;font-size:17px;color:#1F1A27;overflow:hidden}
+.h-cover{position:absolute;top:0;bottom:0;left:0;width:100%;background:#F6F4FA;border-left:2px solid #8B2CF5;animation:h-type 19.2s infinite both}
+@keyframes h-type{0%,2.5%{transform:translateX(0);animation-timing-function:steps(37,end)}15.83%,100%{transform:translateX(100%)}}
+.h-send{width:64px;height:64px;flex:none;border-radius:50%;background:#8B2CF5;display:flex;align-items:center;justify-content:center;animation:h-send 19.2s infinite both}
+@keyframes h-send{0%,16.25%{transform:none}17.08%{transform:scale(.84)}18.33%,100%{transform:none}}
+/* acto 2: Kiro Bot responde */
+.h-phone{transform-style:preserve-3d;width:260px;height:540px;margin:-270px 0 0 -130px;animation:h-ph 19.2s cubic-bezier(.45,0,.2,1) infinite both}
+@keyframes h-ph{0%,17.5%{opacity:0;transform:translateZ(-320px) rotateY(-28deg) scale(.9)}24.17%{opacity:1}25.83%,68.33%{opacity:1;transform:rotateY(-10deg)}71.67%{opacity:.35}74.17%,100%{opacity:0;transform:translateX(-200px) translateZ(-320px) rotateY(32deg)}}
+.h-body{width:100%;height:100%;box-sizing:border-box;border-radius:42px;background:#0F0C14;padding:10px;box-shadow:0 40px 80px rgba(0,0,0,.5)} /* taste-skill-ignore: objeto flotante en 3D */
+.h-scr{width:100%;height:100%;border-radius:33px;background:#F6F4FA;overflow:hidden;display:flex;flex-direction:column}
+.h-msgs{flex:1;min-height:0;padding:16px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
+.h-in,.h-out{padding:10px 13px;font-size:15px;line-height:1.35;max-width:86%}
+.h-in{background:#FFFFFF;color:#1F1A27;border-radius:16px 16px 4px 16px;align-self:flex-end}
+.h-out{background:#8B2CF5;color:#FFFFFF;border-radius:16px 16px 16px 4px;align-self:flex-start}
+.h-inp{flex:none;margin:0 10px 12px;height:42px;border-radius:21px;background:#FFFFFF;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 16px;font-size:13px;color:#6F6780}
+.h-inp span{width:30px;height:30px;border-radius:50%;background:#8B2CF5}
+.h-dots{align-self:flex-start;background:#E7E2EE;border-radius:16px;padding:12px 14px;display:flex;gap:5px}
+.h-dots span{width:7px;height:7px;border-radius:50%;background:#8E86A0;animation:h-blink 1s ease-in-out infinite}
+.h-dots span:nth-child(2){animation-delay:.15s}.h-dots span:nth-child(3){animation-delay:.3s}
+@keyframes h-blink{0%,100%{opacity:.3}50%{opacity:1}}
+.h-m1{animation:h-m1 19.2s cubic-bezier(.2,.8,.2,1) infinite both}@keyframes h-m1{0%,25%{opacity:0;transform:translateY(46px) scale(.9)}27.5%,100%{opacity:1;transform:none}}
+.h-m2{animation:h-m2 19.2s cubic-bezier(.2,.8,.2,1) infinite both}@keyframes h-m2{0%,33.75%{opacity:0;transform:translateY(14px)}35.83%,100%{opacity:1;transform:none}}
+.h-m3{animation:h-m3 19.2s cubic-bezier(.2,.8,.2,1) infinite both}@keyframes h-m3{0%,38.75%{opacity:0;transform:translateY(14px)}40.83%,100%{opacity:1;transform:none}}
+.h-m4{animation:h-m4 19.2s cubic-bezier(.2,.8,.2,1) infinite both}@keyframes h-m4{0%,46.25%{opacity:0;transform:translateY(14px)}48.33%,100%{opacity:1;transform:none}}
+.h-d1{animation:h-d1 19.2s infinite both}@keyframes h-d1{0%,28.33%{opacity:0;max-height:0;padding:0 14px;margin-top:-10px}29.17%,33.33%{opacity:1;max-height:40px;padding:12px 14px;margin-top:0}33.75%,100%{opacity:0;max-height:0;padding:0 14px;margin-top:-10px}}
+.h-d2{animation:h-d2 19.2s infinite both}@keyframes h-d2{0%,41.67%{opacity:0;max-height:0;padding:0 14px;margin-top:-10px}42.5%,45.83%{opacity:1;max-height:40px;padding:12px 14px;margin-top:0}46.25%,100%{opacity:0;max-height:0;padding:0 14px;margin-top:-10px}}
+/* la reserva viaja del celular al panel */
+.h-fly{width:230px;margin:-26px 0 0 -115px;background:#FFFFFF;color:#1F1A27;border-radius:12px;padding:10px 14px;box-sizing:border-box;display:flex;gap:10px;align-items:center;font-size:13px;font-weight:600;box-shadow:0 24px 50px rgba(0,0,0,.45);animation:h-fly 19.2s cubic-bezier(.45,0,.2,1) infinite both} /* taste-skill-ignore: objeto flotante en 3D */
+@keyframes h-fly{0%,67.5%{opacity:0;transform:translate(150px,236px) translateZ(40px) scale(.9)}69.58%{opacity:1;transform:translate(150px,224px) translateZ(80px)}75.83%{opacity:1;transform:translate(70px,-34px) translateZ(110px) scale(.95)}78.33%,100%{opacity:0;transform:translate(70px,-40px) translateZ(60px) scale(.9)}}
+/* acto 3: el panel */
+.h-dash{transform-style:preserve-3d;width:560px;margin:-200px 0 0 -280px;animation:h-da 19.2s cubic-bezier(.45,0,.2,1) infinite both}
+@keyframes h-da{0%,69.17%{opacity:0;transform:translateX(200px) translateZ(-320px) rotateY(-32deg)}72.5%{opacity:.6}76.67%,95%{opacity:1;transform:rotateX(5deg) rotateY(8deg)}100%{opacity:0;transform:rotateX(5deg) rotateY(8deg) translateZ(-180px)}}
+.h-win{display:flex;height:400px;background:#14111A;border-radius:14px;overflow:hidden;box-shadow:0 50px 90px rgba(0,0,0,.5);color:#F6F4FA;font-size:12px} /* taste-skill-ignore: objeto flotante en 3D */
+.h-side{width:138px;flex:none;background:#0F0C14;padding:14px 10px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px}
+.h-brand{display:flex;align-items:center;gap:8px;padding:2px 6px 14px}
+.h-mark{width:24px;height:24px;border-radius:6px;background:#F6F4FA;color:#0C0A10;display:flex;align-items:center;justify-content:center;font-family:Montserrat,sans-serif;font-weight:700;font-size:12px}
+.h-nav{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:7px;color:#A39CB0;font-size:12px}
+.h-nav.on{background:#221D2B;color:#FFFFFF}
+.h-cnt{background:#8B2CF5;color:#FFFFFF;border-radius:8px;padding:0 6px;font-size:11px;font-weight:600;line-height:16px;animation:h-cnt 19.2s infinite both}
+@keyframes h-cnt{0%,80.83%{opacity:1}82.5%,100%{opacity:0}}
+.h-main{flex:1;min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.h-hd{display:flex;align-items:flex-start;justify-content:space-between}
+.h-btn{background:#F6F4FA;color:#0C0A10;border-radius:7px;padding:6px 10px;font-weight:600;font-size:12px}
+.h-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.h-kpi{background:#1B1723;border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
+.h-kl{color:#A39CB0;font-size:11px}
+.h-kv{position:relative;height:20px;font-family:Montserrat,sans-serif;font-weight:700;font-size:17px}
+.h-kv span{position:absolute;left:0;top:0;white-space:nowrap}
+.h-a{animation:h-a 19.2s infinite both}@keyframes h-a{0%,81.67%{opacity:1;transform:none}83.33%,100%{opacity:0;transform:translateY(-8px)}}
+.h-b{animation:h-b 19.2s infinite both}@keyframes h-b{0%,81.67%{opacity:0;transform:translateY(8px)}83.75%,100%{opacity:1;transform:none}}
+.h-grid{display:grid;grid-template-columns:34px repeat(8,minmax(0,1fr));gap:4px;align-items:center}
+.h-gl{color:#A39CB0;font-size:11px}
+.h-gh{color:#9A92AD;font-size:10px;text-align:center;white-space:nowrap}
+.h-cell{height:16px;border-radius:4px;background:#221D2B}
+.h-cell.f{background:#4A3A63}
+.h-cell.n{background:#221D2B;animation:h-cell 19.2s infinite both}
+@keyframes h-cell{0%,81.67%{background:#221D2B;transform:none}82.92%{background:#B07CFF;transform:scale(1.25)}85%,100%{background:#8B2CF5;transform:none}}
+.h-tbl{display:flex;flex-direction:column;gap:2px}
+.h-row{display:grid;grid-template-columns:1.3fr 1.4fr 1fr;gap:8px;align-items:center;padding:7px 8px;border-radius:7px;color:#C9C3D3}
+.h-th{color:#9A92AD;font-size:11px;padding-top:0;padding-bottom:2px}
+.h-who{display:flex;align-items:center;gap:7px;color:#FFFFFF;font-weight:500;white-space:nowrap}
+.h-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0C0A10;flex:none}
+.h-new{animation:h-new 19.2s cubic-bezier(.2,.8,.2,1) infinite both}@keyframes h-new{0%,75.83%{opacity:0;transform:translateY(-10px);background:#2E1B4D}78.33%,86.67%{opacity:1;transform:none;background:#2E1B4D}93.33%,100%{opacity:1;transform:none;background:transparent}}
+.h-st{position:relative;height:20px}
+.h-st span{position:absolute;left:0;top:0;white-space:nowrap;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600}
+.h-pen{background:#3A2F4A;color:#E7E2EE;animation:h-a 19.2s infinite both}
+.h-ok{background:#8B2CF5;color:#FFFFFF;animation:h-b 19.2s infinite both}
+.h-tag{border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600;background:#221D2B;color:#C9C3D3;justify-self:start}
+.h-toast{position:absolute;right:-22px;bottom:-26px;background:#F6F4FA;color:#0C0A10;border-radius:14px;padding:12px 16px;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;white-space:nowrap;box-shadow:0 24px 50px rgba(0,0,0,.45);animation:h-to 19.2s cubic-bezier(.2,.8,.2,1) infinite both} /* taste-skill-ignore: objeto flotante en 3D */
+@keyframes h-to{0%,83.33%{opacity:0;transform:translateZ(70px) translateY(14px)}85.83%,94.17%{opacity:1;transform:translateZ(70px)}96.67%,100%{opacity:0;transform:translateZ(70px)}}
+.h-compact .h-bar{width:342px;margin:-22px 0 0 -171px;gap:6px;animation-name:h-bar-m}
+@keyframes h-bar-m{0%{opacity:0;transform:translateY(30px) scale(.96)}2.5%,17.5%{opacity:1;transform:none}25%{opacity:1;transform:translateY(240px) scale(.64)}26.67%,100%{opacity:0;transform:translateY(240px) scale(.64)}}
+.h-compact .h-field{height:44px;padding:0 12px;border-radius:22px}
+.h-compact .h-tw{font-size:12.5px}
+.h-compact .h-send{width:44px;height:44px}
+.h-compact .h-fly{animation-name:h-fly-m}
+.h-compact .h-phone{animation-name:h-ph-m}
+@keyframes h-ph-m{0%,17.5%{opacity:0;transform:translateZ(-320px) rotateY(-28deg) scale(.9)}24.17%{opacity:1}25.83%,68.33%{opacity:1;transform:rotateY(-3deg)}71.67%{opacity:.35}74.17%,100%{opacity:0;transform:translateX(-200px) translateZ(-320px) rotateY(32deg)}}
+.h-compact .h-cam{animation:none}
+@keyframes h-fly-m{0%,67.5%{opacity:0;transform:translate(40px,236px) translateZ(40px) scale(.9)}69.58%{opacity:1;transform:translate(40px,224px) translateZ(80px)}75.83%{opacity:1;transform:translate(10px,-60px) translateZ(110px) scale(.95)}78.33%,100%{opacity:0;transform:translate(10px,-66px) translateZ(60px) scale(.9)}}
+.h-compact .h-dash{width:350px;margin:-225px 0 0 -175px;animation-name:h-da-m}
+@keyframes h-da-m{0%,69.17%{opacity:0;transform:translateX(160px) translateZ(-320px) rotateY(-32deg)}72.5%{opacity:.6}76.67%,95%{opacity:1;transform:rotateX(4deg) rotateY(3deg)}100%{opacity:0;transform:rotateX(4deg) rotateY(3deg) translateZ(-180px)}}
+.h-compact .h-win{height:auto}
+.h-compact .h-side{display:none}
+.h-compact .h-main{padding:14px}
+.h-compact .h-row{grid-template-columns:minmax(0,1.15fr) minmax(0,1.2fr) auto;gap:6px;padding:7px 6px;font-size:11px}
+.h-compact .h-st{width:86px}
+.h-compact .h-kl{font-size:10px}
+.h-compact .h-toast{right:8px;bottom:-30px;font-size:13px;padding:10px 14px}
+@media (prefers-reduced-motion:reduce){.h-cam,.h-bar,.h-phone,.h-fly,.h-cover,.h-send,.h-m1,.h-m2,.h-m3,.h-m4,.h-d1,.h-d2,.h-dots span{animation:none}.h-bar,.h-phone,.h-fly,.h-d1,.h-d2,.h-a,.h-cnt{display:none}.h-dash,.h-new,.h-b,.h-cell,.h-toast{animation:none;opacity:1}.h-cell.n{background:#8B2CF5}}
+</style>
+</helmet>
+<div class="h-root {{rootCls}}"><div class="h-stage" onMouseMove="{{move}}" onMouseLeave="{{leave}}" role="img" aria-label="{{label}}">
+<div class="h-tilt" style="transform: rotateX({{rx}}deg) rotateY({{ry}}deg);" aria-hidden="true">
+<div class="h-cam">
+
+<div class="h-c"><div class="h-phone" data-ui=""><div class="h-body"><div class="h-scr">
+<div style="background: #0C0A10; color: #FFFFFF; padding: 30px 16px 14px; display: flex; align-items: center; gap: 10px; flex: none;"><span style="width: 36px; height: 36px; border-radius: 50%; background: #8B2CF5; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">K</span><div style="display: flex; flex-direction: column; gap: 1px;"><span style="font-weight: 600; font-size: 15px;">Kiro Bot</span><span style="font-size: 12px; color: #B07CFF;">en línea</span></div></div>
+<div class="h-msgs">
+<div class="h-in h-m1">{{user1}}</div>
+<div class="h-dots h-d1"><span></span><span></span><span></span></div>
+<div class="h-out h-m2">{{bot1}}</div>
+<div class="h-in h-m3">{{user2}}</div>
+<div class="h-dots h-d2"><span></span><span></span><span></span></div>
+<div class="h-out h-m4">{{bot2}}</div>
+</div>
+<div class="h-inp">Escribe un mensaje<span></span></div>
+</div></div></div></div>
+
+<div class="h-c"><div class="h-bar" data-ui="">
+<div class="h-field"><span class="h-tw">{{user1}}<span class="h-cover"></span></span></div>
+<div class="h-send"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></div>
+</div></div>
+
+<div class="h-c"><div class="h-dash" data-ui="">
+<div class="h-win">
+<div class="h-side">
+<div class="h-brand"><span class="h-mark">{{brandInitial}}</span><span style="font-weight: 600; font-size: 12px; white-space: nowrap;">{{brand}}</span></div>
+<div class="h-nav on"><span>{{nav1}}</span><span class="h-cnt">1</span></div>
+<div class="h-nav"><span>{{nav2}}</span></div>
+<div class="h-nav"><span>{{nav3}}</span></div>
+<div class="h-nav"><span>{{nav4}}</span></div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding: 6px 8px; color: #A39CB0; font-size: 11px;"><span style="width: 18px; height: 18px; border-radius: 5px; background: #8B2CF5; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 10px;">K</span>Kiro Bot activo</div>
+</div>
+<div class="h-main">
+<div class="h-hd"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-family: Montserrat, sans-serif; font-weight: 700; font-size: 17px;">{{title}}</span><span style="color: #A39CB0; font-size: 11px;">{{week}}</span></div><span class="h-btn">{{action}}</span></div>
+<div class="h-kpis">
+<div class="h-kpi"><span class="h-kl">{{k1}}</span><span class="h-kv"><span class="h-a">7 de 8</span><span class="h-b">8 de 8</span></span></div>
+<div class="h-kpi"><span class="h-kl">Por confirmar</span><span class="h-kv"><span class="h-a">1</span><span class="h-b">0</span></span></div>
+<div class="h-kpi"><span class="h-kl">{{k3}}</span><span class="h-kv"><span>{{k3v}}</span></span></div>
+</div>
+<div class="h-grid">
+<span></span>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="8"><span class="h-gh">{{c}}</span></sc-for>
+<sc-for list="{{cells}}" as="g" hint-placeholder-count="27"><span class="{{g.cls}}">{{g.t}}</span></sc-for>
+</div>
+<div class="h-tbl">
+<div class="h-row h-th"><span>{{colA}}</span><span>Detalle</span><span>Estado</span></div>
+<div class="h-row h-new"><span class="h-who"><span class="h-av" style="background: #D9C4FF;">LM</span>Laura M.</span><span>{{d1}}</span><span class="h-st"><span class="h-pen">Por confirmar</span><span class="h-ok">Confirmada</span></span></div>
+<div class="h-row"><span class="h-who"><span class="h-av" style="background: #C8E3D4;">AP</span>Andrés P.</span><span>{{d2}}</span><span class="h-tag">Confirmada</span></div>
+<div class="h-row"><span class="h-who"><span class="h-av" style="background: #F2D9C2;">SR</span>Sofía R.</span><span>{{d3}}</span><span class="h-tag">Pagada</span></div>
+</div>
+</div>
+</div>
+<div class="h-toast"><span style="width: 22px; height: 22px; border-radius: 50%; background: #8B2CF5; display: flex; align-items: center; justify-content: center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>{{toast}}</div>
+</div></div>
+
+<div class="h-c"><div class="h-fly" data-ui=""><span style="width: 22px; height: 22px; border-radius: 6px; background: #8B2CF5; flex: none;"></span>{{fly}}</div></div>
+
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scenario":{"editor":"enum","options":["hotel","consultorio"],"default":"hotel"},"compact":{"editor":"boolean","default":false},"$preview":{"width":600,"height":620}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mx: 0, my: 0 }; }
+  renderVals() {
+    var self = this, mx = this.state.mx || 0, my = this.state.my || 0;
+    var S = {
+      hotel: {
+        user1: 'Hola, ¿hay habitación para el sábado?',
+        bot1: '¡Hola! Sí, nos queda la habitación 8, doble. ¿Te la reservo?',
+        user2: 'Sí, por favor',
+        bot2: 'Listo. Te envié el link del anticipo.',
+        brand: 'Casa Ceiba', brandInitial: 'C', nav1: 'Reservas', nav2: 'Calendario', nav3: 'Huéspedes', nav4: 'Pagos',
+        title: 'Reservas', week: 'Viernes 23 a domingo 25 de octubre', action: 'Nueva reserva',
+        k1: 'Ocupación sábado', k3: 'Llegadas hoy', k3v: '2',
+        cols: ['H1','H2','H3','H4','H5','H6','H7','H8'], rows: ['Vie','Sáb','Dom'],
+        colA: 'Huésped', d1: 'Hab. 8 · sábado', d2: 'Hab. 3 · vie y sáb', d3: 'Hab. 5 · domingo',
+        fly: 'Reserva de Laura M.',
+        toast: 'Reserva confirmada · anticipo pagado',
+        label: 'Un cliente escribe por chat, Kiro Bot le reserva la habitación 8 y la reserva aparece confirmada en el panel del hotel'
+      },
+      consultorio: {
+        user1: 'Hola, ¿hay cita de limpieza el jueves?',
+        bot1: '¡Hola! Sí, me queda un espacio a las 3:00 p. m. ¿Te lo agendo?',
+        user2: 'Sí, gracias',
+        bot2: 'Listo. Te envié el link del anticipo.',
+        brand: 'Ceiba Odontología', brandInitial: 'C', nav1: 'Agenda', nav2: 'Pacientes', nav3: 'Pagos', nav4: 'Recordatorios',
+        title: 'Agenda', week: 'Miércoles 21 a viernes 23 de octubre', action: 'Nueva cita',
+        k1: 'Citas jueves', k3: 'Pacientes hoy', k3v: '5',
+        cols: ['8','9','10','11','12','1','2','3'], rows: ['Mié','Jue','Vie'],
+        colA: 'Paciente', d1: 'Limpieza · jue 3 p. m.', d2: 'Control · jue 9 a. m.', d3: 'Valoración · vie',
+        fly: 'Cita de Laura M.',
+        toast: 'Cita confirmada · anticipo pagado',
+        label: 'Un paciente escribe por chat, Kiro Bot le agenda una cita y la cita aparece confirmada en la agenda del consultorio'
+      }
+    };
+    var s = S[this.props.scenario] || S.hotel;
+    var pat = [[1,1,0,1,1,1,0,1],[1,1,1,1,1,1,1,2],[1,0,0,1,0,1,0,0]];
+    var cells = [];
+    for (var r = 0; r < 3; r++) {
+      cells.push({ cls: 'h-gl', t: s.rows[r] });
+      for (var c = 0; c < 8; c++) {
+        var v = pat[r][c];
+        cells.push({ cls: v === 2 ? 'h-cell n' : (v ? 'h-cell f' : 'h-cell'), t: '' });
+      }
+    }
+    return Object.assign({}, s, {
+      cells: cells,
+      rootCls: this.props.compact ? 'h-compact' : '',
+      rx: (-my * 8).toFixed(2),
+      ry: (mx * 12).toFixed(2),
+      move: function (e) { var b = e.currentTarget.getBoundingClientRect(); self.setState({ mx: (e.clientX - b.left) / b.width - 0.5, my: (e.clientY - b.top) / b.height - 0.5 }); },
+      leave: function () { self.setState({ mx: 0, my: 0 }); }
+    });
+  }
+}
+</script>
+</body>
+</html>
