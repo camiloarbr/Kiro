@@ -1,0 +1,288 @@
+---
+import Olas from './Olas.astro';
+import { servicios } from '../data/servicios';
+---
+
+<section id="servicios" class="servicios">
+  <Olas />
+
+  <div class="contenedor interior">
+    <div class="cabeza">
+      <span class="eyebrow revela items-center">Servicios</span>
+      <h2 class="titulo titulo-grande revela">
+        ¿Qué podemos <span class="degradado">construir</span> para ti<span class="pregunta">?</span>
+      </h2>
+      <p class="revela-2">
+        Partimos de módulos propios y los ajustamos a tu operación. Empiezas por lo que más te duele y sumas lo demás.
+      </p>
+    </div>
+
+    <div class="tarjetas">
+      {
+        servicios.map((s, i) => (
+          <article class:list={['tarjeta', { grande: s.grande }]} data-io>
+            <div class="arte" aria-hidden="true">
+              <i class="rayas" />
+              <svg viewBox="0 0 300 180" set:html={s.arte} />
+            </div>
+            <div class="cuerpo">
+              <em>{String(i + 1).padStart(2, '0')}</em>
+              <h3>{s.titulo}</h3>
+              <p>{s.descripcion}</p>
+              <ul>
+                {s.etiquetas.map((e) => (
+                  <li>{e}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="revela-2 mt-14 flex justify-center">
+      <a class="btn brillo" href="#contacto">Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .servicios {
+    position: relative;
+    overflow: hidden;
+    padding: 110px 0 90px;
+    color: var(--color-blanco);
+    background: radial-gradient(60% 50% at 50% 0%, #1e1233 0%, var(--color-negro) 70%);
+  }
+  .interior {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- Encabezado ---------- */
+  .cabeza {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    text-align: center;
+  }
+  .cabeza .eyebrow {
+    color: var(--color-violeta-claro);
+  }
+  .cabeza p {
+    margin: 0;
+    max-width: 52ch;
+    color: var(--color-texto-oscuro);
+  }
+  /* Texto con degradado: el fondo se recorta a la forma de las letras (background-clip: text) */
+  .titulo-grande {
+    max-width: 14ch;
+    font-size: clamp(40px, 5.2vw, 78px);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    background: linear-gradient(180deg, var(--color-white) 30%, #b9b2c6);
+    background-clip: text;
+    color: transparent;
+  }
+  .degradado {
+    background: linear-gradient(100deg, var(--color-lav-media), var(--color-violeta) 60%, var(--color-violeta-claro));
+    background-clip: text;
+    color: transparent;
+  }
+  .pregunta {
+    color: var(--color-violeta-claro);
+    -webkit-text-fill-color: var(--color-violeta-claro);
+  }
+
+  /* ---------- Tarjetas ---------- */
+  .tarjetas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    margin-top: 48px;
+    perspective: 1400px; /* da profundidad al rotateX con que entran */
+  }
+  .tarjeta {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #19131f, #110d17);
+    border: 1px solid rgb(217 196 255 / 0.16);
+    transform-origin: 50% 100%;
+    transition:
+      border-color 0.3s,
+      translate 0.4s var(--ease-kiro);
+  }
+  /* Hover con «translate» (no transform) para no chocar con la animación de entrada */
+  .tarjeta:hover {
+    border-color: rgb(217 196 255 / 0.4);
+    translate: 0 -6px;
+  }
+
+  .arte {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+    background: radial-gradient(80% 90% at 50% 100%, var(--color-profundo-1), #120a1e 70%);
+  }
+  /* Rayas de luz diagonales que se desplazan sin parar detrás de la ilustración */
+  .rayas {
+    position: absolute;
+    inset: -40%;
+    opacity: 0.7;
+    background: repeating-linear-gradient(
+      115deg,
+      rgb(176 124 255 / 0) 0 22px,
+      rgb(176 124 255 / 0.35) 23px,
+      rgb(176 124 255 / 0) 26px 60px
+    );
+    will-change: transform;
+  }
+  .arte svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: #e8d9ff;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 10px rgb(176 124 255 / 0.7));
+  }
+  /* El SVG llega por set:html, así que su contenido no lleva el atributo de estilos con alcance */
+  .arte svg :global(.fill) {
+    fill: var(--color-violeta);
+    stroke: var(--color-lav-media);
+  }
+
+  .cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 26px 28px;
+  }
+  .cuerpo em {
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--color-violeta-claro);
+  }
+  .cuerpo h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700; /* el preflight de Tailwind quita la negrita por defecto de h3 */
+    letter-spacing: -0.02em;
+    color: var(--color-white);
+  }
+  .cuerpo p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--color-texto-oscuro);
+  }
+  .cuerpo ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cuerpo li {
+    padding: 4px 12px;
+    border: 1px solid rgb(217 196 255 / 0.22);
+    border-radius: 999px;
+    font-size: 13px;
+    color: #e8d9ff;
+  }
+
+  .brillo {
+    box-shadow:
+      0 0 0 1px rgb(217 196 255 / 0.3),
+      0 14px 50px rgb(139 44 245 / 0.55);
+  }
+
+  /* ---------- Computador ---------- */
+  @media (width >= 56.25rem) {
+    .servicios {
+      padding: 170px 0 150px;
+    }
+    /* Centrada: deja el espacio del carril del cubo también a la izquierda */
+    .interior {
+      padding-left: 164px;
+    }
+    .tarjetas {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      margin-top: 72px;
+    }
+    .tarjeta {
+      grid-column: span 2;
+    }
+    .tarjeta.grande {
+      grid-column: span 3;
+    }
+    .arte {
+      height: 180px;
+    }
+    .grande .arte {
+      height: 220px;
+    }
+  }
+
+  /* ---------- Movimiento ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .rayas {
+      animation: rayas 6s linear infinite;
+    }
+  }
+
+  /* Las tarjetas entran inclinadas hacia atrás y se enderezan; las de la derecha, un poco después */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .tarjeta {
+        animation: tarjeta-entra linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+      .tarjeta:nth-child(2),
+      .tarjeta:nth-child(4) {
+        animation-range: entry 10% entry 80%;
+      }
+      .tarjeta:nth-child(5) {
+        animation-range: entry 20% entry 90%;
+      }
+    }
+  }
+
+  /* Alternativa con IntersectionObserver (Firefox) */
+  :global(.io) .tarjeta {
+    opacity: 0;
+    transform: translateY(90px) rotateX(38deg) scale(0.92);
+    transition:
+      opacity 0.9s var(--ease-kiro),
+      transform 0.9s var(--ease-kiro),
+      border-color 0.3s,
+      translate 0.4s var(--ease-kiro);
+  }
+  :global(.io) .tarjeta:nth-child(2),
+  :global(.io) .tarjeta:nth-child(4) {
+    transition-delay: 0.1s, 0.1s, 0s, 0s;
+  }
+  :global(.io) .tarjeta:nth-child(5) {
+    transition-delay: 0.2s, 0.2s, 0s, 0s;
+  }
+  :global(.io) .tarjeta:global(.visible) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes tarjeta-entra {
+    from { opacity: 0; transform: translateY(90px) rotateX(38deg) scale(0.92); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes rayas {
+    to { transform: translateX(120px); }
+  }
+</style>
