@@ -1,0 +1,25 @@
+---
+import { enlaces } from '../data/navegacion';
+---
+
+<!-- Único elemento con backdrop-filter: no se anima, así que el desenfoque no cuesta en el scroll -->
+<header class="sticky top-0 z-20 bg-lav/72 backdrop-blur-[14px]">
+  <div class="contenedor flex h-[76px] items-center justify-between gap-6">
+    <a href="#inicio" aria-label="Kiro, inicio" class="flex">
+      <!-- El SVG oficial incluye el área libre de la marca: -ml compensa ese margen para alinear la «k» -->
+      <img src="/logos/kiro-logotipo-corto.svg" alt="" width="73" height="38" class="-ml-[5px]" />
+    </a>
+
+    <nav aria-label="Principal" class="hidden gap-[34px] md:flex">
+      {
+        enlaces.map((e) => (
+          <a href={e.href} class="text-base text-tinta-2 no-underline transition-colors hover:text-violeta">
+            {e.texto}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href="#contacto" class="btn min-h-11 px-5">Contáctanos</a>
+  </div>
+</header>

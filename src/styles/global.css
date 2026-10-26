@@ -30,6 +30,9 @@
   --color-profundo-1: #3a1677;
   --color-profundo-2: #6e22d6;
   --color-profundo-3: #1a1030;
+  /* Texto sobre Kiro Black en el footer (diseño aprobado) */
+  --color-texto-oscuro: #c9c3d3;
+  --color-texto-oscuro-2: #a39cb0;
 
   /* Tipografía */
   --font-display: 'Montserrat Variable', Montserrat, sans-serif;

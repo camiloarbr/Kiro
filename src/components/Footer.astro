@@ -1,0 +1,52 @@
+---
+import { enlaces } from '../data/navegacion';
+import { correo, whatsappTexto, whatsappUrl } from '../data/contacto';
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="bg-negro text-base text-texto-oscuro">
+  <div class="contenedor flex flex-col gap-9 pt-14 pb-8">
+    <div class="grid grid-cols-12 gap-x-6 gap-y-7">
+      <div class="col-span-12 flex flex-col gap-3.5 md:col-span-5">
+        <img
+          src="/logos/kiro-logotipo-corto-negativo.svg"
+          alt="Kiro Solutions"
+          width="88"
+          height="46"
+          class="-ml-[6px] self-start"
+        />
+        <p class="m-0">Software a la medida, agentes de IA y automatización.</p>
+      </div>
+
+      <nav aria-label="Pie de página" class="col-span-12 flex flex-col gap-2 md:col-span-3 md:col-start-7">
+        {
+          enlaces.map((e) => (
+            <a href={e.href} class="no-underline transition-colors hover:text-white">
+              {e.texto}
+            </a>
+          ))
+        }
+      </nav>
+
+      <address class="col-span-12 flex flex-col gap-2 not-italic md:col-span-3 md:col-start-10">
+        <span>Medellín, Colombia</span>
+        <a href={`mailto:${correo}`} class="no-underline transition-colors hover:text-white">{correo}</a>
+        {
+          whatsappUrl ? (
+            <a href={whatsappUrl} class="no-underline transition-colors hover:text-white">
+              WhatsApp {whatsappTexto}
+            </a>
+          ) : (
+            <span>WhatsApp {whatsappTexto}</span>
+          )
+        }
+      </address>
+    </div>
+
+    <div class="flex justify-between gap-4 text-sm text-texto-oscuro-2">
+      <span>© {anio} Kiro Solutions</span>
+      <a href="#inicio" class="no-underline transition-colors hover:text-white">Volver arriba</a>
+    </div>
+  </div>
+</footer>
