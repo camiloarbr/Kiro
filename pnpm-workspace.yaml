@@ -1,0 +1,6 @@
+# Scripts de instalación de dependencias: bloqueados explícitamente.
+# esbuild y workerd traen su binario como dependencia opcional; su script solo lo verifica,
+# y wrangler funciona sin ejecutarlo.
+allowBuilds:
+  esbuild: false
+  workerd: false

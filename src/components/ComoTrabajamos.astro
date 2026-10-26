@@ -35,7 +35,9 @@ const pasos = [
     color: #f3eaff;
   }
 
-  /* Filas de vidrio translúcido sobre el degradado */
+  /* Filas de vidrio translúcido sobre el degradado.
+     Vidrio oscuro (no blanco) y texto blanco: abajo el degradado se aclara y con
+     vidrio blanco las últimas filas quedaban por debajo del contraste AA. */
   .pasos {
     display: flex;
     flex-direction: column;
@@ -47,7 +49,7 @@ const pasos = [
   .pasos li {
     padding: 20px 24px;
     border-radius: 16px;
-    background: rgb(255 255 255 / 0.14);
+    background: rgb(26 16 48 / 0.18);
     border: 1px solid rgb(255 255 255 / 0.35);
     transition:
       background-color 0.3s,
@@ -55,7 +57,7 @@ const pasos = [
   }
   /* translate (no transform) para que el hover no lo bloquee la animación de entrada */
   .pasos li:hover {
-    background: rgb(255 255 255 / 0.22);
+    background: rgb(26 16 48 / 0.26);
     translate: 6px 0;
   }
   .pasos b {
@@ -65,7 +67,7 @@ const pasos = [
     letter-spacing: -0.01em;
   }
   .pasos span {
-    color: #ede3ff;
+    color: var(--color-white);
   }
 
   @supports (animation-timeline: view()) {

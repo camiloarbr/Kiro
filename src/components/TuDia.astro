@@ -80,7 +80,7 @@ import { filasDia } from '../data/dia';
   */
   .hoy span {
     background: linear-gradient(var(--color-violeta), var(--color-violeta)) no-repeat 0 55% / 100% 2px;
-    color: var(--color-gris);
+    color: var(--color-tenue);
   }
   .flecha {
     display: none;
@@ -211,7 +211,7 @@ import { filasDia } from '../data/dia';
   }
   :global(.io) .fila:global(.visible) .hoy span {
     background-size: 100% 2px;
-    color: var(--color-gris);
+    color: var(--color-tenue);
   }
 
   @keyframes fila-entra {
@@ -222,7 +222,7 @@ import { filasDia } from '../data/dia';
      Solo repinta esas líneas de texto; no recalcula el layout. */
   @keyframes tachar {
     from { background-size: 0% 2px; color: var(--color-tinta-2); }
-    to { background-size: 100% 2px; color: var(--color-gris); }
+    to { background-size: 100% 2px; color: var(--color-tenue); }
   }
   @keyframes flecha {
     from { opacity: 0; transform: translateX(-14px); }

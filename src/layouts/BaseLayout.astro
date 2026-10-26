@@ -4,18 +4,35 @@ import '@fontsource-variable/montserrat';
 import '@fontsource-variable/geist';
 import '../styles/global.css';
 
+import { correo } from '../data/contacto';
+
 interface Props {
   title?: string;
   description?: string;
+  /** true en páginas que no deben aparecer en buscadores (p. ej. la 404) */
+  noindex?: boolean;
 }
 
 const {
   title = 'Kiro Solutions · Software a la medida en Medellín',
   description = 'Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio. Software a la medida para hoteles, consultorios y pymes.',
+  noindex = false,
 } = Astro.props;
 
-// Solo hay URL canónica cuando `site` está definido en astro.config.mjs.
+// Open Graph exige URLs absolutas: solo se generan cuando `site` está definido en astro.config.mjs.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const imagenOg = Astro.site ? new URL('/og.png', Astro.site) : undefined;
+
+// Datos estructurados (schema.org): le dicen a Google quién es la empresa. Solo datos reales.
+const organizacion = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Kiro Solutions',
+  description,
+  email: correo,
+  address: { '@type': 'PostalAddress', addressLocality: 'Medellín', addressCountry: 'CO' },
+  ...(Astro.site && { url: Astro.site.href, logo: new URL('/apple-touch-icon.png', Astro.site).href }),
+};
 ---
 
 <!doctype html>
@@ -26,7 +43,29 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#F4EFFF" />
+
+    <!-- Vista previa al compartir el enlace (WhatsApp, LinkedIn, Facebook, X) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kiro Solutions" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {
+      imagenOg && (
+        <>
+          <meta property="og:image" content={imagenOg} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Kiro Solutions: software a la medida que trabaja por ti." />
+        </>
+      )
+    }
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {!noindex && <script type="application/ld+json" set:html={JSON.stringify(organizacion)} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />

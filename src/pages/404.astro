@@ -1,0 +1,19 @@
+---
+// Página de error: Cloudflare la sirve para cualquier ruta que no exista
+// ("not_found_handling": "404-page" en wrangler.jsonc).
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada · Kiro Solutions" noindex>
+  <main class="contenedor flex min-h-screen flex-col items-start justify-center gap-6 py-24">
+    <a href="/" aria-label="Kiro, inicio" class="flex">
+      <img src="/logos/kiro-logotipo-corto.svg" alt="" width="73" height="38" class="-ml-[5px]" />
+    </a>
+    <p class="eyebrow">Error 404</p>
+    <h1 class="titulo max-w-[16ch] text-[clamp(34px,4vw,56px)] leading-[1.05]">
+      Esta página no existe <span class="text-violeta">(todavía).</span>
+    </h1>
+    <p class="m-0 max-w-[48ch] text-tinta-2">Puede que el enlace esté mal escrito o que la página se haya movido.</p>
+    <a class="btn" href="/">Volver al inicio <span aria-hidden="true">→</span></a>
+  </main>
+</BaseLayout>

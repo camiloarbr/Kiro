@@ -1,0 +1,14 @@
+{
+  // Configuración de Cloudflare Workers. El sitio es 100 % estático: no hay código de Worker,
+  // Cloudflare sirve directamente los archivos que genera «astro build» en ./dist.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kiro-landing",
+  "compatibility_date": "2026-10-22",
+  "assets": {
+    "directory": "./dist",
+    // Cualquier ruta que no exista responde con dist/404.html (src/pages/404.astro) y código 404.
+    "not_found_handling": "404-page"
+  }
+  // Cuando haya dominio propio (comprado en Cloudflare Registrar), agregar:
+  // "routes": [{ "pattern": "<dominio>", "custom_domain": true }]
+}

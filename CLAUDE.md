@@ -59,6 +59,13 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - **Nunca** agregues `Co-Authored-By` ni menciones a Claude en commits o PR. `.claude/settings.json` ya lo desactiva.
    - Al final de cada paso, propón el mensaje de commit (en español, estilo `feat: portada con paneles de vidrio`) y haz el commit solo si Gallo lo aprueba.
    - **Nunca hagas `git push`**: el push lo hace Gallo.
-7. **Pendientes conocidos:**
+7. **Decisiones técnicas que no hay que deshacer:**
+   - `astro.config.mjs` usa `cssMinify: 'esbuild'`. Lightning CSS (el minificador por defecto de Vite 8) mete `animation-timeline` dentro del atajo `animation`, que es inválido: en producción se rompen todas las animaciones con el scroll. Verificar siempre sobre `pnpm build` + `pnpm preview`, no solo con `pnpm dev`.
+   - En los keyframes 3D (portada y demo), todos los pasos repiten la misma lista de funciones de `transform`. Si se "simplifican", el navegador interpola con matrices y los giros cambian.
+   - Animaciones con scroll dentro de `@supports (animation-timeline: view())` y `prefers-reduced-motion: no-preference`. El CSS base es la versión estática legible. Firefox usa la clase `.io` + `src/scripts/revelar.ts`.
+   - Hover sobre elementos que tienen animación de entrada: usar `translate` (no `transform`), porque la animación siempre le gana al `:hover`.
+   - Contraste ajustado a AA frente a la referencia: tachado de «Tu día» en `tenue`, filas de «Cómo trabajamos» con vidrio oscuro y texto blanco, eyebrow «Hablemos» en Morado oscuro.
+   - `pnpm-workspace.yaml` bloquea los scripts de instalación de `esbuild` y `workerd` (no hacen falta). No agregar excepciones a `minimumReleaseAge`.
+8. **Pendientes conocidos:**
    - El número de WhatsApp es un placeholder: ponerlo en una sola constante en `src/data/contacto.ts`.
    - Los nombres de ejemplo («Casa Ceiba», «Ceiba Odontología», «Laura M.») son de muestra.
