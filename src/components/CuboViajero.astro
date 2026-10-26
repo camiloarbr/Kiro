@@ -37,9 +37,9 @@
         content: '';
         position: absolute;
         left: 59px;
-        top: 2600px;
+        top: 2900px;
         width: 2px;
-        height: calc(100% - 2600px);
+        height: calc(100% - 2900px);
         background: linear-gradient(
           180deg,
           rgb(139 44 245 / 0),
@@ -54,7 +54,7 @@
       }
 
       /*
-        Aparece al 92–100 % de la portada, justo cuando los paneles se arman en este
+        Aparece al 93–100 % de la portada, justo cuando el cubo de bloques llega a este
         mismo punto. --hero vive en la portada, que no es antepasado del riel: por eso
         .recorrido declara timeline-scope, para que la línea de tiempo se vea desde aquí.
       */
@@ -79,11 +79,11 @@
       /* El cubo: 6 caras <i> colocadas en 3D con preserve-3d; gira ~3 vueltas en el recorrido */
       .cubo {
         position: absolute;
-        left: 25px;
-        top: 25px;
-        width: 70px;
-        height: 70px;
-        --mitad: 35px;
+        left: 16px;
+        top: 16px;
+        width: 88px;
+        height: 88px;
+        --mitad: 44px;
         transform-style: preserve-3d;
         will-change: transform;
         animation: giro linear both;
@@ -140,8 +140,8 @@
       }
       .riel::before {
         left: 31px;
-        top: 2300px;
-        height: calc(100% - 2300px);
+        top: 2600px;
+        height: calc(100% - 2600px);
         opacity: 0.6;
       }
       .viajero {
@@ -176,11 +176,11 @@
     to { scale: 1 1; }
   }
   @keyframes aparece {
-    0%, 92% { opacity: 0; scale: 1; }
-    95% { opacity: 1; scale: 1.25; }
+    0%, 93% { opacity: 0; scale: 1; }
+    96% { opacity: 1; scale: 1.2; }
     100% { opacity: 1; scale: 1; }
   }
-  /* Empieza en la misma pose en que quedan armados los paneles: rotateX(-24deg) rotateY(-35deg) */
+  /* Empieza en la misma pose en que termina el cubo de bloques de la portada: rotateX(-24deg) rotateY(-35deg) */
   @keyframes giro {
     0% { transform: rotateX(-24deg) rotateY(-35deg) rotateZ(0deg); }
     25% { transform: rotateX(70deg) rotateY(235deg) rotateZ(20deg); }

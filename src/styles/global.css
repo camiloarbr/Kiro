@@ -46,10 +46,20 @@
 }
 
 @layer base {
+  /*
+    Compensa el header sticky (76 px) al saltar a #servicios, #contacto…
+    Con scroll-margin en las secciones, NO con scroll-padding en html: el scroll-padding
+    también recorta el área que usan las view-timeline y corre todas las animaciones 76 px.
+  */
+  section[id] {
+    scroll-margin-top: 76px;
+  }
+
   html {
-    /* Compensa el header sticky (76 px) al saltar a #servicios, #contacto… */
-    scroll-padding-top: 76px;
     scroll-behavior: smooth;
+    /* En celular el clip del body no llega al viewport: sin esto, lo que sobresale a la derecha
+       (riel del cubo, olas, panel del demo) ensancha la página y el teléfono aleja el zoom */
+    overflow-x: clip;
   }
 
   body {
@@ -191,14 +201,6 @@
   .btn:hover {
     transform: translateY(-2px);
     background: var(--color-violeta-hover);
-  }
-  /* Botón sin destino todavía (p. ej. WhatsApp sin número): no reacciona al mouse */
-  .btn[aria-disabled='true'] {
-    cursor: default;
-  }
-  .btn[aria-disabled='true']:hover {
-    transform: none;
-    background: var(--color-violeta);
   }
   .btn-claro {
     background: rgb(255 255 255 / 0.7);

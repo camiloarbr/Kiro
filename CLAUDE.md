@@ -9,7 +9,7 @@ Kiro Solutions es una empresa de software de Medellín, Colombia, fundada por es
 - `docs/diseno/ESPECIFICACION-LANDING.md`: especificación del diseño final, sección por sección, con todos los textos.
 - `docs/diseno/referencia/landing-estatica.html`: el diseño final funcionando. Ábrelo en Chrome; es la referencia visual exacta.
 - `docs/diseno/referencia/*.dc.html`: código fuente del diseño (CSS, keyframes, medidas). Es solo referencia; no copiar su sintaxis.
-- `docs/diseno/capturas/`: capturas de computador y celular.
+- `docs/diseno/capturas/`: capturas de computador y celular. **Excepción:** la portada cambió a «bloques-cursor» (oct 2026); su referencia es `docs/diseno/referencia/portada-bloques-cursor.html` / `.dc.html` y ya no las capturas `*-01`/`*-02`/`*-03` ni los paneles de `Estilo-Glass.dc.html`.
 
 ## Stack
 - **Astro 7** (sitio estático, sin framework de UI), **TypeScript** estricto. Se usa `typescript@6` porque `@astrojs/check` todavía no acepta TypeScript 7.
@@ -66,6 +66,11 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - Hover sobre elementos que tienen animación de entrada: usar `translate` (no `transform`), porque la animación siempre le gana al `:hover`.
    - Contraste ajustado a AA frente a la referencia: tachado de «Tu día» en `tenue`, filas de «Cómo trabajamos» con vidrio oscuro y texto blanco, eyebrow «Hablemos» en Morado oscuro.
    - `pnpm-workspace.yaml` bloquea los scripts de instalación de `esbuild` y `workerd` (no hacen falta). No agregar excepciones a `minimumReleaseAge`.
+   - Los nombres de `@keyframes` son **globales** aunque estén en el `<style>` de un componente: si dos componentes usan el mismo nombre, uno pisa al otro. Usar un prefijo por componente (la portada usa `portada-…`).
+   - El offset del header se hace con `scroll-margin-top` en `section[id]`, **nunca** con `scroll-padding-top` en `html`: el scroll-padding recorta el área de las `view-timeline` y corre todas las animaciones con scroll.
+   - `overflow-x: clip` va en `html` y en `body`. Solo en `body` no llega al viewport en celular y lo que sobresale (riel, olas, panel del demo) ensancha la página.
+   - Portada: las posiciones de los 27 bloques se generan en `src/data/bloques.ts`. No escribirlas a mano en el componente.
 8. **Pendientes conocidos:**
-   - El número de WhatsApp es un placeholder: ponerlo en una sola constante en `src/data/contacto.ts`.
+   - El contacto es **solo por correo** (decisión de Gallo, oct 2026): sin teléfono ni WhatsApp de Kiro en la página. El correo vive en `src/data/contacto.ts`.
+   - Los pasos claro → oscuro («Tu día» → Servicios y Contacto → footer) usan `src/components/Transicion.astro`.
    - Los nombres de ejemplo («Casa Ceiba», «Ceiba Odontología», «Laura M.») son de muestra.

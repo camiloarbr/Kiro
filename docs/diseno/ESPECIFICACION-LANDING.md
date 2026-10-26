@@ -12,9 +12,9 @@ Los archivos `.dc.html` son de una herramienta de diseño. Úsalos como **refere
 
 ## Concepto
 Estilo «vidrio» con identidad Kiro:
-- **Base:** fondos lavanda, paneles de vidrio morado en 3D, secciones que alternan entre claro y oscuro, botones redondeados (píldora) y la palabra de acento en morado.
+- **Base:** fondos lavanda, bloques y piezas de vidrio morado en 3D, secciones que alternan entre claro y oscuro, botones redondeados (píldora) y la palabra de acento en morado.
 - **Movimiento:** casi todo se anima con el scroll.
-- **Hilo conductor:** un **cubo de vidrio**. Nace de los paneles de la portada y baja acompañando toda la página.
+- **Hilo conductor:** un **cubo**. En la portada lo forman 27 bloques-cursor que se transforman con el scroll; al final se convierte en el cubo de vidrio que baja acompañando toda la página.
 
 Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca** se copia texto, estructura, cifras ni casos de Zora. No se inventan clientes, cifras ni testimonios.
 
@@ -26,29 +26,37 @@ Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca
 - Links «Tu día», «Servicios» y «Cómo trabajamos». Se ocultan en celular.
 - Botón píldora «Contáctanos», que lleva a `#contacto`.
 
-### 1. Portada `#inicio` (escena fija mientras se hace scroll)
-- **Altura y escena:** la sección mide ~2600 px en computador y ~2300 px en celular. Dentro hay una escena `position: sticky` que se queda fija mientras se hace scroll.
+### 1. Portada `#inicio` — «bloques-cursor» (escena fija mientras se hace scroll)
+Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrome) y `portada-bloques-cursor.dc.html` (CSS, keyframes y posiciones). La sección «Tu día» de relleno y la etiqueta «Opción A» de esa referencia no son parte del diseño.
+
+- **Altura y escena:** la sección mide 2900 px en computador y 2600 px en celular. Dentro hay una escena `position: sticky` que se queda fija mientras se hace scroll.
 - **Textos:**
-  - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado).
+  - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado) y, al final, el **cursor de la marca**: un cuadrado morado de 0,32 em que parpadea (1,05 s).
   - Sub: «Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.»
-  - Botón: «Conoce más →», que lleva a `#servicios`.
-  - Etiquetas en mayúsculas: Software a la medida · Agentes de IA · Automatización · Integraciones.
-- **3 paneles de vidrio morado** (360×460 en computador; 286×168 en celular), con estos textos:
-  - ENTENDEMOS — «Mapeamos cómo opera tu negocio hoy.»
-  - CONSTRUIMOS — «Software a la medida, con módulos propios e IA.»
-  - ACOMPAÑAMOS — «Ajustamos contigo mientras tu negocio crece.»
+  - Botón: «Conoce más →» (56 px de alto), que lleva a `#servicios`.
+- **27 bloques-cursor:** mini cubos de **62 px** con 6 caras: frente/atrás, tapa clara y costados oscuros. Sus posiciones se generan en `src/data/bloques.ts`.
+- **Cámara 3D:** perspectiva de 1500 px. Un grupo lleva todo al carril al final y una cámara gira el conjunto (`rotateX`/`rotateY`) y se aleja en el «ik».
 - **Coreografía según el avance del scroll** dentro de la portada:
-  - **0–8 %:** paneles apilados a la derecha, girados en 3D (rotateY -28°), con el texto del héroe a la izquierda.
-  - **8–24 %:** el texto del héroe se va. Los paneles se separan dando vueltas en profundidad.
-  - **40–64 %:** quedan en fila: izquierda, centro y derecha (en celular, en columna vertical). El texto de cada panel se lee claro, sobre un degradado oscuro en la parte de abajo. El panel central avanza un poco hacia la cámara.
-  - **76–88 %:** los paneles se encogen y vuelan al carril derecho, donde **se arman como 3 caras de un cubo** (frente, lado y tapa). Una luz blanca («sol») viaja con ellos y se convierte en el núcleo del cubo.
-  - **74–86 %:** aparece la frase «Tecnología que se adapta **a tu negocio.**» con el sub «Automatizamos lo repetitivo para que tu equipo se enfoque en lo importante.»
-  - **92–100 %:** el cubo «se enciende» (crece un poco y brilla) y pasa a ser el cubo que acompaña la página.
-- Detalle exacto: keyframes `z-p0`, `z-p1`, `z-p2` (computador), `z-p0m`, `z-p1m`, `z-p2m` (celular), `z-sun`, `z-persp`, `z-st` y `z-heroout` en `Estilo-Glass.dc.html`.
+  - **0–5 %:** cubo 3×3×3 de bloques violeta a la derecha del título (cámara `rotateX(-24°) rotateY(-35°)`).
+  - **8–22 %:** el texto del héroe se va a la izquierda.
+  - **~16 %:** los bloques explotan en una nube y flotan girando. Algunos se vuelven grafito.
+  - **28–38 %:** se ordenan en el monograma **«ik»**: la i en grafito (punto + palo de 9 bloques) y la K en violeta (dos brazos diagonales de 2 bloques de grosor). La cámara se aleja (`scale(.8)`).
+  - **48–64 %:** se separan en **3 mini cubos 2×2×2**, cada uno en su tono de morado (claro, medio, oscuro), con sus textos (aparecen entre 46 y 52 % y se van entre 66 y 72 %):
+    - ENTENDEMOS — «Mapeamos cómo opera tu negocio hoy.»
+    - CONSTRUIMOS — «Software a la medida, con módulos propios e IA.»
+    - ACOMPAÑAMOS — «Ajustamos contigo mientras tu negocio crece.»
+    En computador van en fila con el texto debajo; en celular, en columna con el texto a la derecha.
+  - **76–84 %:** se vuelven a armar en el cubo 3×3×3 al centro.
+  - **72–82 %:** aparece la frase «Tecnología que se adapta **a tu negocio.**» con el sub «Automatizamos lo repetitivo para que tu equipo se enfoque en lo importante.»
+  - **84–94 %:** el cubo se encoge (de 186 a 88 px) y vuela al carril derecho; la lente se acerca al carril (perspectiva 700 px).
+  - **93–97 %:** el cubo de bloques se apaga mientras aparece el cubo que acompaña la página, en el mismo lugar, tamaño y pose.
+  - **88–100 %:** el resplandor morado de abajo se apaga, para pasar sin corte a «Tu día».
+- **Celular:** la cámara va a escala 0,6, el cubo inicial sale centrado bajo el título y la nube es más compacta. Escala final 0,2867, para que el cubo llegue a 32 px.
+- **Versión estática** (Firefox, sin scroll-driven animations o con «reducir movimiento»): título, el cubo 3×3×3 quieto, los tres pasos en lista y la frase.
 
 ### 2. Cubo que acompaña (desde el final de la portada hasta el contacto)
 - **Posición:**
-  - Computador: carril fijo a la derecha, `position: sticky` centrado verticalmente, cubo de 70 px.
+  - Computador: carril fijo a la derecha, `position: sticky` centrado verticalmente, cubo de 88 px.
   - Celular: abajo a la derecha, cubo de 32 px.
 - **Movimiento:** gira con el scroll (~3 vueltas a lo largo de la página). Tiene un núcleo de luz que pulsa.
 - **Línea violeta:** detrás del cubo, se dibuja con el scroll.
@@ -152,7 +160,7 @@ Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca
 - **Solo `transform` y `opacity`:** anima únicamente esas dos propiedades. Nada de `filter: blur()` animado ni `backdrop-filter` en elementos que se mueven. Solo el header usa `backdrop-filter`.
 - **Olas:** se mueven con `transform`, no se redibuja el trazado del SVG.
 - **`will-change`:** solo en paneles, cubo y olas.
-- **Accesibilidad:** con `prefers-reduced-motion: reduce` todo queda estático y legible. Los paneles se muestran en grilla y el cubo se oculta.
+- **Accesibilidad:** con `prefers-reduced-motion: reduce` todo queda estático y legible. En la portada, el cubo de bloques queda quieto, los tres pasos se muestran en lista y el cubo que acompaña se oculta.
 - **Navegadores:**
   - Scroll-driven animations (`animation-timeline: view()` / `scroll()`, `view-timeline`, `timeline-scope`) funcionan en Chrome, Edge y Safari recientes.
   - Firefox necesita **mejora progresiva**: una alternativa con `IntersectionObserver` para las entradas y la portada mostrada en estado legible.
