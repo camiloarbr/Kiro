@@ -96,6 +96,54 @@
   }
 }
 
+/*
+  Entradas al hacer scroll: .revela sube y aparece al entrar en pantalla; .revela-2 un poco después.
+  - Chrome, Edge y Safari: animation-timeline: view() (sin JS).
+  - Sin soporte (Firefox): BaseLayout pone la clase .io en <html> y src/scripts/revelar.ts
+    agrega .visible con IntersectionObserver, que dispara una transición normal.
+  - Con «reducir movimiento»: ni una ni otra; el contenido queda visible desde el inicio.
+*/
+@keyframes revela {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .revela {
+      animation: revela linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+    .revela-2 {
+      animation: revela linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 100%;
+    }
+  }
+}
+.io .revela,
+.io .revela-2 {
+  opacity: 0;
+  transform: translateY(48px);
+  transition:
+    opacity 0.8s var(--ease-kiro),
+    transform 0.8s var(--ease-kiro);
+}
+.io .revela-2 {
+  transition-delay: 0.12s;
+}
+.io .revela.visible,
+.io .revela-2.visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* Títulos: Montserrat 700 con tracking cerrado */
 @utility titulo {
   font-family: var(--font-display);

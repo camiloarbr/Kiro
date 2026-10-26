@@ -31,8 +31,25 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!--
+      Se ejecuta antes de pintar: si el navegador no tiene scroll-driven animations y la
+      persona no pidió reducir movimiento, activa la alternativa con IntersectionObserver.
+      Va en línea (is:inline) para que no haya un parpadeo del contenido antes de ocultarlo.
+    -->
+    <script is:inline>
+      if (
+        !CSS.supports('animation-timeline: view()') &&
+        matchMedia('(prefers-reduced-motion: no-preference)').matches
+      ) {
+        document.documentElement.classList.add('io');
+      }
+    </script>
   </head>
   <body>
     <slot />
+    <script>
+      import '../scripts/revelar';
+    </script>
   </body>
 </html>

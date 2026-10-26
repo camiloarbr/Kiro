@@ -1,0 +1,239 @@
+---
+import { filasDia } from '../data/dia';
+---
+
+<section id="dia" class="dia pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
+  <div class="contenedor">
+    <span class="eyebrow revela">Un día cualquiera</span>
+    <h2 class="titulo revela mt-[18px] max-w-[18ch] text-[clamp(34px,4vw,56px)] leading-[1.05]">
+      Tu día, con y sin <span class="text-violeta">Kiro.</span>
+    </h2>
+    <p class="revela-2 mt-[18px] mb-0 max-w-[48ch] text-tinta-2">
+      Baja y mira cómo las tareas que hoy haces a mano se van resolviendo solas.
+    </p>
+
+    <div class="encabezado" aria-hidden="true"><span></span><span>Hoy</span><span></span><span>Con Kiro</span></div>
+
+    <ol class="filas">
+      {
+        filasDia.map((f) => (
+          <li class="fila" data-io>
+            <time datetime={f.hora24}>{f.hora}</time>
+            <p class="hoy">
+              <span>{f.hoy}</span>
+            </p>
+            <span class="flecha" aria-hidden="true">→</span>
+            <p class="kiro">
+              <b>Con Kiro</b>
+              {f.conKiro}
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="cierre revela">Lo que hoy te quita el día, <span class="text-violeta">Kiro lo hace solo.</span></p>
+  </div>
+</section>
+
+<style>
+  /* ---------- Versión estática (base): tareas ya tachadas y tarjetas visibles ---------- */
+  .dia {
+    position: relative;
+    background: linear-gradient(180deg, var(--color-lav-3) 0%, var(--color-lav) 40%, #f7f2ff 100%);
+  }
+
+  .encabezado {
+    display: none;
+  }
+  .filas {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fila {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgb(255 255 255 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.85);
+  }
+  time {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--color-violeta);
+  }
+  .hoy {
+    margin: 0;
+    font-size: 18px;
+  }
+  /*
+    El tachado es un degradado de 2 px de alto como fondo del <span> en línea:
+    al ser inline, el fondo sigue cada renglón cuando el texto se parte en dos.
+  */
+  .hoy span {
+    background: linear-gradient(var(--color-violeta), var(--color-violeta)) no-repeat 0 55% / 100% 2px;
+    color: var(--color-gris);
+  }
+  .flecha {
+    display: none;
+    color: var(--color-violeta);
+    font-size: 22px;
+    text-align: center;
+  }
+  .kiro {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    color: var(--color-white);
+    background: linear-gradient(135deg, var(--color-violeta-hover), var(--color-profundo-2));
+    box-shadow: 0 18px 36px rgb(91 23 184 / 0.22);
+    font-size: 17px;
+  }
+  .kiro b {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e8d9ff;
+  }
+  .cierre {
+    margin: 72px 0 0;
+    max-width: 28ch;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  @media (width >= 56.25rem) {
+    .encabezado,
+    .fila {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr) 48px minmax(0, 1fr);
+      gap: 20px;
+    }
+    .encabezado {
+      margin-top: 56px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-tenue);
+    }
+    .fila {
+      padding: 20px 22px;
+    }
+    .flecha {
+      display: block;
+    }
+  }
+
+  /* ---------- Animación con el scroll (Chrome, Edge, Safari) ----------
+     Cada elemento usa view(): su propia entrada en pantalla. Como hora, tarea,
+     flecha y tarjeta están en la misma fila, los rangos crean una secuencia:
+     la fila entra (0–22 %) → se tacha (22–38 %) → flecha (30–40 %) → tarjeta (32–48 %). */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .fila {
+        animation: fila-entra linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+      .hoy span {
+        animation: tachar linear both;
+        animation-timeline: view();
+        animation-range: cover 22% cover 38%;
+      }
+      .flecha {
+        animation: flecha linear both;
+        animation-timeline: view();
+        animation-range: cover 30% cover 40%;
+      }
+      .kiro {
+        animation: tarjeta linear both;
+        animation-timeline: view();
+        animation-range: cover 32% cover 48%;
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) and (width < 56.25rem) {
+      .kiro {
+        animation-name: tarjeta-movil;
+      }
+    }
+  }
+
+  /* ---------- Alternativa con IntersectionObserver (Firefox) ----------
+     Mismo orden, pero por tiempo: al recibir .visible, cada parte arranca con su retraso. */
+  :global(.io) .fila {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+    transition:
+      opacity 0.6s var(--ease-kiro),
+      transform 0.6s var(--ease-kiro);
+  }
+  :global(.io) .hoy span {
+    background-size: 0% 2px;
+    color: var(--color-tinta-2);
+    transition:
+      background-size 0.6s ease 0.45s,
+      color 0.6s ease 0.45s;
+  }
+  :global(.io) .flecha {
+    opacity: 0;
+    transform: translateX(-14px);
+    transition:
+      opacity 0.4s ease 0.8s,
+      transform 0.4s ease 0.8s;
+  }
+  :global(.io) .kiro {
+    opacity: 0;
+    transform: translateX(60px) scale(0.9);
+    transition:
+      opacity 0.6s var(--ease-kiro) 0.9s,
+      transform 0.6s var(--ease-kiro) 0.9s;
+  }
+  :global(.io) .fila:global(.visible),
+  :global(.io) .fila:global(.visible) .flecha,
+  :global(.io) .fila:global(.visible) .kiro {
+    opacity: 1;
+    transform: none;
+  }
+  :global(.io) .fila:global(.visible) .hoy span {
+    background-size: 100% 2px;
+    color: var(--color-gris);
+  }
+
+  @keyframes fila-entra {
+    from { opacity: 0; transform: translateY(40px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+  /* Excepción a «solo transform y opacity»: el tachado anima el ancho del fondo y el color.
+     Solo repinta esas líneas de texto; no recalcula el layout. */
+  @keyframes tachar {
+    from { background-size: 0% 2px; color: var(--color-tinta-2); }
+    to { background-size: 100% 2px; color: var(--color-gris); }
+  }
+  @keyframes flecha {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes tarjeta {
+    from { opacity: 0; transform: translateX(60px) scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes tarjeta-movil {
+    from { opacity: 0; transform: translateY(24px) scale(0.94); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
