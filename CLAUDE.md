@@ -72,6 +72,10 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - El offset del header se hace con `scroll-margin-top` en `section[id]`, **nunca** con `scroll-padding-top` en `html`: el scroll-padding recorta el área de las `view-timeline` y corre todas las animaciones con scroll.
    - `overflow-x: clip` va en `html` y en `body`. Solo en `body` no llega al viewport en celular y lo que sobresale (riel, olas, panel del demo) ensancha la página.
    - Portada: las posiciones de los 27 bloques se generan en `src/data/bloques.ts`. No escribirlas a mano en el componente.
+   - Portada: los colores de las caras **no se animan**. Cada cara tiene su violeta fijo y, solo en los bloques que cambian de tono, capas `::before` («ik») y `::after` (mini cubo) que se cruzan con `opacity`. Animar colores (`@property`) mandaba toda la animación de los bloques al hilo principal (~31 fps con CPU 4×). Sin `will-change` en los bloques: `preserve-3d` ya crea las capas.
+   - «Tu día» sube `--solape` px (320 / 240 en celular, definido en `.recorrido`) sobre el final de la portada para entrar cuando el cubo llega al carril. La línea del carril usa el mismo valor.
+   - Franjas claro → oscuro (`Transicion.astro`): degradado fijo y corto, con altura por instancia (160 px «Tu día» → Servicios, 72 px contacto → footer).
+   - Cloudflare Web Analytics: token en `src/data/analitica.ts`; vacío = no se carga.
 8. **Pendientes conocidos:**
    - El contacto es **solo por correo** (decisión de Gallo, oct 2026): sin teléfono ni WhatsApp de Kiro en la página. El correo vive en `src/data/contacto.ts`.
    - Los pasos claro → oscuro («Tu día» → Servicios y Contacto → footer) usan `src/components/Transicion.astro`.

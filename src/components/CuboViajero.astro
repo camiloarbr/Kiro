@@ -37,9 +37,10 @@
         content: '';
         position: absolute;
         left: 59px;
-        top: 2900px;
+        /* Empieza donde empieza «Tu día» (sube --solape px sobre la portada) */
+        top: calc(2900px - var(--solape));
         width: 2px;
-        height: calc(100% - 2900px);
+        height: calc(100% - 2900px + var(--solape));
         background: linear-gradient(
           180deg,
           rgb(139 44 245 / 0),
@@ -140,8 +141,8 @@
       }
       .riel::before {
         left: 31px;
-        top: 2600px;
-        height: calc(100% - 2600px);
+        top: calc(2600px - var(--solape));
+        height: calc(100% - 2600px + var(--solape));
         opacity: 0.6;
       }
       .viajero {

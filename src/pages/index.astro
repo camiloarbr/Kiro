@@ -19,14 +19,14 @@ import Transicion from '../components/Transicion.astro';
     <Hero />
     <div class="flujo">
       <TuDia />
-      <Transicion desde="#f7f2ff" hacia="var(--color-negro)" />
+      <Transicion desde="#f7f2ff" hacia="var(--color-negro)" alto={160} />
       <Servicios />
       <DemoKiroBot />
       <ComoTrabajamos />
       <Contacto />
     </div>
   </main>
-  <Transicion desde="var(--color-lav)" hacia="var(--color-negro)" />
+  <Transicion desde="var(--color-lav)" hacia="var(--color-negro)" alto={72} />
   <Footer />
 </BaseLayout>
 
@@ -41,6 +41,13 @@ import Transicion from '../components/Transicion.astro';
     position: relative;
     container-type: inline-size;
     timeline-scope: --hero, --flujo;
+    /* Cuánto sube «Tu día» sobre el final de la portada (lo usan TuDia y CuboViajero) */
+    --solape: 240px;
+  }
+  @media (width >= 56.25rem) {
+    .recorrido {
+      --solape: 320px;
+    }
   }
   .flujo {
     position: relative;

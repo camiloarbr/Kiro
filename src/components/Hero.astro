@@ -1,6 +1,8 @@
 ---
 // Portada «bloques-cursor». Las posiciones de los 27 bloques salen de src/data/bloques.ts.
 import { bloques, pasos } from '../data/bloques';
+
+const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
 ---
 
 <section id="inicio" class="portada">
@@ -20,14 +22,11 @@ import { bloques, pasos } from '../data/bloques';
         <div class="grupo" aria-hidden="true">
           <div class="camara">
             {
-              bloques.map((estilo) => (
-                <div class="bloque" style={estilo}>
-                  <i class="frente" />
-                  <i class="atras" />
-                  <i class="arriba" />
-                  <i class="abajo" />
-                  <i class="der" />
-                  <i class="izq" />
+              bloques.map((b) => (
+                <div class:list={['bloque', { 'con-ik': b.conIk, 'con-mini': b.conMini }]} style={b.estilo}>
+                  {caras.map((cara) => (
+                    <i class={cara} />
+                  ))}
                 </div>
               ))
             }
@@ -54,24 +53,6 @@ import { bloques, pasos } from '../data/bloques';
 </section>
 
 <style>
-  /* Colores de las caras registrados con @property: así el navegador puede interpolarlos
-     (una variable normal saltaría de un color a otro sin transición). */
-  @property --vf {
-    syntax: '<color>';
-    inherits: true;
-    initial-value: #8b2cf5;
-  }
-  @property --vt {
-    syntax: '<color>';
-    inherits: true;
-    initial-value: #b07cff;
-  }
-  @property --vs {
-    syntax: '<color>';
-    inherits: true;
-    initial-value: #5b17b8;
-  }
-
   /* =========================================================================
      1. VERSIÓN ESTÁTICA (base)
      Firefox, navegadores sin scroll-driven animations y «reducir movimiento»:
@@ -135,19 +116,46 @@ import { bloques, pasos } from '../data/bloques';
     /* Quieto, cada bloque ocupa su celda del cubo final (centrado: sin los 40 px de más) */
     transform: translate3d(var(--x3), calc(var(--y3) - 40px), var(--z3));
   }
+  /*
+    Caras con color fijo violeta (frente/atrás, tapa clara, costados oscuros).
+    backface-visibility: las caras que miran hacia atrás no se pintan (el cubo es cerrado y opaco).
+  */
   .bloque i {
     position: absolute;
     inset: 0;
     box-sizing: border-box;
     border: 1px solid rgb(255 255 255 / 0.22);
     border-radius: 3px;
+    backface-visibility: hidden;
   }
-  .frente { background: var(--vf); transform: translateZ(31px); }
-  .atras { background: var(--vf); transform: rotateY(180deg) translateZ(31px); }
-  .arriba { background: var(--vt); transform: rotateX(90deg) translateZ(31px); }
-  .abajo { background: var(--vs); transform: rotateX(-90deg) translateZ(31px); }
-  .der { background: var(--vs); transform: rotateY(90deg) translateZ(31px); }
-  .izq { background: var(--vs); transform: rotateY(-90deg) translateZ(31px); }
+  .frente { background: var(--color-violeta); transform: translateZ(31px); }
+  .atras { background: var(--color-violeta); transform: rotateY(180deg) translateZ(31px); }
+  .arriba { background: var(--color-violeta-claro); transform: rotateX(90deg) translateZ(31px); }
+  .abajo { background: var(--color-violeta-oscuro); transform: rotateX(-90deg) translateZ(31px); }
+  .der { background: var(--color-violeta-oscuro); transform: rotateY(90deg) translateZ(31px); }
+  .izq { background: var(--color-violeta-oscuro); transform: rotateY(-90deg) translateZ(31px); }
+
+  /*
+    Cambio de tono sin animar colores: dos capas encima del violeta, cada una con su color FIJO
+    (::before = tono del «ik», ::after = tono del mini cubo), que se encienden con opacity.
+    Solo existen en los bloques cuyo tono cambia (conIk/conMini en src/data/bloques.ts).
+  */
+  .con-ik i::before,
+  .con-mini i::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    box-sizing: border-box;
+    border: inherit;
+    border-radius: inherit;
+    opacity: 0;
+  }
+  .con-ik .frente::before, .con-ik .atras::before { background: var(--of); }
+  .con-ik .arriba::before { background: var(--ot); }
+  .con-ik .abajo::before, .con-ik .der::before, .con-ik .izq::before { background: var(--os); }
+  .con-mini .frente::after, .con-mini .atras::after { background: var(--cf); }
+  .con-mini .arriba::after { background: var(--ct); }
+  .con-mini .abajo::after, .con-mini .der::after, .con-mini .izq::after { background: var(--cs); }
 
   .etiquetas {
     display: grid;
@@ -320,6 +328,17 @@ import { bloques, pasos } from '../data/bloques';
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
       }
+      /* Las capas de color: animaciones solo de opacity, que el compositor hace sin el hilo principal */
+      .con-ik i::before {
+        animation: portada-tono-ik linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+      .con-mini i::after {
+        animation: portada-tono-mini linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
 
       .etiquetas {
         position: absolute;
@@ -447,23 +466,36 @@ import { bloques, pasos } from '../data/bloques';
   }
   /*
     El viaje de cada bloque: cubo → nube (gira) → «ik» → mini cubo → cubo final.
-    Las posiciones vienen de sus variables (--x0, --xc, --x1…) y los colores de las caras
-    cambian con --vf/--vt/--vs: violeta en los cubos, grafito/violeta en el «ik», un tono por mini cubo.
+    Solo transform: las posiciones vienen de sus variables (--x0, --xc, --x1…).
   */
   @keyframes portada-bloque {
-    0%, 5% { transform: translate3d(var(--x0), var(--y0), var(--z0)); --vf: #8b2cf5; --vt: #b07cff; --vs: #5b17b8; }
-    16% { transform: translate3d(var(--xc), var(--yc), var(--zc)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)); --vf: var(--of); --vt: var(--ot); --vs: var(--os); }
-    28%, 38% { transform: translate3d(var(--x1), var(--y1), var(--z1)); --vf: var(--of); --vt: var(--ot); --vs: var(--os); }
-    48%, 64% { transform: translate3d(var(--x2), var(--y2), var(--z2)); --vf: var(--cf); --vt: var(--ct); --vs: var(--cs); }
-    76%, 100% { transform: translate3d(var(--x3), var(--y3), var(--z3)); --vf: #8b2cf5; --vt: #b07cff; --vs: #5b17b8; }
+    0%, 5% { transform: translate3d(var(--x0), var(--y0), var(--z0)); }
+    16% { transform: translate3d(var(--xc), var(--yc), var(--zc)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)); }
+    28%, 38% { transform: translate3d(var(--x1), var(--y1), var(--z1)); }
+    48%, 64% { transform: translate3d(var(--x2), var(--y2), var(--z2)); }
+    76%, 100% { transform: translate3d(var(--x3), var(--y3), var(--z3)); }
   }
   /* Celular: cubo inicial centrado y más abajo, nube más compacta y mini cubos en columna */
   @keyframes portada-bloque-movil {
-    0%, 5% { transform: translate3d(0px, calc(var(--y0) + 150px), var(--z0)) translateX(calc(var(--x0) - 380px)); --vf: #8b2cf5; --vt: #b07cff; --vs: #5b17b8; }
-    16% { transform: translate3d(calc((var(--xc) - 370px) * 0.7), calc(var(--yc) * 0.9 + 100px), var(--zc)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)); --vf: var(--of); --vt: var(--ot); --vs: var(--os); }
-    28%, 38% { transform: translate3d(var(--x1), var(--y1), var(--z1)); --vf: var(--of); --vt: var(--ot); --vs: var(--os); }
-    48%, 64% { transform: translate3d(var(--mx2), calc(var(--y2) + var(--my2)), var(--z2)); --vf: var(--cf); --vt: var(--ct); --vs: var(--cs); }
-    76%, 100% { transform: translate3d(var(--x3), var(--y3), var(--z3)); --vf: #8b2cf5; --vt: #b07cff; --vs: #5b17b8; }
+    0%, 5% { transform: translate3d(0px, calc(var(--y0) + 150px), var(--z0)) translateX(calc(var(--x0) - 380px)); }
+    16% { transform: translate3d(calc((var(--xc) - 370px) * 0.7), calc(var(--yc) * 0.9 + 100px), var(--zc)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)); }
+    28%, 38% { transform: translate3d(var(--x1), var(--y1), var(--z1)); }
+    48%, 64% { transform: translate3d(var(--mx2), calc(var(--y2) + var(--my2)), var(--z2)); }
+    76%, 100% { transform: translate3d(var(--x3), var(--y3), var(--z3)); }
+  }
+  /*
+    Los tonos, con los mismos tiempos que antes tenía la interpolación de colores:
+    5→16 % violeta → tono «ik» · 38→48 % «ik» → mini cubo · 64→76 % mini cubo → violeta
+  */
+  @keyframes portada-tono-ik {
+    0%, 5% { opacity: 0; }
+    16%, 38% { opacity: 1; }
+    48%, 100% { opacity: 0; }
+  }
+  @keyframes portada-tono-mini {
+    0%, 38% { opacity: 0; }
+    48%, 64% { opacity: 1; }
+    76%, 100% { opacity: 0; }
   }
   @keyframes portada-etiqueta {
     0%, 46% { opacity: 0; transform: translate(var(--lx), calc(var(--ly) + 24px)); }

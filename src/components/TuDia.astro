@@ -139,6 +139,28 @@ import { filasDia } from '../data/dia';
     }
   }
 
+  /*
+    Con la portada animada, «Tu día» sube --solape px sobre el final de la portada, como una cortina:
+    así entra apenas el cubo llega al carril. z-index 5: encima de la escena de la portada (frase z 4)
+    y debajo del cubo viajero (z 6). Mismas condiciones que la escena animada de Hero.astro.
+  */
+  @supports (animation-timeline: view()) and (timeline-scope: none) {
+    @media (prefers-reduced-motion: no-preference) {
+      .dia {
+        margin-top: calc(-1 * var(--solape));
+        z-index: 5;
+        /* Borde superior difuminado: al subir sobre el resplandor de la portada no deja una línea */
+        background: linear-gradient(
+          180deg,
+          rgb(228 211 255 / 0) 0,
+          var(--color-lav-3) 140px,
+          var(--color-lav) 40%,
+          #f7f2ff 100%
+        );
+      }
+    }
+  }
+
   /* ---------- Animación con el scroll (Chrome, Edge, Safari) ----------
      Cada elemento usa view(): su propia entrada en pantalla. Como hora, tarea,
      flecha y tarjeta están en la misma fila, los rangos crean una secuencia:

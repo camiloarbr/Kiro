@@ -112,8 +112,24 @@ const deg = (n: number) => `${n}deg`;
 
 const ik = monogramaIk();
 
-/** Variables CSS de cada bloque, listas para el atributo style. */
-export const bloques: string[] = celdas.map(([cx, cy, cz], b) => {
+const igual = (a: Tono, b: Tono) => a.frente === b.frente && a.tapa === b.tapa && a.lado === b.lado;
+
+export interface Bloque {
+  /** Variables CSS del bloque, listas para el atributo style */
+  estilo: string;
+  /** El tono del «ik» es distinto del violeta base: necesita la capa de color ::before */
+  conIk: boolean;
+  /** El tono del mini cubo es distinto del violeta base: necesita la capa de color ::after */
+  conMini: boolean;
+}
+
+export const bloques: Bloque[] = celdas.map(([cx, cy, cz], b) => ({
+  estilo: variables([cx, cy, cz], b),
+  conIk: !igual(ik[b].tono, violeta),
+  conMini: !igual(miniCubo(b).tono, violeta),
+}));
+
+function variables([cx, cy, cz]: Trio, b: number): string {
   const [xc, yc, zc, rx, ry, rz] = nube[b];
   const m = miniCubo(b);
   const vars: Record<string, string> = {
@@ -128,4 +144,4 @@ export const bloques: string[] = celdas.map(([cx, cy, cz], b) => {
     '--cf': m.tono.frente, '--ct': m.tono.tapa, '--cs': m.tono.lado,
   };
   return Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
-});
+}
