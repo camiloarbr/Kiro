@@ -175,6 +175,70 @@ def reverb(x, seconds=1.8, wet=0.22, seed=7):
     return x + wet * out[:, : x.shape[1]]
 
 
+# ── Instrumentos de impacto (v11) ────────────────────────────────────────
+def sub_boom(dur=1.8, f0=62, f1=29, decay=0.55, drive=1.6):
+    """Subgrave de cine: un seno que cae de tono, con un poco de saturación
+    para que se sienta también en parlantes de celular (armónicos)."""
+    f = lambda t: f1 + (f0 - f1) * np.exp(-t / 0.18)
+    x = sine(f, dur) * env_exp(dur, 0.004, decay)
+    return np.tanh(drive * x) / np.tanh(drive)
+
+
+def crack(dur=0.12, lo=1800):
+    """Transitorio brillante (el «chasquido» del golpe)."""
+    x = hp(noise(dur), lo) * env_exp(dur, 0.0004, 0.02)
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def body_hit(dur=0.45):
+    """Cuerpo del golpe: ruido grave filtrado (un «bum» de aire)."""
+    x = lp(noise(dur), 500) * env_exp(dur, 0.002, 0.09)
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def rev_swell(dur=1.2, lo=250, hi=7000, curve=3.0):
+    """Subida en reversa (estéreo): crece cada vez más rápido y corta en seco."""
+    t = t_axis(dur)
+    e = (t / dur) ** curve
+    L = sweep_noise(dur, lo, hi) * e
+    R = sweep_noise(dur, lo * 1.07, hi * 0.95) * e
+    st = np.stack([L, R])
+    return st / (np.abs(st).max() + 1e-9)
+
+
+def reverse_ping(dur=1.3):
+    """La firma del cursor al revés: el ping pasado por reverberación y
+    reproducido hacia atrás (llega «aspirado» hasta el golpe)."""
+    x = pan(ping(880, dur, 0.5), 0)
+    wet = reverb(np.pad(x, ((0, 0), (0, int(1.5 * SR)))), 2.4, 1.2, seed=5)
+    rev = wet[:, ::-1][:, -int(dur * SR):]
+    return rev / (np.abs(rev).max() + 1e-9)
+
+
+def wide_air(dur=2.6, lo=1200, hi=9000):
+    """Apertura: aire brillante que se abre a los lados y se apaga lento."""
+    t = t_axis(dur)
+    e = np.exp(-t / (dur / 4)) * np.clip(t / 0.01, 0, 1)
+    L = sweep_noise(dur, lo, hi) * e
+    R = sweep_noise(dur, lo * 1.1, hi * 0.9) * e
+    st = np.stack([L, R])
+    return st / (np.abs(st).max() + 1e-9)
+
+
+def tape_stop(x, t_end, dur=0.45):
+    """La música «se apaga» como una cinta que se frena (el tono cae) justo
+    antes del corte del freeze."""
+    a, b = int((t_end - dur) * SR), int(t_end * SR)
+    n = b - a
+    k = np.arange(n) / n
+    rate = (1 - k) ** 1.6                       # velocidad de la cinta: 1 → 0
+    pos = a + np.cumsum(rate)                   # posición de lectura
+    for ch in range(x.shape[0]):
+        seg = np.interp(pos, np.arange(x.shape[1]), x[ch])
+        x[ch, a:b] = seg * (1 - k ** 3)
+    return x
+
+
 # ── Voz ──────────────────────────────────────────────────────────────────
 def load_mp3(path):
     raw = subprocess.run(["ffmpeg", "-v", "quiet", "-i", str(path), "-f", "f32le", "-ac", "1",
@@ -205,11 +269,14 @@ def build_sfx():
     home_p = screen_pan(TL.HOME[0])
     for at, kind in TL.sound_cues():
         if kind == "cursor_on":
+            # el punto «se enciende»: ping de la firma + un grave suave que lo sostiene
             place(fx, ping(880, 1.2, 0.35), at, db(-12), home_p)
+            place(fx, sub_boom(1.4, 70, 55, 0.4, 1.0), at, db(-25), 0)
+            place(fx, rev_swell(0.5, 800, 5000, 4.0), at - 0.5, db(-36))
         elif kind == "blink_soft":
             pass   # v5: el intro queda en silencio mientras el cursor parpadea
         elif kind == "move":
-            place(fx, whoosh(0.22, 700, 3200), at, db(-43), 0)
+            place(fx, whoosh(0.22, 700, 3200), at, db(-37), 0)
         elif kind.startswith("activate_"):
             what = kind.split("_", 1)[1]
             px = TL.ANCHORS.get(what, (540, 0))[0]
@@ -228,8 +295,11 @@ def build_sfx():
                 for k in range(5):
                     place(fx, click(0.008, 2500), at + 0.03 + k * 0.055 + 0.012 * (k % 2), db(-30), p)
         elif kind == "freeze":
-            place(fx, click(0.02, 1800), at, db(-12), home_p)
-            place(fx, thump(0.25, 120, 60, 0.05), at, db(-16), 0)
+            # corte seco: golpe denso que se interrumpe con el silencio (0,14 s)
+            place(fx, click(0.02, 1800), at, db(-11), home_p)
+            place(fx, crack(0.1, 1500), at, db(-15))
+            place(fx, sub_boom(0.6, 90, 38, 0.2), at, db(-9), 0)
+            place(fx, body_hit(0.3), at, db(-14), 0)
         elif kind == "lift":
             f = lambda t: 440 * 2 ** (t / 0.3)
             place(fx, sine(f, 0.3) * env_exp(0.3, 0.12, 0.12), at, db(-30), home_p)
@@ -247,11 +317,16 @@ def build_sfx():
             i = int(kind[-1])
             notes = [293.66, 369.99, 440.0, 554.37, 659.26]       # Re – Fa# – La – Do# – Mi
             pans = [-0.45, -0.3, -0.15, 0.15, 0.4]
-            place(fx, pluck(notes[i], 1.2, 0.7), at, db(-17), pans[i])
+            x = synth(notes[i], 1.2, 12.0, 2.5, 0.08, 0.002, 0.45) + 0.4 * synth(notes[i] * 2, 1.2, 8.0, 2.0, 0.06, 0.002, 0.3, detune=5)
+            place(fx, x / 1.4, at, db(-19), pans[i])
             place(fx, thump(0.2, 140, 70, 0.04), at, db(-26), pans[i])
         elif kind == "retract":
             place(fx, sweep_noise(0.45, 600, 4000)[::-1], at, db(-32), 0)
         elif kind == "impact":
+            # el logo queda completo: subida en reversa + golpe con subgrave
+            place(fx, rev_swell(0.9, 300, 6000), at - 0.9, db(-24))
+            place(fx, sub_boom(2.2, 60, 30, 0.6), at, db(-10), 0)
+            place(fx, crack(0.1, 2500), at, db(-22))
             place(fx, thump(1.0, 80, 38, 0.32), at, db(-12), 0)
             place(fx, chord([73.42, 110.0, 146.83, 220.0, 329.63, 369.99], 4.0, 0.03, 1.6, 0.6), at, db(-13))
             place(fx, ping(880, 1.6, 0.55), at + 0.02, db(-14), home_p)
@@ -259,6 +334,13 @@ def build_sfx():
             place(fx, ping(1760, 0.3, 0.05), at, db(-30), home_p)
         elif kind == "dissolve":
             place(fx, sweep_noise(0.6, 4000, 700), at, db(-30), 0)
+        elif kind == "phone_in":
+            # el celular llega desde el fondo: soplo que sube y un golpe suave al asentarse
+            place(fx, whoosh(0.8, 250, 2200, 0.7), at, db(-29), 0)
+            place(fx, thump(0.35, 110, 55, 0.08), at + 0.82, db(-27), 0)
+        elif kind == "phone_out":
+            # se va girando hacia la izquierda
+            place(fx, sweep_noise(0.8, 2600, 500) * 0.8, at, db(-31), -0.5)
         elif kind == "msg_in":
             place(fx, soft_note(1318.5, 0.3, 0.002, 0.07), at, db(-27), -0.3)
             place(fx, click(0.008), at, db(-32), -0.3)
@@ -274,7 +356,8 @@ def build_sfx():
         elif kind == "wire":
             place(fx, sweep_noise(0.75, 1200, 5000) * 0.7, at, db(-31), 0.4)
         elif kind == "land":
-            place(fx, ping(880, 0.9, 0.3), at, db(-17), 0.45)
+            place(fx, ping(880, 0.9, 0.3), at, db(-16), 0.45)
+            place(fx, sub_boom(0.7, 85, 42, 0.18), at, db(-17), 0)
             place(fx, thump(0.4, 100, 50, 0.1), at, db(-20), 0.3)
         elif kind == "ok":
             place(fx, soft_note(1760, 0.3, 0.002, 0.06), at, db(-30), 0.4)
@@ -297,22 +380,29 @@ def build_sfx():
             f = lambda t: 73.42 * (1 + 0.5 * np.clip(t / 1.0, 0, 1))
             place(fx, sine(f, 1.4) * env_exp(1.4, 0.4, 0.5), at, db(-20), 0)
         elif kind == "cube_explode":
+            # v18: vuelve el sonido de la v16 (el que le gustaba a Gallo)
+            place(fx, sub_boom(1.2, 70, 32, 0.35), at, db(-13), 0)
+            place(fx, crack(0.12, 1800), at, db(-20))
+            place(fx, rev_swell(0.35, 500, 4000), at - 0.35, db(-28))
             place(fx, thump(0.8, 70, 35, 0.25), at, db(-17), 0)
             st = np.stack([sweep_noise(0.9, 400, 5000), sweep_noise(0.9, 500, 5200)])
             place(fx, st, at, db(-26))
             place(fx, chord([293.66, 440.0, 659.26], 1.2, 0.01, 0.5, 0.8), at + 0.05, db(-30))
         elif kind == "cube_twist":
             st = np.stack([sweep_noise(0.55, 900, 4200), sweep_noise(0.55, 900, 4200)[::-1]])
-            place(fx, st, at, db(-27))
+            place(fx, st, at, db(-23))
         elif kind == "cube_lock":
-            place(fx, thump(0.25, 160, 90, 0.04), at, db(-20), 0)
-            place(fx, click(0.012, 2200), at, db(-22), 0)
+            # encaje mecánico: dos clics muy juntos y un golpe corto
+            place(fx, thump(0.25, 160, 90, 0.04), at, db(-16), 0)
+            place(fx, click(0.012, 2200), at, db(-18), 0)
+            place(fx, click(0.01, 3500), at + 0.028, db(-21), 0)
             place(fx, soft_note(587.33, 0.5, 0.002, 0.12), at, db(-28), 0)
         elif kind == "cube_spin":
-            place(fx, whoosh(0.8, 300, 2000, 0.55), at, db(-26), 0)
+            place(fx, whoosh(0.8, 300, 2000, 0.55), at, db(-21), 0)
         elif kind == "cube_collapse":
-            place(fx, sweep_noise(0.65, 600, 4500)[::-1] * 0.9, at, db(-25), 0)
+            place(fx, sweep_noise(0.65, 600, 4500)[::-1] * 0.9, at, db(-20), 0)
         elif kind == "cube_home":
+            place(fx, sub_boom(0.8, 80, 40, 0.2), at, db(-17), 0)
             place(fx, thump(0.4, 90, 45, 0.1), at, db(-24), home_p)
             place(fx, ping(880, 0.8, 0.25), at, db(-24), home_p)
         elif kind == "sting":
@@ -320,6 +410,216 @@ def build_sfx():
             place(fx, ping(1318.5, 1.6, 0.5), at + 0.14, db(-19), home_p + 0.1)
             place(fx, chord([73.42, 146.83, 220.0, 369.99, 554.37], 3.2, 0.08, 1.2, 0.6), at, db(-17))
     return reverb(fx, 1.6, 0.16)
+
+
+# ── El cubo se parte y se vuelve a armar (v17) ──────────────────────────
+def shards(dur=0.5, n=27, seed=3, implode=False):
+    """27 fragmentos (uno por cubito): golpecitos cortos y resonantes con tono
+    y posición distintos. Al partirse salen casi juntos y se van espaciando;
+    al armarse, al revés: llegan cada vez más seguidos hasta el encaje."""
+    rng = np.random.default_rng(seed)
+    out = np.zeros((2, int(dur * SR) + int(0.2 * SR)))
+    for q in range(n):
+        u = (q / (n - 1)) ** 1.8
+        at = (1 - u) * (dur - 0.03) if implode else u * dur
+        fc = rng.uniform(1800, 6500)
+        d = rng.uniform(0.03, 0.07)
+        tk = bp(noise(d), fc * 0.8, min(fc * 1.25, SR / 2 - 200)) * env_exp(d, 0.0005, d / 4)
+        ring = sine(rng.uniform(700, 1700), d) * env_exp(d, 0.0005, d / 3)
+        x = tk / (np.abs(tk).max() + 1e-9) + 0.4 * ring
+        g = rng.uniform(0.45, 1.0)
+        place(out, x, at, g, rng.uniform(-0.85, 0.85))
+    return out / (np.abs(out).max() + 1e-9)
+
+
+# ── Negro → blanco (v11): el golpe grande del tráiler ────────────────────
+def soft_ping(f=880.0, dur=2.4, attack=0.06, decay=0.8):
+    """El ping del cursor sin el clic de tecla y con ataque suave (no golpea)."""
+    x = sine(f, dur) + db(-16) * sine(2 * f, dur) + db(-28) * sine(3 * f, dur)
+    return 0.8 * x * env_exp(dur, attack, decay)
+
+
+def build_light():
+    """Negro → blanco (v13: suspenso, nada de golpes). Después de «Hay otra
+    forma.» quedan dos segundos de oscuridad con el cursor parpadeando: un Re
+    grave muy bajo crece despacio con un leve latido y la firma del cursor se
+    acerca al revés, desvaneciéndose antes de la luz (no termina en pico).
+    Cuando la luz amanece desde el cuadrado, el grave, el aire y el acorde de
+    Re suben con ataques lentos (0,3–0,6 s) y el ping del cursor entra sin clic.
+    No hay ningún transitorio: es un florecimiento, no un impacto."""
+    bus = np.zeros((2, N))
+    if getattr(cfg, "TEMA", "oscuro") != "mezcla":
+        return bus
+    H = cfg.LUZ[0]
+    # 1) espera: Re grave que crece desde el final de la frase, con un latido leve
+    d = H - (cfg.T["vo4"] + 0.75)
+    tt = t_axis(d)
+    held = (sine(36.71, d) + 0.7 * sine(73.42, d) + 0.25 * sine(110.0, d))
+    held *= (tt / d) ** 2.0 * (0.8 + 0.2 * np.sin(2 * np.pi * 1.25 * tt))
+    place(bus, np.tanh(1.3 * held) / np.tanh(1.3), H - d, db(-27), 0)
+    # 1b) tensión: una nota aguda muy suave que tiembla y crece en los últimos 2,5 s
+    d2 = 2.5
+    t2 = t_axis(d2)
+    hi = (sine(1760.0, d2) + 0.5 * sine(1864.66, d2)) * (0.6 + 0.4 * np.sin(2 * np.pi * 5.5 * t2))
+    hi *= (t2 / d2) ** 2.5 * np.clip((d2 - t2) / 0.25, 0, 1)
+    place(bus, hi, H - d2, db(-40), 0)
+    # 2) la firma del cursor al revés, que se apaga antes de la luz
+    rp = reverse_ping(1.8)
+    k = np.ones(rp.shape[1])
+    f = int(0.45 * SR)
+    k[-f:] = np.linspace(1, 0, f) ** 1.5
+    place(bus, rp * k, H - 1.8 + 0.1, db(-26))
+    # 3) amanecer: todo con ataques lentos, ningún golpe
+    sw = sub_boom(3.6, 48, 40, 1.4, 1.0) * np.clip(t_axis(3.6) / 0.45, 0, 1) ** 2
+    place(bus, sw, H, db(-17), 0)
+    air = wide_air(3.4, 700, 6000) * np.clip(t_axis(3.4) / 0.6, 0, 1) ** 2
+    place(bus, air, H, db(-29))
+    place(bus, soft_ping(880, 2.6, 0.08, 0.9), H + 0.25, db(-15), 0)
+    place(bus, soft_ping(1318.5, 2.2, 0.08, 0.7), H + 0.55, db(-23), 0.2)
+    bloom = chord([73.42, 146.83, 220.0, 293.66, 369.99, 440.0, 659.26], 5.0, 0.55, 2.1, 0.9)
+    place(bus, bloom, H, db(-16))
+    return reverb(bus, 3.4, 0.36, seed=23)
+
+
+# ── Sintetizadores (v16) ─────────────────────────────────────────────────
+def synth(f, dur, bright0=14.0, bright1=3.0, tau=0.12, attack=0.004, decay=0.35, detune=0.0):
+    """Sierra limitada en banda con «filtro» que se cierra: cada armónico k
+    pesa exp(-k / K(t)), y K baja de bright0 a bright1 (ataque brillante que se
+    oscurece, como un sintetizador con envolvente de filtro)."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    kmax = int(min(40, (SR / 2 - 200) / f))
+    k = np.arange(1, kmax + 1)[:, None]
+    K = bright1 + (bright0 - bright1) * np.exp(-t / tau)
+    w = np.exp(-k / K[None, :]) / k
+    f2 = f * 2 ** (detune / 1200)
+    x = (w * np.sin(2 * np.pi * k * f2 * t[None, :])).sum(axis=0)
+    x *= env_exp(dur, attack, decay)[:n]
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def kick(dur=0.42):
+    f = lambda t: 46 + 74 * np.exp(-t / 0.035)
+    x = sine(f, dur) * env_exp(dur, 0.002, 0.13)
+    x[: int(0.004 * SR)] += 0.25 * hp(noise(0.004), 3000)
+    return np.tanh(1.8 * x) / np.tanh(1.8)
+
+
+def hat(dur=0.05, open_=False):
+    d = 0.22 if open_ else dur
+    x = hp(noise(d), 7500) * env_exp(d, 0.001, 0.07 if open_ else 0.012)
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def snare(dur=0.2):
+    body = sine(185.0, dur) * env_exp(dur, 0.001, 0.05)
+    nz = bp(noise(dur), 1200, 7000) * env_exp(dur, 0.001, 0.07)
+    x = 0.5 * body + nz
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def music_groove(mu):
+    """La solución (en blanco) y el cubo 3D: pulso electrónico a 112 BPM en Re
+    mayor (Re – La – Si m – Sol). Bajo de sierra que «bombea» con el bombo,
+    arpegio de sintetizador en semicorcheas que rebota de lado a lado, colchón
+    amplio y hi-hats. Con la convergencia hay un respiro (sin bombo) y con el
+    cubo vuelve todo con una subida: redoblante en corcheas, después en
+    semicorcheas y un barrido que crece, y se corta en seco cuando el cubo
+    vuelve a ser el cursor. El logo se arma sobre la nota grave sostenida."""
+    bpm = 112.0
+    beat = 60 / bpm
+    start = T["s6"] + 0.35
+    rv = T["rv"]
+    brk0, brk1 = rv, rv + TL.RV["extrude"][0]            # respiro: la interfaz converge
+    b_eighth = rv + TL.RV["explode"][0]                   # redoblante en corcheas
+    b_six = rv + TL.RV["spin"][0]                         # redoblante en semicorcheas
+    end = rv + TL.RV["home"][1] - 0.04                    # corte seco al volver a ser cursor
+    roots = [73.42, 55.0, 61.74, 49.0]                     # Re2 · La1 · Si1 · Sol1
+    arps = [[293.66, 369.99, 440.0, 587.33], [277.18, 329.63, 440.0, 554.37],
+            [246.94, 293.66, 369.99, 493.88], [196.0, 246.94, 293.66, 392.0]]
+    pads = [[146.83, 220.0, 293.66, 369.99], [138.59, 220.0, 277.18, 329.63],
+            [123.47, 185.0, 246.94, 293.66], [98.0, 196.0, 246.94, 293.66]]
+    n_beats = int((end - start) / beat) + 1
+    bass_bus = np.zeros((2, N))
+    pad_bus = np.zeros((2, N))
+    side = np.zeros(N)            # envolvente del bombo para el «bombeo»
+    for i in range(n_beats):
+        at = start + i * beat
+        if at >= end:
+            break
+        bar = i // 4
+        ch = bar % 4
+        in_brk = brk0 <= at < brk1
+        k_in = min(1.0, (i + 1) / 6)                     # entra en 1,5 compases
+        # bombo en cada tiempo (menos en el respiro)
+        if not in_brk:
+            place(mu, kick(), at, db(-17) * k_in, 0)
+            j = int(at * SR)
+            m = min(N - j, int(0.3 * SR))
+            side[j:j + m] = np.maximum(side[j:j + m], np.exp(-np.arange(m) / (0.11 * SR)))
+        # bajo en corcheas (el segundo de cada par más corto)
+        for h in range(2):
+            ta = at + h * beat / 2
+            if ta >= end:
+                break
+            dur = beat / 2 * (0.95 if h == 0 else 0.7)
+            br = 5.0 if in_brk else 9.0
+            x = synth(roots[ch], dur + 0.05, br, 2.0, 0.08, 0.003, 0.25)
+            x2 = synth(roots[ch] * 2, dur + 0.05, br, 2.5, 0.08, 0.003, 0.2, detune=7)
+            place(bass_bus, x + 0.35 * x2, ta, db(-19) * k_in, 0)
+        # arpegio en semicorcheas desde el segundo compás, rebotando en estéreo
+        if bar >= 1:
+            pat = [0, 1, 2, 3, 2, 1, 2, 3]
+            for q in range(4):
+                ta = at + q * beat / 4
+                if ta >= end:
+                    break
+                idx = pat[(i * 4 + q) % 8]
+                note = arps[ch][idx]
+                br = 4.0 if in_brk else 10.0
+                x = synth(note, 0.28, br, 2.0, 0.05, 0.002, 0.09, detune=4 * (-1) ** q)
+                place(mu, x, ta, db(-27 if not in_brk else -31), 0.55 * (-1) ** q)
+        # hi-hats: contratiempo; abierto al final de cada dos compases
+        if not in_brk:
+            place(mu, hat(), at + beat / 2, db(-30) * k_in, 0.25)
+            if i % 8 == 7:
+                place(mu, hat(open_=True), at + beat / 2, db(-29), -0.2)
+        # colchón: un acorde por compás (sierras desafinadas, ataque lento)
+        if i % 4 == 0:
+            bar_d = 4 * beat + 0.4
+            for nf in pads[ch]:
+                for dt, pp in ((-6, -0.6), (6, 0.6)):
+                    x = synth(nf, bar_d, 3.0, 2.0, 1.0, 0.25, 1.2, detune=dt)
+                    place(pad_bus, x, at, db(-37), pp)
+    # redoblante de la subida: corcheas y luego semicorcheas, en crescendo
+    t_s = b_eighth
+    while t_s < end - 0.02:
+        k = (t_s - b_eighth) / max(0.1, end - b_eighth)
+        place(mu, snare(), t_s, db(-40 + 8 * k), 0)
+        t_s += beat / 2 if t_s < b_six else beat / 4
+    # barrido que crece hasta el corte
+    d = end - b_eighth
+    rise = sweep_noise(d, 400, 9000) * (t_axis(d) / d) ** 2.2
+    place(mu, rise, b_eighth, db(-34), 0)
+    # bombeo: el bajo y el colchón bajan con cada bombo
+    g = 1 - 0.55 * side
+    bass_bus *= g
+    pad_bus *= g
+    # v17: durante el cubo 3D la música baja ~10 dB para que mande el cubo
+    t_full = np.arange(N) / SR
+    c0 = rv + TL.RV["grow"][0]
+    cube_gain = 1 - (1 - db(-10)) * np.clip((t_full - c0) / 0.6, 0, 1)
+    _CUBE_GAIN[0] = cube_gain
+    # corte seco al final
+    e = int(end * SR)
+    f = int(0.012 * SR)
+    for bus in (bass_bus, pad_bus):
+        bus[:, e:e + f] *= np.linspace(1, 0, f)
+        bus[:, e + f:] = 0
+    mu += bass_bus + pad_bus
+
+
+_CUBE_GAIN = [None]
 
 
 # ── Música / camas ───────────────────────────────────────────────────────
@@ -362,32 +662,10 @@ def build_music():
     tension = (cl * 0.35 + rise) * swell
     place(mu, tension, T["s3"], db(-20), 0)
 
-    # E4: recuperación controlada — pulso estable (96 BPM) en Re, cuerdas pulsadas y colchón
-    bpm = 96.0
-    beat = 60 / bpm
-    start = T["s6"] + 0.35
-    end = T["rv"] + 0.9                 # se detiene cuando la interfaz converge
-    arp = [146.83, 220.0, 329.63, 369.99, 220.0, 329.63, 440.0, 369.99]   # Re–La–Mi–Fa#
-    n = int((end - start) / (beat / 2))
-    for i in range(n):
-        at = start + i * beat / 2
-        k = min(1, i / 8) * min(1, (end - at) / 1.2)
-        place(mu, pluck(arp[i % len(arp)], 1.0, 0.45), at, db(-29) * k, 0.35 * np.sin(i * 0.9))
-        if i % 2 == 0:
-            place(mu, thump(0.3, 75, 45, 0.08), at, db(-28) * k, 0)
-    pad_dur = (T["rv"] + 1.6) - start
-    pad = chord([73.42, 110.0, 146.83, 220.0, 277.18, 329.63], pad_dur, 1.2, 99, 0.7)
-    tp = t_axis(pad_dur)
-    pad *= np.clip(tp / 1.5, 0, 1) * np.clip((pad_dur - tp) / 1.4, 0, 1)
-    place(mu, pad, start, db(-27))
-
-    # E5: colchón que acompaña la transición 3D y lleva a la revelación
-    c0 = T["rv"] + TL.RV["grow"][0]
-    d = T["s5"] + 0.4 - c0
-    tt = t_axis(d)
-    swell = chord([73.42, 110.0, 146.83, 220.0, 329.63], d, 0.8, 99, 0.6)
-    swell *= np.clip(tt / 1.2, 0, 1) * (0.5 + 0.5 * tt / d) * np.clip((d - tt) / 0.5, 0, 1)
-    place(mu, lp(swell, 1600), c0, db(-27))
+    # E4–E5 (v16): música electrónica en vez de las cuerdas pulsadas
+    groove = np.zeros_like(mu)
+    music_groove(groove)
+    mu += groove * _CUBE_GAIN[0]          # v17: el cubo manda (la música baja ~10 dB)
 
     # E5: el cuadrado solo — una nota grave que crece hacia la transformación
     a0 = T["rv"] + TL.RV["cube_home"][1] - 0.3
@@ -464,11 +742,13 @@ def main():
     voice = build_voice()
     sfx = build_sfx()
     music = build_music()
+    music = tape_stop(music, T["freeze"] + 0.02, 0.45)   # la cama se frena antes del corte
     music = duck(music, voice, -9)
     sfx_d = duck(sfx, voice, -9)
     music = hard_silence(music)
     sfx_d = hard_silence(sfx_d)
-    mix = voice + music + sfx_d
+    light = duck(build_light(), voice, -10)
+    mix = voice + music + sfx_d + light
     # micro fundido final (la cola de silencio ya está en la línea de tiempo)
     tail = int(0.4 * SR)
     mix[:, -tail:] *= np.linspace(1, 0, tail)
@@ -481,7 +761,7 @@ def main():
     print(f"  mezcla: {meter.integrated_loudness(mix.T):.1f} LUFS, pico {20*np.log10(np.abs(mix).max()):.1f} dBFS")
     write(STEMS / "voz.wav", voice)
     write(STEMS / "musica.wav", music)
-    write(STEMS / "efectos.wav", sfx)
+    write(STEMS / "efectos.wav", sfx_d + light)
     write(STEMS / "mezcla.wav", mix)
 
 

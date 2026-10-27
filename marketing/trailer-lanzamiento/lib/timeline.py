@@ -152,9 +152,9 @@ S6 = dict(
     cursor_out=(4.45, 4.85), # sale de la burbuja y va a la confirmación
     chip=(4.85, 5.30),
     panel=(4.90, 5.55),
-    wire=(5.35, 6.10),       # conector chip → celda
-    land=(6.10, 6.40),       # el cuadrado se vuelve la celda reservada
-    paid=(6.80, 7.20),
+    wire=(5.35, 6.30),       # conector chip → celda (v9: más largo, sin saltos)
+    land=(6.30, 6.60),       # el cuadrado se vuelve la celda reservada
+    paid=(7.00, 7.40),
 )
 
 # ── E5 (v2): revelación (segundos desde T['rv']) ────────────────────────
@@ -193,6 +193,8 @@ def sound_cues():
         a((dep, "move"))
         a((arr, "activate_" + ("chat" if kind.startswith("chat") else kind)))
     a((T["freeze"], "freeze"))
+    if getattr(cfg, "TEMA", "oscuro") == "mezcla":
+        a((cfg.LUZ[0], "light"))   # negro → blanco: el golpe grande del tráiler
     # E4: la solución
     s6 = T["s6"]
     a((s6 + S6["organize"][0], "lift"))

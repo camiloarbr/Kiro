@@ -24,8 +24,7 @@ from lib.draw import color, paint
 
 C = cfg.C
 P = L.PARTS
-WORD_WHITE = L.COLORS["word"]
-SOL_COLOR = L.COLORS["solutions"]
+# colores del logo: se leen de L.COLORS en cada fotograma (cambian con el tema)
 VIOLET = L.COLORS["cursor"]
 GUIDE_W = 3.0 / TL.S        # 3 px en pantalla
 
@@ -52,7 +51,7 @@ def _wipe_up(c, path, x0, x1, k, top=None):
     y = E.lerp(L.BASELINE + 10, top - 10, k)
     c.save()
     c.clipRect(skia.Rect.MakeLTRB(x0, y, x1, L.BASELINE + 12))
-    c.drawPath(path, paint(WORD_WHITE))
+    c.drawPath(path, paint(L.COLORS["word"]))
     c.restore()
     if k < 1:
         _edge(c, x0, y - 3 / TL.S, x1, y + 3 / TL.S, k)
@@ -64,7 +63,7 @@ def _wipe_right(c, path, x0, x1, k, y0=-60, y1=800):
     x = E.lerp(x0, x1, k)
     c.save()
     c.clipRect(skia.Rect.MakeLTRB(x0, y0, x, y1))
-    c.drawPath(path, paint(WORD_WHITE))
+    c.drawPath(path, paint(L.COLORS["word"]))
     c.restore()
     if k < 1:
         b = path.getBounds()
@@ -86,7 +85,7 @@ def _sweep(c, path, center, k):
         clip.close()
     c.save()
     c.clipPath(clip, skia.ClipOp.kIntersect, True)
-    c.drawPath(path, paint(WORD_WHITE))
+    c.drawPath(path, paint(L.COLORS["word"]))
     c.restore()
     if k < 1:
         ang = math.radians(-90 + 360 * k)
@@ -170,7 +169,7 @@ def draw_build(c, u, cursor_alpha=1.0, show_cursor=True, solutions=None, hop=Tru
         e = E.out_expo(ex)
         top = E.lerp(L.CURSOR.top(), L.XHEIGHT, e)
         bot = E.lerp(L.CURSOR.bottom(), L.BASELINE, e)
-        col = _blend(VIOLET, WORD_WHITE, E.in_out_cubic(E.prog(u, S5["extrude"][0] + 0.18, S5["extrude"][1])))
+        col = _blend(VIOLET, L.COLORS["word"], E.in_out_cubic(E.prog(u, S5["extrude"][0] + 0.18, S5["extrude"][1])))
         c.drawRect(skia.Rect.MakeLTRB(L.CURSOR.left(), top, L.CURSOR.right(), bot), paint(col))
 
     # 5) «solutions» ─────────────────────────────────────────────────
@@ -181,7 +180,7 @@ def draw_build(c, u, cursor_alpha=1.0, show_cursor=True, solutions=None, hop=Tru
         half = (b.width() / 2 + 20) * sk
         c.save()
         c.clipRect(skia.Rect.MakeLTRB(cx - half, b.top() - 10, cx + half, b.bottom() + 10))
-        c.drawPath(P["solutions"], paint(SOL_COLOR, E.clamp(sk * 1.3)))
+        c.drawPath(P["solutions"], paint(L.COLORS["solutions"], E.clamp(sk * 1.3)))
         c.restore()
 
     # 1) el cursor ────────────────────────────────────────────────────

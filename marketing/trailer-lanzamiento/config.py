@@ -6,10 +6,10 @@ leen ESTE archivo, así que un cambio de tiempo mueve imagen y sonido juntos.
 """
 
 # ── Salida ───────────────────────────────────────────────────────────────
-VERSION = "v6"           # nombre del render: out/kiro-trailer-v6-<voz>.mp4 (no pisa versiones anteriores)
+VERSION = "v20"          # nombre del render: out/kiro-trailer-v20-<voz>.mp4 (no pisa versiones anteriores)
 W, H = 1080, 1920
 FPS = 30
-DURATION = 43.3          # segundos totales (incluye la cola de silencio)
+DURATION = 46.3          # segundos totales (incluye la cola de silencio)
 
 # ── Voz ──────────────────────────────────────────────────────────────────
 # Carpeta dentro de audio/voz/. v5: «carlos» (ElevenLabs, «Carlos – Premium
@@ -36,6 +36,25 @@ C = dict(
     lav="#D9C4FF",          # lavanda media (extensión web aprobada)
 )
 
+# ── Tema (v10) ───────────────────────────────────────────────────────────
+# oscuro: todo sobre Kiro Black · claro: todo sobre Blanco Kiro (logo positivo)
+# mezcla: el problema va en negro y con «Hay otra forma» la luz se abre en
+# círculo desde el cuadrado; la solución, el cubo y el logo van en blanco.
+# Se cambia con KIRO_TEMA=oscuro|claro|mezcla (lib/theme.py aplica la paleta).
+import os as _os_tema
+TEMA = _os_tema.environ.get("KIRO_TEMA", "mezcla")
+PALETA_OSCURA = dict(C)
+PALETA_CLARA = dict(
+    C,
+    black="#F6F4FA",        # fondo: Blanco Kiro
+    graphite="#E9E4F1",     # superficies
+    graphite_2="#DDD6E8",   # superficies elevadas
+    gray="#6F6780",         # texto secundario (más oscuro para leerse sobre blanco)
+    white="#0C0A10",        # texto: Kiro Black
+    violet_light="#5B17B8", # acento de texto sobre blanco: morado oscuro
+)
+LUZ = (20.62, 21.70)        # v15: 3 s de suspenso desde el final de «Hay otra forma.» (el cuadrado se achica); luego la luz amanece
+
 # ── Línea de tiempo (segundos) ───────────────────────────────────────────
 # v2: el logo solo aparece al final. Orden: problema → solución → marca.
 T = dict(
@@ -49,15 +68,15 @@ T = dict(
     freeze=15.30,       # corte: todo se detiene
     s4=15.30,           # E3 pausa: se retira todo, silencio real
     vo4=16.80,          # «Hay otra forma.»
-    s6=18.80,           # E4 la solución: el cuadrado ordena el espacio y trabaja
-    vo6a=19.60,         # «Creamos software a tu medida, automatizaciones y agentes inteligentes,»
-    vo6b=24.75,         # «para que tu negocio trabaje mejor.»
-    rv=29.20,           # E5 revelación: la interfaz converge; transición 3D (cubo de la landing)
-    s5=36.50,           # el cuadrado empieza a transformarse en «kiro» (única vez)
-    logo_done=39.50,    # «kiro» queda completo (impacto)
-    vo5=40.05,          # «Kiro.»  (el cierre solo dice el nombre)
-    close=41.00,        # el logo queda quieto (dirección web solo si config.URL no está vacía)
-    sting=41.65,        # firma sonora final (parpadeo del cursor)
+    s6=21.80,           # E4 la solución: el cuadrado ordena el espacio y trabaja
+    vo6a=22.60,         # «Creamos software a tu medida, automatizaciones y agentes inteligentes,»
+    vo6b=27.75,         # «para que tu negocio trabaje mejor.»
+    rv=32.20,           # E5 revelación: la interfaz converge; transición 3D (cubo de la landing)
+    s5=39.50,           # el cuadrado empieza a transformarse en «kiro» (única vez)
+    logo_done=42.50,    # «kiro» queda completo (impacto)
+    vo5=43.05,          # «Kiro.»  (el cierre solo dice el nombre)
+    close=44.00,        # el logo queda quieto (dirección web solo si config.URL no está vacía)
+    sting=44.65,        # firma sonora final (parpadeo del cursor)
 )
 
 # ── Narración ────────────────────────────────────────────────────────────
@@ -96,7 +115,8 @@ VO_TIMINGS_FOR = VOICE   # los tiempos ya vienen de la voz elegida
 
 # Subtítulos discretos para quien ve sin sonido (Reels/TikTok arrancan mudos).
 SUBTITULOS = True
-SUBTITULOS_EN = ["vo1", "vo2", "vo3", "vo4"]   # en la solución hablan los rótulos; en el cierre, la frase
+SUBTITULOS_EN = ["vo1", "vo2", "vo3", "vo4", "vo6a", "vo6b"]   # v20: también en la parte blanca; «Kiro.» sin subtítulo (el logo ya lo dice)
+SUBTITULOS_Y = {"vo6a": 1632, "vo6b": 1632}   # en la solución van debajo del panel (no tapan nada)
 
 # ── Textos en pantalla ───────────────────────────────────────────────────
 URL = ""   # v4: sin dirección web; el cierre es solo el logo. Para mostrarla: "kiro.kirosolutionsco.workers.dev"

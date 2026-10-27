@@ -48,7 +48,20 @@ def draw(c, t):
             continue
         out = E.prog(t, end, end + fade_len)
         lines, space = _layout(words, fnt)
-        y = BASE_Y - (len(lines) - 1) * LINE_H / 2 + 20
+        # v19: como máximo 2 renglones a la vez; las frases largas pasan de
+        # página cuando empieza la palabra del renglón siguiente
+        pages = [lines[i:i + 2] for i in range(0, len(lines), 2)]
+        if len(pages) > 1:
+            k = 0
+            for j in range(1, len(pages)):
+                if t >= start + pages[j][0][0][1] - 0.05:
+                    k = j
+            if k < len(pages) - 1:
+                nxt_page = start + pages[k + 1][0][0][1] - 0.05
+                out = max(out, E.prog(t, nxt_page - 0.12, nxt_page))
+            lines = pages[k]
+        base_y = cfg.SUBTITULOS_Y.get(cue, BASE_Y) if hasattr(cfg, "SUBTITULOS_Y") else BASE_Y
+        y = base_y - (len(lines) - 1) * LINE_H / 2 + 20
         for ln in lines:
             total = sum(w for _, _, w in ln) + space * (len(ln) - 1)
             x = 540 - total / 2

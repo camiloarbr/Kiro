@@ -64,6 +64,8 @@ def parse_subpaths(d):
 
 
 COLORS = {}  # colores tal como vienen en el SVG oficial (palabra, cursor, «solutions»)
+COLORS_NEGATIVO = {}   # copia del SVG oficial (para volver del tema claro)
+COLORS_POSITIVO_WORD, COLORS_POSITIVO_SOL = "#0C0A10", "#5E566B"   # versión positiva del manual
 
 
 def _load():
@@ -85,6 +87,7 @@ def _load():
     cx, cy, cw, ch = map(float, rect.groups())
     fills = re.findall(r'fill="(#[0-9A-Fa-f]{6})"', svg)
     COLORS.update(word=fills[0], cursor=fills[1], solutions=fills[2])
+    COLORS_NEGATIVO.update(COLORS)
     return dict(
         k_arm=k_arm, k_stem=k_stem, k_leg=k_leg, i_stem=i_stem, r=r, o=o,
         solutions=sol, cursor=skia.Rect.MakeXYWH(cx, cy, cw, ch),

@@ -276,31 +276,43 @@ def _anchor_xy(kind):
 
 
 def draw_wires(c, t):
+    """Rastros punteados que deja el cuadrado (v8): siguen su recorrido real y
+    se dibujan mientras se mueve, desde el primer movimiento al salir del
+    centro. Se van apagando con el tiempo y se acumulan: el desorden crece."""
+    from scenes import cursor as CU
     out = E.prog(t, T["s4"] + 0.1, T["s4"] + 0.6)
     if out >= 1:
         return
-    prev = None
-    for (dep, arr, kind) in TL.ALL_MOVES:
-        p1 = _anchor_xy(kind)
-        if prev is not None and dep >= T["s3"] and t >= dep:
-            p0 = prev
-            k = E.out_cubic(E.prog(t, dep, arr)) * 0.8   # nunca llega: queda un hueco
-            k *= (1 - out)
-            x1 = E.lerp(p0[0], p1[0], k)
-            y1 = E.lerp(p0[1], p1[1], k)
-            age = E.prog(t, arr, arr + 1.2)
-            p = paint(C["gray"], (0.42 - 0.2 * age), stroke=2)
-            p.setPathEffect(skia.DashPathEffect.Make([10, 12], 0))
-            line(c, p0[0], p0[1], x1, y1, p)
-        prev = p1
+    segs = CU._SEGS
+    if t < segs[0]["t0"]:
+        return
+    # punto de origen en el centro
+    age0 = E.prog(t, segs[0]["t1"], segs[0]["t1"] + 1.2)
+    c.drawCircle(*TL.START, 4, paint(C["white"], (0.45 - 0.25 * age0) * (1 - out)))
+    for sg in segs:
+        if t <= sg["t0"]:
+            break
+        t_end = min(t, sg["t1"])
+        n = max(3, int((t_end - sg["t0"]) * 90))
+        path = skia.Path()
+        for i in range(n + 1):
+            x, y = CU.path_point(sg["t0"] + (t_end - sg["t0"]) * i / n)
+            if i == 0:
+                path.moveTo(x, y)
+            else:
+                path.lineTo(x, y)
+        age = E.prog(t, sg["t1"], sg["t1"] + 1.2)
+        p = paint(C["white"], (0.40 - 0.20 * age) * (1 - out), stroke=2.2)
+        p.setStrokeJoin(skia.Paint.kRound_Join)
+        p.setPathEffect(skia.DashPathEffect.Make([10, 12], 0))
+        c.drawPath(path, p)
 
 
 def draw(c, t):
     if t < T["s2"] - 0.2 or t > T["s6"]:
         return
     draw_grid(c, t)
-    draw_wires(c, t)          # coordenadas de pantalla (los anclajes ya están desplazados)
-    draw_trail(c, t)
+    draw_wires(c, t)          # rastros del cuadrado (coordenadas de pantalla)
     c.save()
     c.translate(0, TL.MANUAL_DY)   # v3: todo el bloque 110 px más arriba
     draw_log(c, t)

@@ -257,7 +257,7 @@ def _wire(c, t, r):
     a0, a1 = S6["wire"]
     if r < a0:
         return
-    k = E.in_out_cubic(E.prog(r, a0, a1))
+    k = E.in_out_sine(E.prog(r, a0, a1))
     kx = exit_k("wire", t)
     settled = E.prog(r, a1, a1 + 0.6)
     p = paint(C["violet_light"], (0.85 - 0.4 * settled) * (1 - kx), stroke=3)
@@ -338,14 +338,14 @@ def cursor_rect(t):
     if r < o0:
         return home, 0
     if r < o0 + 0.45:                      # va al inicio de la guía
-        k = E.in_out_cubic(E.prog(r, o0, o0 + 0.45))
+        k = E.in_out_sine(E.prog(r, o0, o0 + 0.45))
         return _lerp_rect(home, _sq(ga, s), k), 0
     if r < o1:                             # traza la guía de izquierda a derecha
-        k = E.in_out_cubic(E.prog(r, o0 + 0.45, o1))
+        k = E.in_out_sine(E.prog(r, o0 + 0.45, o1))
         return _lerp_rect(_sq(ga, s), _sq(gb, s), k), 0
     a0, a1 = S6["cursor_to_chat"]
     if r < a1:
-        k = E.in_out_cubic(E.prog(r, a0, a1))
+        k = E.in_out_sine(E.prog(r, a0, a1))
         return _lerp_rect(_sq(gb, s), typing, k), 0
     t0, t1 = S6["typing"]
     if r < S6["bot"][0]:
@@ -363,7 +363,7 @@ def cursor_rect(t):
         # nace en la esquina inferior izquierda de la burbuja y baja al cuadro
         start = skia.Rect.MakeXYWH(BOT_RECT.left(), BOT_RECT.bottom() - s, s, s)
         grow = E.out_back(E.prog(r, o0, o0 + 0.12), 1.6)
-        k = E.in_out_cubic(E.prog(r, o0 + 0.06, o1))
+        k = E.in_out_sine(E.prog(r, o0 + 0.06, o1))
         rect = _lerp_rect(start, sq, k)
         if grow < 1:
             rect = _scale_rect(rect, max(0.01, grow))
@@ -371,7 +371,7 @@ def cursor_rect(t):
     if r < w0:
         return sq, 10
     if r < land0:
-        k = E.in_out_cubic(E.prog(r, w0, w1))
+        k = E.in_out_sine(E.prog(r, w0, w1))
         (x, y), _ = _poly_point(WIRE, k)
         size = E.lerp(44, CELL, E.prog(r, w0, w0 + 0.3))
         return skia.Rect.MakeXYWH(x - size / 2, y - size / 2, size, size), 12
@@ -395,7 +395,7 @@ def _organize(c, t, r):
     o0, o1 = S6["organize"]
     if r < o0 + 0.45:
         return
-    k = E.in_out_cubic(E.prog(r, o0 + 0.45, o1))
+    k = E.in_out_sine(E.prog(r, o0 + 0.45, o1))
     fade = 1 - exit_k("header", t)
     ga, gb = _guide_ends()
     x_end = E.lerp(X0, X1, k)

@@ -2,11 +2,135 @@
 
 Video vertical 1080 × 1920, 30 fps, H.264 + AAC, para Reels y TikTok.
 
-**Versión actual: v6**, en dos voces (43,3 s cada una):
+**Versión actual: v20** (solo voz de mujer): `out/kiro-trailer-v20-mujer.mp4`
+con Lucía, 46,3 s. Es igual a la v19, pero sin el subtítulo «Kiro.» del final.
 
-- `out/kiro-trailer-v6-carlos.mp4`: Carlos, toma nueva con menos respiración.
-- `out/kiro-trailer-v6-mujer-grave.mp4`: Lucía, voz femenina más grave (151 Hz). Es la versión con mujer recomendada.
-- `out/kiro-trailer-v6-mujer.mp4`: Daniela, voz femenina aguda (240 Hz).
+
+La v19 agrega subtítulos en la parte blanca: «Creamos software a tu medida…»,
+«para que tu negocio trabaje mejor.» y «Kiro.». En la solución van debajo del
+panel (`SUBTITULOS_Y` en `config.py`). Ahora se muestran como máximo dos
+renglones a la vez y las frases largas pasan de página.
+
+
+La v18 recupera el sonido de explosión del cubo de la v16 (grave con
+chasquido, barrido estéreo y acorde) y quita el de cuando se vuelve a armar.
+Siguen igual los sonidos de movimiento (giros, vuelta, encajes) y la música
+más baja durante el cubo.
+
+La v17 dejó que el cubo 3D mandara en el sonido (los 27 pedazos no gustaron):
+
+- **La música baja ≈10 dB durante el cubo.** El redoblante y el barrido de la
+  subida quedan discretos.
+- **Cuando el cubo se parte**, suenan un grave que empuja, aire que se abre y
+  27 pedazos. Son golpecitos cortos y resonantes, uno por cubito, cada uno con
+  su tono y su lado del estéreo: salen casi juntos y se van espaciando. Queda
+  unos 12 dB por encima de la música.
+- **Cuando se vuelve a armar** (sonido nuevo), hay una succión hacia adentro y
+  los 27 pedazos llegan cada vez más seguidos hasta el encaje. Queda unos 7 dB
+  por encima de la música.
+
+La v16 cambió la música de la parte en blanco:
+
+La v16 cambia la música de la parte en blanco: en vez de cuerdas pulsadas
+(sonaban a guitarra) lleva un pulso electrónico a 112 BPM en Re mayor (Re – La –
+Si m – Sol), generado en `music_groove()` de `audio/build_audio.py`.
+
+- **Solución:** bajo de sierra que «bombea» con el bombo en cada tiempo,
+  hi-hats y colchón de sintetizador. Desde el segundo compás entra un arpegio
+  en semicorcheas que rebota de lado a lado.
+- **Convergencia:** un respiro sin bombo, con el filtro cerrado.
+- **Cubo 3D:** vuelve todo y sube. El redoblante va en corcheas, después en
+  semicorcheas, y un barrido crece hasta que el cubo vuelve a ser el cursor;
+  ahí se corta en seco.
+- **Logo:** se arma sobre la nota grave sostenida. Sus notas son ahora de
+  sintetizador (antes, de cuerda pulsada) y cierra con el golpe final.
+
+La voz queda unos 6 dB por encima de la música mientras habla.
+
+La v15 tenía 3 s de suspenso antes de la luz (20,6 s):
+
+La v15 deja el suspenso en 3 segundos: la luz amanece a los 20,6 s. Todo lo
+demás es igual a la v14, que se describe a continuación con 4 s.
+
+La v14 llevó el suspenso a 4 segundos:
+
+- **Oscuridad:** desde que Lucía termina «Hay otra forma.» (17,6 s) hasta que
+  amanece la luz (21,6 s) pasan 4 s.
+- **El cuadrado se achica** todo ese tiempo, hasta casi un punto (−62 %), como
+  si fuera a desaparecer. Al principio parpadea dos veces, como un cursor que
+  espera. Cuando amanece la luz vuelve a su tamaño.
+- **Sonido:** por debajo crece un Re grave muy bajo con leve latido. En los
+  últimos 2,5 s se suma una nota aguda muy suave que tiembla, y la firma del
+  cursor llega al revés y se apaga antes de la luz. El amanecer no tiene
+  golpes ni clics: el grave, el aire y el acorde de Re suben con ataques
+  lentos.
+- **Duración:** todo lo posterior se corrió 4 s en total respecto de la v11.
+
+El resto de las mejoras de sonido de la v11 sigue igual (corte del caos,
+cubo y logo).
+
+La v11 hace el sonido más impactante (`audio/build_audio.py`):
+
+- **Negro → blanco: el golpe grande del tráiler.** Lucía dice «Hay otra
+  forma.» en silencio. Por debajo, la firma del cursor sube aspirada al revés
+  y crece una subida de ruido. Siguen 80 ms de vacío total y, cuando la luz
+  estalla desde el cuadrado, entran a la vez: subgrave, chasquido, cuerpo,
+  aire que se abre a los lados, el ping del cursor y un acorde brillante de Re
+  que sostiene hasta la solución. La luz ahora llega al terminar la frase
+  (17,7 s), así el golpe no tapa la voz. El cuadrado se contrae y late con el
+  golpe. Todo esto va en un bus propio, para que el silencio de la pausa no lo
+  corte.
+- **Corte del caos (15,3 s):** la música se frena como una cinta (el tono
+  cae) y el corte es un golpe denso con subgrave.
+- **Aparición del cuadrado:** un grave suave que lo sostiene, como si se
+  «encendiera».
+- **Cubo 3D:** la explosión tiene subgrave y chasquido, los encajes suenan
+  más mecánicos (dos clics) y los giros y la compresión suben de nivel.
+- **Logo:** subida en reversa antes del golpe final y subgrave.
+- **Resto:** los recorridos del cuadrado se oyen un poco más (−37 dB) y la
+  celda reservada tiene un grave corto.
+
+Mezcla a −14 LUFS, pico −1,5 dBFS. El golpe de luz queda unos 7,5 dB por
+encima de la música de la solución.
+
+La v10 mezcla los dos colores de la marca:
+
+- **El problema va en negro** (0–17 s): el caos y el trabajo a mano.
+- **La luz se abre con «Hay otra forma»**: un círculo de Blanco Kiro sale del
+  cuadrado violeta (16,9–17,8 s), así que es Kiro quien trae la luz.
+- **La solución, el cubo y el logo van en blanco.** El texto pasa a Kiro Black
+  y el acento de texto a morado oscuro. El cierre usa la versión positiva del
+  logo (letras negras).
+- **Cómo se cambia:** `KIRO_TEMA=oscuro` vuelve a todo negro, `KIRO_TEMA=claro`
+  pone todo en blanco y `LUZ` en `config.py` mueve el momento del cambio. Las
+  paletas están en `config.py` y se aplican desde `lib/theme.py`.
+
+La v9 vuelve a la escena de la solución de la v6 (chat plano, sin el celular
+3D) y conserva el principio fluido de la v8. También suaviza los recorridos
+del cuadrado en esa escena: la guía, la entrada al chat, la salida a la
+confirmación y el conector (más largo). Ningún fotograma pasa de ≈80 px. El
+código del celular 3D quedó guardado en `scenes/phone3d.py` y
+`versiones/v8-celular/`, por si se quiere recuperar.
+
+Novedades de la v8:
+
+- **Recorrido continuo al principio.** En la v7, el cuadrado viajaba en tramos
+  rectos y se quedaba quieto 6 fotogramas en cada elemento. Ahora recorre una
+  curva suave (spline cardinal, `scenes/cursor.py`): al pasar por cada
+  elemento baja la velocidad, pero no se detiene. Llega en los mismos
+  instantes, así que las reacciones y los sonidos siguen sincronizados.
+- **Rastros desde el primer movimiento.** Las líneas punteadas siguen el
+  recorrido real y se dibujan mientras el cuadrado se mueve
+  (`scenes/manual.py`, `draw_wires`). Antes solo aparecían desde la segunda
+  mitad.
+
+Novedad de la v7: con «software a tu medida» entra el **celular 3D de la
+landing** (`scenes/phone3d.py`, réplica de `DemoKiroBot.astro`). Llega desde el
+fondo girando, el cuadrado entra al chat y se vuelve la respuesta del agente,
+y el celular se va girando a la izquierda mientras el panel entra en 3D desde
+la derecha. Sin marca: el contacto es «Casa Ceiba» y el avatar es el cuadrado
+violeta. También se suavizaron los recorridos del cuadrado en esa escena (paso
+máximo ≈ 90 px por fotograma).
 
 Primero el problema, después la solución y al final la marca: el logo aparece
 una sola vez y el narrador solo dice «Kiro». Antes del logo hay una transición
@@ -30,7 +154,7 @@ Cambios de la v6:
 | 1 Intriga | 0–7,3 s | Silencio. El cuadrado aparece en el centro (1,6 s) y espera. «Todo negocio empieza con una idea.» (4,4 s) |
 | 2 Tensión | 7,3–15,3 s | Sale del centro y activa una hoja de cálculo (cuadrícula completa), chats, pendientes y registros. «Pero cuando todo depende de hacerlo a mano, cada tarea se convierte en otra complicación.» |
 | 3 Pausa | 15,3–18,8 s | Corte seco, todo se retira, vuelve al centro. «Hay otra forma.» |
-| 4 Solución | 18,8–29,2 s | Ordena el espacio, se vuelve la respuesta del agente y la celda reservada. Sin marca. |
+| 4 Solución | 18,8–29,2 s | Ordena el espacio; entra el celular 3D de la landing y el cuadrado se vuelve la respuesta del agente dentro del chat; el celular sale girando, entra el panel y el cuadrado termina siendo la celda reservada. Sin marca. |
 | 5 Revelación | 29,2–39,5 s | La interfaz converge en el cuadrado, que se vuelve el cubo 3D de la landing (29,6–36,2 s): se extruye, explota en cubitos, se rearma, hace dos giros de capa y se comprime en el cursor. Luego se transforma en «kiro». «Kiro.» |
 | 6 Cierre | 39,5–43,3 s | Solo el logo. Parpadeo y firma sonora. |
 
@@ -40,7 +164,31 @@ Versiones anteriores, intactas: v1 a v5 en `out/`.
 
 | Ruta | Qué es |
 |---|---|
-| `out/kiro-trailer-v6-carlos.mp4` | **v6 con Carlos** |
+| `out/kiro-trailer-v20-mujer.mp4` | **v20 con Lucía** (sin subtítulo «Kiro.» al final) |
+| `out/kiro-trailer-v19-mujer.mp4` | v19 con Lucía (con subtítulo «Kiro.») |
+| `out/kiro-trailer-v18-mujer.mp4` | v18 con Lucía (sin subtítulos en la parte blanca) |
+| `out/kiro-trailer-v17-mujer.mp4` | v17 con Lucía (27 pedazos al partirse y al armarse) |
+| `out/kiro-trailer-v16-mujer.mp4` | v16 con Lucía (música fuerte en el cubo) |
+| `out/kiro-trailer-v15-mujer.mp4` | v15 con Lucía (cuerdas pulsadas) |
+| `out/hoja-de-contacto-v15.png` | Un fotograma por segundo de la v15 |
+| `out/kiro-trailer-v14-mujer.mp4` | v14 con Lucía (4 s de suspenso) |
+| `out/hoja-de-contacto-v14.png` | Un fotograma por segundo de la v14 |
+| `out/kiro-trailer-v13-mujer.mp4` | v13 con Lucía (2 s de suspenso) |
+| `out/hoja-de-contacto-v13.png` | Un fotograma por segundo de la v13 |
+| `out/kiro-trailer-v12-mujer.mp4` | v12 con Lucía (1 s de intriga) |
+| `out/hoja-de-contacto-v12.png` | Un fotograma por segundo de la v12 |
+| `out/kiro-trailer-v11-mujer.mp4` | v11 con Lucía (golpe seco al pasar a blanco) |
+| `out/kiro-trailer-v10-mujer.mp4` | v10 con Lucía (negro → blanco, sonido anterior) |
+| `out/hoja-de-contacto-v10.png` | Un fotograma por segundo de la v10 |
+| `lib/theme.py` | Tema oscuro, claro o mezcla (paleta en vivo) |
+| `out/kiro-trailer-v9-mujer.mp4` | v9 con Lucía (todo negro) |
+| `out/hoja-de-contacto-v9.png` | Un fotograma por segundo de la v9 |
+| `out/kiro-trailer-v8-carlos.mp4` | v8 con Carlos |
+| `out/kiro-trailer-v8-mujer.mp4` | **v8 con Lucía** |
+| `out/kiro-trailer-v7-carlos.mp4`, `out/kiro-trailer-v7-mujer.mp4` | v7 (celular 3D, recorrido a tramos) |
+| `out/hoja-de-contacto-v7.png` | Un fotograma por segundo de la v7 |
+| `scenes/phone3d.py` | El celular 3D de la landing (proyección en perspectiva) |
+| `out/kiro-trailer-v6-carlos.mp4` | v6 con Carlos |
 | `out/kiro-trailer-v6-mujer-grave.mp4` | **v6 con Lucía (voz femenina grave)** |
 | `out/kiro-trailer-v6-mujer.mp4` | v6 con Daniela (voz femenina aguda) |
 | `out/hoja-de-contacto-v6.png` | Un fotograma por segundo de la v6 |

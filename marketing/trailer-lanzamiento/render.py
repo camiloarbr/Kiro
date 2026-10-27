@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 
 import config as cfg  # noqa: E402
 from lib.draw import color  # noqa: E402
-from lib import ease as E, timeline as TL  # noqa: E402
+from lib import ease as E, theme, timeline as TL  # noqa: E402
 from scenes import captions, cursor, logo_build, manual, system, signature  # noqa: E402
 
 OUT = ROOT / "out"
@@ -38,7 +38,33 @@ def camera_zoom(t):
 
 
 def draw_frame(c, t):
-    c.clear(color(cfg.C["black"]))
+    """Tema mezcla: hasta «Hay otra forma» todo es oscuro; ahí la luz se abre
+    en círculo desde el cuadrado (se dibuja el fotograma oscuro y encima, dentro
+    del círculo, el mismo fotograma con la paleta clara)."""
+    k = theme.luz(t)
+    if k <= 0:
+        theme.apply("oscuro")
+        _draw(c, t)
+        return
+    if k >= 1:
+        theme.apply("claro")
+        _draw(c, t)
+        return
+    theme.apply("oscuro")
+    _draw(c, t)
+    x, y = TL.START
+    r = k * 1.04 * max(((x - a) ** 2 + (y - b) ** 2) ** 0.5 for a in (0, cfg.W) for b in (0, cfg.H))
+    c.save()
+    clip = skia.Path()
+    clip.addCircle(x, y, max(r, 0.5))
+    c.clipPath(clip, doAntiAlias=True)
+    theme.apply("claro")
+    _draw(c, t)
+    c.restore()
+
+
+def _draw(c, t):
+    c.drawColor(color(cfg.C["black"]))
     manual.draw(c, t)        # E2–E3: el problema
     system.draw(c, t)        # E4: la solución (sin marca)
     z = camera_zoom(t)
