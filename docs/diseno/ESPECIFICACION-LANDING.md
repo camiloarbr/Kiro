@@ -51,13 +51,13 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - **84–94 %:** el cubo se encoge (de 186 a 88 px) y vuela al carril derecho; la lente se acerca al carril (perspectiva 700 px).
   - **93–97 %:** el cubo de bloques se apaga mientras aparece el cubo que acompaña la página, en el mismo lugar, tamaño y pose.
   - **88–100 %:** el resplandor morado de abajo se apaga, para pasar sin corte a «Tu día».
-- **Celular:** la cámara va a escala 0,6, el cubo inicial sale centrado bajo el título y la nube es más compacta. Escala final 0,2867, para que el cubo llegue a 32 px.
+- **Celular:** la cámara va a escala 0,6, el cubo inicial sale centrado bajo el título y la nube es más compacta. Escala final 0,24, para que el cubo llegue al tamaño del cubo del carril (26 px).
 - **Versión estática** (Firefox, sin scroll-driven animations o con «reducir movimiento»): título, el cubo 3×3×3 quieto, los tres pasos en lista y la frase.
 
 ### 2. Cubo que acompaña (desde el final de la portada hasta el contacto)
 - **Posición:**
   - Computador: carril fijo a la derecha, `position: sticky` centrado verticalmente, cubo de 88 px.
-  - Celular: abajo a la derecha, cubo de 32 px.
+  - Celular: abajo a la derecha, pegado al borde, cubo de 26 px. El contenido deja 32 px a la derecha para que el cubo no tape el final de títulos y tarjetas.
 - **Movimiento:** gira con el scroll (~3 vueltas a lo largo de la página). Tiene un núcleo de luz que pulsa.
 - **Línea violeta:** detrás del cubo, se dibuja con el scroll.
 - **Espacio reservado:** en computador, las secciones dejan ~164 px a la derecha para que el cubo no tape texto.

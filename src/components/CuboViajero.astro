@@ -89,7 +89,9 @@
         will-change: transform;
         animation: giro linear both;
         animation-timeline: --flujo;
-        animation-range: entry 0% exit 100%;
+        /* «Tu día» sube --solape px sobre la portada: el giro empieza esos px después, cuando la portada
+           termina, para que al relevo el cubo tenga la misma pose que el cubo de bloques */
+        animation-range: entry var(--solape) exit 100%;
       }
       .cubo i {
         position: absolute;
@@ -135,8 +137,9 @@
     }
 
     @media (prefers-reduced-motion: no-preference) and (width < 56.25rem) {
+      /* Celular: cubo de 26 px centrado en x = 100% - 18 px, pegado al borde para no tapar texto */
       .riel {
-        right: -4px;
+        right: -14px;
         width: 64px;
       }
       .riel::before {
@@ -155,19 +158,19 @@
         inset: -14px;
       }
       .cubo {
-        left: 16px;
-        top: 16px;
-        width: 32px;
-        height: 32px;
-        --mitad: 16px;
+        left: 19px;
+        top: 19px;
+        width: 26px;
+        height: 26px;
+        --mitad: 13px;
       }
       .cubo i {
-        border-radius: 6px;
+        border-radius: 5px;
       }
       .cubo b {
-        width: 10px;
-        height: 10px;
-        margin: -5px 0 0 -5px;
+        width: 8px;
+        height: 8px;
+        margin: -4px 0 0 -4px;
       }
     }
   }

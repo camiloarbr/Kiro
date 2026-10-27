@@ -395,17 +395,17 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         animation-name: portada-salida-hero-movil;
       }
       .escena {
-        --cx: calc(50cqw - 28px);
+        --cx: calc(50cqw - 18px);
         --cy: calc(100vh - 118px - 64px - clamp(600px, 100vh - 64px, 760px) / 2);
       }
       /* En celular la cámara va a 60 % (scale independiente del transform animado).
-         Escala final: 186 px × 0,6 × k = 32 px, el cubo del carril en celular. */
+         Escala final: 186 px × 0,6 × k = 26 px, el cubo del carril en celular. */
       .camara {
         scale: 0.6;
       }
       .grupo {
-        --k: 0.2867;
-        --dy: -5px;
+        --k: 0.24;
+        --dy: -4px;
       }
       .bloque {
         animation-name: portada-bloque-movil;

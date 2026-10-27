@@ -99,8 +99,10 @@
   }
 }
 
-/* Secciones que recorre el cubo: en computador dejan 164 px a la derecha para su carril */
+/* Secciones que recorre el cubo: dejan espacio a la derecha para su carril
+   (celular: 24 + 8 px, para que el cubo de 26 px no tape el final de títulos y tarjetas; computador: 164 px) */
 .flujo > section .contenedor {
+  padding-right: 32px;
   @variant md {
     padding-right: 164px;
   }
