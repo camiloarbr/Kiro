@@ -1,0 +1,4 @@
+skia-python>=144
+numpy
+scipy
+pyloudnorm
