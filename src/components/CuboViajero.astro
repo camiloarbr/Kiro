@@ -179,10 +179,10 @@
     from { scale: 1 0; }
     to { scale: 1 1; }
   }
+  /* Solo opacity, sin crecer: así el relevo queda exactamente encima del cubo de bloques */
   @keyframes aparece {
-    0%, 93% { opacity: 0; scale: 1; }
-    96% { opacity: 1; scale: 1.2; }
-    100% { opacity: 1; scale: 1; }
+    0%, 93% { opacity: 0; }
+    96%, 100% { opacity: 1; }
   }
   /* Empieza en la misma pose en que termina el cubo de bloques de la portada: rotateX(-24deg) rotateY(-35deg) */
   @keyframes giro {
