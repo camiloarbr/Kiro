@@ -6,6 +6,7 @@
 //   20 %    nube: los bloques explotan girando       → --xc --yc --zc --rx --ry --rz
 //   36–64 % 3 mini cubos 2×2×2                        → --x2 --y2 --z2 (celular: --mx2 --my2)
 //   76 %+   cubo 3×3×3 al centro                      → --x3 --y3 --z3
+//   92–99 % se vuelve vidrio: cada bloque se apaga en su turno → --d
 
 export const LADO = 62;
 const MEDIO = LADO / 2;
@@ -105,13 +106,16 @@ function variables([cx, cy, cz]: Trio, b: number): string {
   const [xc, yc, zc, rx, ry, rz] = nube[b];
   const m = miniCubo(b);
   const vars: Record<string, string> = {
-    '--x0': px(380 + LADO * cx), '--y0': px(LADO * cy), '--z0': px(LADO * cz),
+    // El cubo inicial se arma en el centro: Hero.astro lo agranda (cámara) y lo ubica según la pantalla (.grupo)
+    '--x0': px(LADO * cx), '--y0': px(LADO * cy), '--z0': px(LADO * cz),
     '--xc': px(xc), '--yc': px(yc), '--zc': px(zc), '--rx': deg(rx), '--ry': deg(ry), '--rz': deg(rz),
     '--x2': px(m.x), '--y2': px(m.y), '--z2': px(m.z),
     '--mx2': px(m.xMovil), '--my2': px(m.yMovil),
     // El cubo final es el mismo 3×3×3, centrado en x y 40 px más abajo
     '--x3': px(LADO * cx), '--y3': px(40 + LADO * cy), '--z3': px(LADO * cz),
     '--cf': m.tono.frente, '--ct': m.tono.tapa, '--cs': m.tono.lado,
+    // Turno para apagarse al volverse vidrio (0 a 1). Como celdas está desordenada, el orden se ve al azar
+    '--d': (b / (celdas.length - 1)).toFixed(3),
   };
   return Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
 }

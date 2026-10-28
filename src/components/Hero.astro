@@ -207,8 +207,11 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
       gap: 30px;
       width: min(720px, 50%);
     }
+    /* max-width: siempre en 3 líneas como el diseño (Software a la / medida que / trabaja por ti.).
+       Así la línea más larga mide ~6,5em en cualquier pantalla y el cubo se centra con esa medida (--ix) */
     .h1 {
       font-size: clamp(44px, 5.2vw, 98px);
+      max-width: 7em;
     }
     .sub {
       font-size: clamp(20px, 1.4vw, 25px);
@@ -309,6 +312,18 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         --k: 0.485;
         /* El cubo final está armado 40 px bajo el centro: al llegar al carril quedaba 13 px más abajo */
         --dy: -13px;
+        /*
+          Cubo inicial (0–6 %), según la pantalla: centrado entre el final del texto y el borde derecho
+          del contenido, y a la altura del texto. Lo más ancho del texto es el título (línea más larga
+          ≈ 6,5 × clamp(44px, 5.2vw, 98px)) o, en pantallas angostas, el párrafo (36ch ≈ 21,6 × su letra).
+          El centro de ese espacio queda a medio texto del centro de la escena. --iz acerca el cubo a la
+          lente (se ve del tamaño de antes) y con la perspectiva todo se ve 1,17 veces más lejos del
+          centro: 0,5 / 1,17 ≈ 0,427. Los -4 px y --iy corrigen lo que la perspectiva corre el cubo
+          (medido en pantallas de 1024 a 1920 px de ancho).
+        */
+        --ix: calc(max(6.5 * clamp(44px, 5.2vw, 98px), 21.6 * clamp(20px, 1.4vw, 25px)) * 0.427 - 4px);
+        --iy: -17px;
+        --iz: 218px;
         animation: portada-grupo linear both;
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
@@ -330,6 +345,16 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         animation: portada-tono-mini linear both;
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
+      }
+      /*
+        Relevo con el cubo de vidrio (que aparece encima, en CuboViajero): cada bloque se apaga en su
+        turno (--d) entre el 92 y el 99 %. La opacity va en las caras y no en .grupo: en un elemento
+        con preserve-3d, opacity < 1 aplana el 3D y el cubo saltaba al perder la perspectiva.
+      */
+      .bloque i {
+        animation: portada-a-vidrio linear both;
+        animation-timeline: --hero;
+        animation-range: contain calc(92% + var(--d) * 3%) contain calc(96% + var(--d) * 3%);
       }
 
       .etiquetas {
@@ -394,10 +419,15 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
          Escala final: 186 px × 0,6 × k = 26 px, el cubo del carril en celular. */
       .camara {
         scale: 0.6;
+        animation-name: portada-camara-movil;
       }
       .grupo {
         --k: 0.24;
         --dy: -4px;
+        /* En celular el cubo inicial ya va centrado bajo el texto (portada-bloque-movil) */
+        --ix: 0px;
+        --iy: 0px;
+        --iz: 0px;
       }
       .bloque {
         animation-name: portada-bloque-movil;
@@ -439,21 +469,46 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
   /* Al final la lente se acerca al carril para que el cubo coincida con el que baja con la página */
   @keyframes portada-perspectiva {
     0%, 84% { perspective: 1500px; perspective-origin: 50% 50%; }
-    95%, 100% { perspective: 700px; perspective-origin: calc(50% + var(--cx)) calc(50% + var(--cy)); }
+    92%, 100% { perspective: 700px; perspective-origin: calc(50% + var(--cx)) calc(50% + var(--cy)); }
   }
-  /* 84–94 %: todo el conjunto vuela al carril y se encoge; 94–97 % se apaga (lo reemplaza el cubo viajero) */
+  /*
+    0–6 %: el cubo inicial a la derecha del título (--ix --iy --iz); 6–20 % vuelve al centro mientras explota.
+    84–92 %: todo el conjunto vuela al carril y se encoge; ahí se queda mientras se vuelve vidrio (92–99 %).
+  */
   @keyframes portada-grupo {
-    0%, 84% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
-    94% { transform: translate3d(var(--cx), calc(var(--cy) + var(--dy)), 0) scale(var(--k)); opacity: 1; }
-    97%, 100% { transform: translate3d(var(--cx), calc(var(--cy) + var(--dy)), 0) scale(var(--k)); opacity: 0; }
+    0%, 6% { transform: translate3d(var(--ix), var(--iy), var(--iz)) scale(1); }
+    20%, 84% { transform: translate3d(0, 0, 0) scale(1); }
+    92%, 100% { transform: translate3d(var(--cx), calc(var(--cy) + var(--dy)), 0) scale(var(--k)); }
   }
-  /* La cámara gira el conjunto y termina en la pose del cubo viajero */
+  /* Cada bloque se apaga dentro de su propio tramo (animation-range con --d) */
+  @keyframes portada-a-vidrio {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  /*
+    La cámara gira el conjunto y termina en la pose del cubo viajero.
+    0–6 %: agranda el cubo inicial 1,35 veces (lo ubica .grupo con --ix --iy --iz).
+    scale3d y no scale: scale() solo agranda x e y, y el cubo quedaba aplastado en profundidad.
+  */
   @keyframes portada-camara {
-    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale(1); }
-    20% { transform: rotateX(-14deg) rotateY(-70deg) scale(1); }
-    36%, 64% { transform: rotateX(-22deg) rotateY(-24deg) scale(1); }
-    76% { transform: rotateX(-24deg) rotateY(55deg) scale(1); }
-    84%, 100% { transform: rotateX(-24deg) rotateY(-35deg) scale(1); }
+    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1.35, 1.35, 1.35); }
+    20% { transform: rotateX(-14deg) rotateY(-70deg) scale3d(1, 1, 1); }
+    36%, 64% { transform: rotateX(-22deg) rotateY(-10deg) scale3d(1, 1, 1); }
+    76% { transform: rotateX(-24deg) rotateY(55deg) scale3d(1, 1, 1); }
+    84%, 100% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1, 1, 1); }
+  }
+  /*
+    36–64 %: en computador la cámara gira poco (rotateY -10deg y no -24deg) para que los 3 mini cubos,
+    en fila, queden casi a la misma altura sobre su texto; con -24deg el de la derecha quedaba más
+    cerca, más abajo y tapaba su texto.
+    En celular van en columna, al lado del texto: ahí se conserva el giro de -24deg, que les da volumen.
+  */
+  @keyframes portada-camara-movil {
+    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1.35, 1.35, 1.35); }
+    20% { transform: rotateX(-14deg) rotateY(-70deg) scale3d(1, 1, 1); }
+    36%, 64% { transform: rotateX(-22deg) rotateY(-24deg) scale3d(1, 1, 1); }
+    76% { transform: rotateX(-24deg) rotateY(55deg) scale3d(1, 1, 1); }
+    84%, 100% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1, 1, 1); }
   }
   /*
     El viaje de cada bloque: cubo → nube (gira) → mini cubo → cubo final.
@@ -467,7 +522,7 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
   }
   /* Celular: cubo inicial centrado y más abajo, nube más compacta y mini cubos en columna */
   @keyframes portada-bloque-movil {
-    0%, 6% { transform: translate3d(0px, calc(var(--y0) + 150px), var(--z0)) translateX(calc(var(--x0) - 380px)); }
+    0%, 6% { transform: translate3d(0px, calc(var(--y0) + 130px), var(--z0)) translateX(var(--x0)); }
     20% { transform: translate3d(calc((var(--xc) - 370px) * 0.7), calc(var(--yc) * 0.9 + 100px), var(--zc)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)); }
     36%, 64% { transform: translate3d(var(--mx2), calc(var(--y2) + var(--my2)), var(--z2)); }
     76%, 100% { transform: translate3d(var(--x3), var(--y3), var(--z3)); }
