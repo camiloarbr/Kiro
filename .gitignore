@@ -16,3 +16,15 @@ Thumbs.db
 
 # zip original del repo (su contenido ya está en docs/)
 kiro-repo-inicial.zip
+
+# todo lo que no es de la landing vive fuera del repo
+marketing/
+
+# videos, audio y comprimidos pesados (por si alguno vuelve a caer aquí)
+*.mp4
+*.mov
+*.m4a
+*.wav
+*.zip
+*.rar
+_to_delete/
