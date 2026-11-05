@@ -1,14 +1,15 @@
-# Kiro — landing page
+# Kairo — landing page
 
-## Qué es Kiro
-Kiro Solutions es una empresa de software de Medellín, Colombia, fundada por estudiantes de EAFIT (Camilo «Gallo» Arbeláez y Juan José Cárdenas). Hace **software a la medida** para negocios pequeños y medianos: páginas y plataformas web, agentes de IA y chatbots, automatización de procesos, sistemas internos y paneles, e integraciones. Hoy se enfoca en atención al cliente para **hoteles y consultorios de salud**. La landing sirve para dar credibilidad y conseguir conversaciones con clientes.
+## Qué es Kairo
+Kairo Solutions (antes Kiro Solutions; cambió de nombre en nov 2026) es una empresa de software de Medellín, Colombia, fundada por estudiantes de EAFIT (Camilo «Gallo» Arbeláez y Juan José Cárdenas). Hace **software a la medida** para negocios pequeños y medianos: páginas y plataformas web, agentes de IA y chatbots, automatización de procesos, sistemas internos y paneles, e integraciones. Hoy se enfoca en atención al cliente para **hoteles y consultorios de salud**. La landing sirve para dar credibilidad y conseguir conversaciones con clientes.
 
 ## Documentos clave (leer antes de construir)
-- `docs/marca/MANUAL-DE-MARCA.md`: identidad oficial (logo, ícono, colores, tipografía, voz). La versión visual está en `docs/marca/manual-de-marca.html`.
-- `docs/marca/assets/`: logos e íconos oficiales en SVG y PNG. **No redibujar el logo**: usar estos archivos.
+- `docs/marca/MANUAL-DE-MARCA.md`: identidad oficial de Kairo (logo, ícono «k» + cursor, colores con el rosa eléctrico, tipografía, voz, cubo y Kai con su ficha técnica). Es copia del manual «Kairo Solutions» de Claude Design, que es la fuente viva.
+- `docs/marca/assets/`: logos, íconos, favicon y firma de correo oficiales de Kairo en SVG y PNG. **No redibujar el logo**: usar estos archivos.
 - `docs/diseno/ESPECIFICACION-LANDING.md`: especificación del diseño final, sección por sección, con todos los textos.
 - `docs/diseno/referencia/landing-estatica.html`: el diseño final funcionando. Ábrelo en Chrome; es la referencia visual exacta.
 - `docs/diseno/referencia/*.dc.html`: código fuente del diseño (CSS, keyframes, medidas). Es solo referencia; no copiar su sintaxis.
+- Los archivos de `docs/diseno/` son de cuando la marca era Kiro: sirven como referencia de diseño, no para el nombre ni los logos.
 - `docs/diseno/capturas/`: capturas de computador y celular. **Excepción:** la portada cambió a «bloques-cursor» (oct 2026); su referencia es `docs/diseno/referencia/portada-bloques-cursor.html` / `.dc.html` y ya no las capturas `*-01`/`*-02`/`*-03` ni los paneles de `Estilo-Glass.dc.html`.
 
 ## Stack
@@ -21,7 +22,7 @@ Kiro Solutions es una empresa de software de Medellín, Colombia, fundada por es
 - **Fuentes autoalojadas** con Fontsource, versiones variables: `@fontsource-variable/montserrat` y `@fontsource-variable/geist` (familias `'Montserrat Variable'` y `'Geist Variable'`).
 - **Gestor de paquetes:** pnpm.
 - **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build y deploy en un paso: `pnpm deploy` (`astro build` + `wrangler deploy`).
-  - Cuenta de Cloudflare de la empresa (KiroSolutionsCol@gmail.com), Worker `kiro`, publicado en **https://kiro.kirosolutionsco.workers.dev** (`site` en `astro.config.mjs`).
+  - Cuenta de Cloudflare de la empresa (KiroSolutionsCol@gmail.com), Worker `kiro`, publicado en **https://kiro.kirosolutionsco.workers.dev** (`site` en `astro.config.mjs`). El Worker, la URL y el nombre del paquete siguen en «kiro» hasta tener el dominio de Kairo.
   - Pendiente: dominio propio (Cloudflare Registrar). Al tenerlo: `"routes": [{ "pattern": "<dominio>", "custom_domain": true }]` en `wrangler.jsonc`, `site` al dominio y volver a publicar. Opcional: Workers Builds para publicar en cada push.
 
 ## Estructura esperada
@@ -30,7 +31,8 @@ src/
   layouts/BaseLayout.astro        ← <head>, fuentes, favicon, SEO
   components/                     ← un componente por sección
     Header.astro  Hero.astro  CuboViajero.astro  TuDia.astro
-    Servicios.astro  Olas.astro  DemoKiroBot.astro
+    Servicios.astro  Olas.astro  DemoKai.astro
+    Mascota.astro  Acompanante.astro  ← Kai, la mascota
     ComoTrabajamos.astro  Contacto.astro  Footer.astro
   data/                           ← textos y datos (servicios, filas de «Tu día», escenarios del demo)
   styles/global.css               ← Tailwind + tokens + keyframes compartidas
@@ -51,6 +53,8 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - Colores, fuentes y logos solo del manual.
    - No copiar contenido de somoszora.com: se tomó solo el estilo visual.
    - No inventar clientes, cifras ni testimonios.
+   - Kai: usar solo las imágenes de `public/mascota/` (con `Mascota.astro`). No redibujarlo ni cambiarle la cara, los colores ni las proporciones (ficha técnica en el manual).
+   - Rosa eléctrico (`--color-rosa`): una sola cosa en toda la página, hoy el contador del demo. Nunca en el logo, el cubo, los botones ni pegado a un bloque morado.
 5. **Rendimiento y accesibilidad.**
    - Animar solo `transform` y `opacity`.
    - Respetar `prefers-reduced-motion`.
@@ -77,6 +81,6 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - Franjas claro → oscuro (`Transicion.astro`): degradado fijo y corto, con altura por instancia (160 px «Tu día» → Servicios, 72 px contacto → footer).
    - Cloudflare Web Analytics: token en `src/data/analitica.ts`; vacío = no se carga.
 8. **Pendientes conocidos:**
-   - El contacto es **solo por correo** (decisión de Gallo, oct 2026): sin teléfono ni WhatsApp de Kiro en la página. El correo vive en `src/data/contacto.ts`.
+   - El contacto es **solo por correo** (decisión de Gallo, oct 2026): sin teléfono ni WhatsApp de Kairo en la página. El correo vive en `src/data/contacto.ts` y sigue siendo `KiroSolutionsCol@gmail.com` hasta crear el de Kairo.
    - Los pasos claro → oscuro («Tu día» → Servicios y Contacto → footer) usan `src/components/Transicion.astro`.
    - Los nombres de ejemplo («Casa Ceiba», «Ceiba Odontología», «Laura M.») son de muestra.

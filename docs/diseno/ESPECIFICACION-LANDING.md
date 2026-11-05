@@ -1,9 +1,9 @@
-# Landing de Kiro — especificación del diseño final
+# Landing de Kairo — especificación del diseño final
 
 **Fuente de verdad del diseño:**
 - `docs/diseno/referencia/landing-estatica.html`: abre este archivo en Chrome. Es la landing completa funcionando, con todas las animaciones.
 - `docs/diseno/referencia/Estilo-Glass.dc.html`: el código fuente del diseño (CSS completo, con todas las keyframes y medidas).
-- `docs/diseno/referencia/Hero3D.dc.html`: la animación del celular 3D (chat → Kiro Bot → panel), con los textos de Hotel y Consultorio en el script del final.
+- `docs/diseno/referencia/Hero3D.dc.html`: la animación del celular 3D (chat → Kai → panel), con los textos de Hotel y Consultorio en el script del final.
 - `docs/diseno/capturas/`: capturas de computador (1440×900) y celular (390×844) de cada sección.
 
 Los archivos `.dc.html` son de una herramienta de diseño. Úsalos como **referencia** de estilos, medidas, textos y animaciones. **No** los copies tal cual al proyecto. Los `{{...}}`, `<sc-if>` y `<dc-import>` son sintaxis de esa herramienta.
@@ -11,7 +11,7 @@ Los archivos `.dc.html` son de una herramienta de diseño. Úsalos como **refere
 ---
 
 ## Concepto
-Estilo «vidrio» con identidad Kiro:
+Estilo «vidrio» con identidad Kairo:
 - **Base:** fondos lavanda, bloques y piezas de vidrio morado en 3D, secciones que alternan entre claro y oscuro, botones redondeados (píldora) y la palabra de acento en morado.
 - **Movimiento:** casi todo se anima con el scroll.
 - **Hilo conductor:** un **cubo**. En la portada lo forman 27 bloques-cursor que se transforman con el scroll; al final se convierte en el cubo de vidrio que baja acompañando toda la página.
@@ -22,7 +22,7 @@ Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca
 
 ### 0. Header (sticky)
 - Fondo lavanda translúcido con desenfoque.
-- Logo corto «kiro» a la izquierda.
+- Logo corto «kairo» a la izquierda.
 - Links «Tu día», «Servicios» y «Cómo trabajamos». Se ocultan en celular.
 - Botón píldora «Contáctanos», que lleva a `#contacto`.
 
@@ -62,28 +62,28 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 - **Línea violeta:** detrás del cubo, se dibuja con el scroll.
 - **Espacio reservado:** en computador, las secciones dejan ~164 px a la derecha para que el cubo no tape texto.
 
-### 3. «Tu día, con y sin Kiro» `#dia`
+### 3. «Tu día, con y sin Kairo» `#dia`
 - **Encabezado:**
   - Eyebrow: UN DÍA CUALQUIERA.
-  - Título: «Tu día, con y sin **Kiro.**»
+  - Título: «Tu día, con y sin **Kairo.**»
   - Sub: «Baja y mira cómo las tareas que hoy haces a mano se van resolviendo solas.»
-- **Filas:** 6 filas de vidrio claro (hora · tarea de hoy · flecha · tarjeta morada «CON KIRO»).
+- **Filas:** 6 filas de vidrio claro (hora · tarea de hoy · flecha · tarjeta morada «CON KAIRO»).
   - Al bajar, la tarea de hoy se tacha.
-  - Después entra la tarjeta «Con Kiro».
+  - Después entra la tarjeta «Con Kairo».
 
-| Hora | Hoy | Con Kiro |
+| Hora | Hoy | Con Kairo |
 |---|---|---|
-| 7:30 a. m. | Revisas los mensajes que llegaron de noche, uno por uno. | Kiro Bot ya los respondió y dejó las citas agendadas. |
+| 7:30 a. m. | Revisas los mensajes que llegaron de noche, uno por uno. | Kai ya los respondió y dejó las citas agendadas. |
 | 10:00 a. m. | Confirmas las citas de mañana por WhatsApp. | Los recordatorios salieron solos y ya hay respuestas. |
 | 1:00 p. m. | Persigues anticipos y revisas transferencias. | Cada pago quedó registrado al entrar. |
 | 4:00 p. m. | Copias reservas del chat a un Excel. | Todo cayó directo en tu panel. |
 | 6:30 p. m. | Armas a mano el resumen del día. | El reporte del día ya está listo. |
-| 11:00 p. m. | Un cliente escribe y nadie responde. | Kiro Bot responde y le reserva. |
+| 11:00 p. m. | Un cliente escribe y nadie responde. | Kai responde y le reserva. |
 
-- **Cierre:** «Lo que hoy te quita el día, **Kiro lo hace solo.**»
+- **Cierre:** «Lo que hoy te quita el día, **Kairo lo hace solo.**»
 
 ### 4. Servicios `#servicios` (sección oscura con olas)
-- **Fondo:** Kiro Black con brillo morado arriba.
+- **Fondo:** Kairo Black con brillo morado arriba.
 - **Olas:** a izquierda y derecha, **olas de vidrio violeta** (SVG con degradados y un borde brillante) que se mecen sin parar. Además se desplazan con el scroll (parallax).
 - **Encabezado** centrado:
   - Eyebrow: SERVICIOS.
@@ -103,14 +103,14 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 - **Botón:** «Cuéntanos qué necesitas ↗», con brillo. Lleva a `#contacto`.
 
 ### 5. «Así se ve en tu negocio» (demo)
-- **Fondo:** degradado que va de Kiro Black a morado y vuelve a oscuro.
+- **Fondo:** degradado que va de Kairo Black a morado y vuelve a oscuro.
 - **Encabezado:**
   - Título: «Del mensaje a la reserva, sin que muevas un dedo.»
-  - Sub: «Un cliente escribe, Kiro Bot responde y la reserva aparece confirmada en tu panel.»
+  - Sub: «Un cliente escribe, Kai responde y la reserva aparece confirmada en tu panel.»
 - **Selector** Hotel / Consultorio (botones píldora). Cambia los textos de la animación.
 - **Animación en bucle de 19,2 s** (ver `Hero3D.dc.html`):
   1. Una barra de chat escribe la pregunta del cliente letra por letra.
-  2. La barra viaja al celular 3D. Kiro Bot responde, con puntos de «escribiendo…».
+  2. La barra viaja al celular 3D. Kai responde, con puntos de «escribiendo…».
   3. El último mensaje se queda visible ~4 s.
   4. La reserva sale volando del celular a un panel (dashboard). En el panel: el KPI pasa de 7 de 8 a 8 de 8, se ilumina una celda nueva en la grilla de ocupación, la fila de Laura M. cambia de «Por confirmar» a «Confirmada» y aparece un aviso de confirmación.
 - **Versión celular:** el celular va casi derecho y a tamaño completo. El panel no tiene barra lateral (350 px de ancho).
@@ -134,14 +134,14 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - Título: «¿Qué te quita **tiempo** hoy?»
   - Sub: «Cuéntanos el problema y te mostramos cómo lo resolvemos con software.»
 - **Botones:**
-  - «WhatsApp [número de Kiro]». **Pendiente**: deja el número en una sola constante.
-  - «Escríbenos un correo», que abre `mailto:KiroSolutionsCol@gmail.com?subject=Quiero un diagnóstico con Kiro`.
+  - «WhatsApp [número de Kairo]». **Pendiente**: deja el número en una sola constante.
+  - «Escríbenos un correo», que abre `mailto:KiroSolutionsCol@gmail.com?subject=Quiero un diagnóstico con Kairo`.
 
-### 8. Footer (Kiro Black)
+### 8. Footer (Kairo Black)
 - **Columna de marca:** logo negativo + «Software a la medida, agentes de IA y automatización.»
 - **Columna de enlaces:** Tu día, Servicios, Cómo trabajamos.
 - **Columna de contacto:** Medellín, Colombia · correo · WhatsApp.
-- **Pie:** «© 2026 Kiro Solutions» · «Volver arriba».
+- **Pie:** «© 2026 Kairo Solutions» · «Volver arriba».
 
 ---
 
