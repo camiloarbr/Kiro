@@ -86,6 +86,22 @@
     outline-offset: 3px;
   }
 
+  /* Títulos de sección y de tarjeta sin una palabra sola en la última línea; párrafos sin «viudas».
+     El h1 no: su corte en 3 líneas está medido para ubicar el cubo de la portada */
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  /* La selección de texto también lleva la marca */
+  ::selection {
+    background: var(--color-violeta);
+    color: var(--color-white);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -178,7 +194,8 @@
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-violeta);
+    /* Texto de acento sobre claro: morado oscuro (manual). Las secciones oscuras lo cambian a claro */
+    color: var(--color-violeta-oscuro);
   }
   .eyebrow::after {
     content: '';

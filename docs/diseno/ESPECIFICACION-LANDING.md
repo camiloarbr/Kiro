@@ -1,5 +1,7 @@
 # Landing de Kairo — especificación del diseño final
 
+> **Audit de Impeccable (nov 2026):** se quitaron el resplandor de la portada, el texto con degradado, el botón con brillo, las rayas animadas y los halos y sombras de color, porque el manual no los permite. Detalles y valores en `DESIGN.md`.
+
 **Fuente de verdad del diseño:**
 - `docs/diseno/referencia/landing-estatica.html`: abre este archivo en Chrome. Es la landing completa funcionando, con todas las animaciones.
 - `docs/diseno/referencia/Estilo-Glass.dc.html`: el código fuente del diseño (CSS completo, con todas las keyframes y medidas).
@@ -51,7 +53,6 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - **72–82 %:** aparece la frase «Tecnología que se adapta **a tu negocio.**» con el sub «Automatizamos lo repetitivo para que tu equipo se enfoque en lo importante.»
   - **84–94 %:** el cubo se encoge (de 186 a 88 px) y vuela al carril derecho; la lente se acerca al carril (perspectiva 700 px).
   - **93–97 %:** el cubo de bloques se apaga mientras aparece el cubo que acompaña la página, en el mismo lugar, tamaño y pose.
-  - **88–100 %:** el resplandor morado de abajo se apaga, para pasar sin corte a «Tu día».
 - **Celular:** la cámara va a escala 0,6, el cubo inicial sale centrado bajo el título y la nube es más compacta. Escala final 0,24, para que el cubo llegue al tamaño del cubo del carril (26 px).
 - **Versión estática** (Firefox, sin scroll-driven animations o con «reducir movimiento»): título, el cubo 3×3×3 quieto, los tres pasos en lista y la frase.
 
@@ -68,7 +69,7 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - Eyebrow: UN DÍA CUALQUIERA.
   - Título: «Tu día, con y sin **Kairo.**»
   - Sub: «Baja y mira cómo las tareas que hoy haces a mano se van resolviendo solas.»
-- **Filas:** 6 filas de vidrio claro (hora · tarea de hoy · flecha · tarjeta morada «CON KAIRO»).
+- **Filas:** 6 filas de vidrio claro (hora · tarea de hoy · flecha · tarjeta Kairo Violet plana con «CON KAIRO» en blanco).
   - Al bajar, la tarea de hoy se tacha.
   - Después entra la tarjeta «Con Kairo».
 
@@ -84,14 +85,14 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 - **Cierre:** «Lo que hoy te quita el día, **Kairo lo hace solo.**»
 
 ### 4. Servicios `#servicios` (sección oscura con olas)
-- **Fondo:** Kairo Black con brillo morado arriba.
+- **Fondo:** Kairo Black plano.
 - **Olas:** a izquierda y derecha, **olas de vidrio violeta** (SVG con degradados y un borde brillante) que se mecen sin parar. Además se desplazan con el scroll (parallax).
 - **Encabezado** centrado:
   - Eyebrow: SERVICIOS.
-  - Título grande: «¿Qué podemos **construir** para ti?» (la palabra «construir» con degradado violeta).
+  - Título grande: «¿Qué podemos **construir** para ti?» (la palabra «construir» en morado claro; sin texto con degradado).
   - Sub: «Partimos de módulos propios y los ajustamos a tu operación. Empiezas por lo que más te duele y sumas lo demás.»
 - **5 tarjetas:**
-  - Cada una tiene arriba una ilustración de líneas violeta brillante, con rayas de luz en movimiento detrás.
+  - Cada una tiene arriba una ilustración de líneas lavanda sobre un panel `profundo-3`. Tarjeta en grafito.
   - Abajo lleva número, título, descripción y etiquetas.
   - Entran inclinadas (rotateX) al hacer scroll.
   - Grilla de 6 columnas en computador: las 2 primeras ocupan 3 columnas y las otras 3 ocupan 2.
@@ -101,7 +102,7 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
     3. **Automatización de procesos.** Los pasos que hoy haces a mano se hacen solos. Etiquetas: Recordatorios automáticos · Registros sin digitar · Cobros que se marcan solos.
     4. **Sistemas internos y paneles.** Tu operación y tus números en un solo lugar. Etiquetas: Indicadores del día a la vista · Accesos por rol · Reportes sin armar Excel.
     5. **Integraciones.** Conectamos lo que ya usas: facturación, pagos, calendarios y mensajería. Etiquetas: Facturación y pagos · Calendarios · Canales de mensajería.
-- **Botón:** «Cuéntanos qué necesitas ↗», con brillo. Lleva a `#contacto`.
+- **Botón:** «Cuéntanos qué necesitas ↗» (botón principal, sin brillo). Lleva a `#contacto`.
 
 ### 5. «Así se ve en tu negocio» (demo)
 - **Fondo:** degradado que va de Kairo Black a morado y vuelve a oscuro.

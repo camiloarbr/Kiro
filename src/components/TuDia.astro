@@ -40,7 +40,9 @@ import { filasDia } from '../data/dia';
   /* ---------- Versión estática (base): tareas ya tachadas y tarjetas visibles ---------- */
   .dia {
     position: relative;
-    background: linear-gradient(180deg, var(--color-lav-3) 0%, var(--color-lav) 40%, #f7f2ff 100%);
+    /* Línea de tiempo con nombre: el acompañante (Kai) espera a que esta sección termine de pasar */
+    view-timeline: --dia block;
+    background: linear-gradient(180deg, var(--color-lav-3) 0%, var(--color-lav) 40%, var(--color-lav) 100%);
   }
 
   .encabezado {
@@ -96,15 +98,15 @@ import { filasDia } from '../data/dia';
     padding: 14px 18px;
     border-radius: 14px;
     color: var(--color-white);
-    background: linear-gradient(135deg, var(--color-violeta-hover), var(--color-profundo-2));
-    box-shadow: 0 18px 36px rgb(91 23 184 / 0.22);
+    /* Violeta plano: el manual no usa degradados ni sombras de color (texto blanco: 5,6:1) */
+    background: var(--color-violeta);
     font-size: 17px;
   }
   .kairo b {
     font-size: 12px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #e8d9ff;
+    color: var(--color-white);
   }
   .cierre {
     margin: 72px 0 0;
@@ -149,13 +151,13 @@ import { filasDia } from '../data/dia';
       .dia {
         margin-top: calc(-1 * var(--solape));
         z-index: 5;
-        /* Borde superior difuminado: al subir sobre el resplandor de la portada no deja una línea */
+        /* Borde superior difuminado: al subir sobre el final de la portada no deja una línea */
         background: linear-gradient(
           180deg,
           rgb(228 211 255 / 0) 0,
           var(--color-lav-3) 140px,
           var(--color-lav) 40%,
-          #f7f2ff 100%
+          var(--color-lav) 100%
         );
       }
     }

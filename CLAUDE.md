@@ -11,6 +11,7 @@ Kairo Solutions (antes Kiro Solutions; cambió de nombre en nov 2026) es una emp
 - `docs/diseno/referencia/*.dc.html`: código fuente del diseño (CSS, keyframes, medidas). Es solo referencia; no copiar su sintaxis.
 - Los archivos de `docs/diseno/` son de cuando la marca era Kiro: sirven como referencia de diseño, no para el nombre ni los logos.
 - `docs/diseno/KAI-3D.md`: cómo funciona Kai en 3D (modelo, ojos, mirada, carga diferida) y sus reglas.
+- `DESIGN.md`: el sistema de diseño de la landing (tokens, tipografía, componentes y reglas) en el formato de Impeccable. Lo pendiente de marca está al final.
 - `docs/diseno/capturas/`: capturas de computador y celular. **Excepción:** la portada cambió a «bloques-cursor» (oct 2026); su referencia es `docs/diseno/referencia/portada-bloques-cursor.html` / `.dc.html` y ya no las capturas `*-01`/`*-02`/`*-03` ni los paneles de `Estilo-Glass.dc.html`.
 
 ## Stack
@@ -75,7 +76,8 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - En los keyframes 3D (portada y demo), todos los pasos repiten la misma lista de funciones de `transform`. Si se "simplifican", el navegador interpola con matrices y los giros cambian.
    - Animaciones con scroll dentro de `@supports (animation-timeline: view())` y `prefers-reduced-motion: no-preference`. El CSS base es la versión estática legible. Firefox usa la clase `.io` + `src/scripts/revelar.ts`.
    - Hover sobre elementos que tienen animación de entrada: usar `translate` (no `transform`), porque la animación siempre le gana al `:hover`.
-   - Contraste ajustado a AA frente a la referencia: tachado de «Tu día» en `tenue`, filas de «Cómo trabajamos» con vidrio oscuro y texto blanco, eyebrow «Hablemos» en Morado oscuro.
+   - Contraste ajustado a AA frente a la referencia: tachado de «Tu día» en `tenue`, filas de «Cómo trabajamos» con vidrio oscuro y texto blanco. Texto de acento sobre claro en `violeta-oscuro` (eyebrows y etiquetas de los mini cubos; el violeta daba 4,2:1) y «CON KAIRO» en blanco.
+   - Sin efectos de color (manual y audit de Impeccable, nov 2026): nada de texto con degradado, brillos, halos ni sombras moradas. Las sombras que queden, neutras y con desplazamiento.
    - `pnpm-workspace.yaml` bloquea los scripts de instalación de `esbuild` y `workerd` (no hacen falta). No agregar excepciones a `minimumReleaseAge`.
    - Los nombres de `@keyframes` son **globales** aunque estén en el `<style>` de un componente: si dos componentes usan el mismo nombre, uno pisa al otro. Usar un prefijo por componente (la portada usa `portada-…`).
    - El offset del header se hace con `scroll-margin-top` en `section[id]`, **nunca** con `scroll-padding-top` en `html`: el scroll-padding recorta el área de las `view-timeline` y corre todas las animaciones con scroll.

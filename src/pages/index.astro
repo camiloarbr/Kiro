@@ -21,7 +21,7 @@ import Acompanante from '../components/Acompanante.astro';
     <Hero />
     <div class="flujo">
       <TuDia />
-      <Transicion desde="#f7f2ff" hacia="var(--color-negro)" alto={160} />
+      <Transicion desde="var(--color-lav)" hacia="var(--color-negro)" alto={160} />
       <Servicios />
       <DemoKai />
       <ComoTrabajamos />
@@ -36,13 +36,13 @@ import Acompanante from '../components/Acompanante.astro';
   /*
     .recorrido es el «escenario» del cubo:
     - container-type permite medir en cqw (ancho de este contenedor) para ubicar el carril.
-    - timeline-scope sube las líneas de tiempo --hero (portada) y --flujo (secciones)
-      hasta aquí, para que el cubo, que es hermano de ellas, pueda usarlas.
+    - timeline-scope sube las líneas de tiempo --hero (portada), --flujo (secciones) y --dia («Tu día»)
+      hasta aquí, para que el cubo y el acompañante, que son hermanos de ellas, puedan usarlas.
   */
   .recorrido {
     position: relative;
     container-type: inline-size;
-    timeline-scope: --hero, --flujo;
+    timeline-scope: --hero, --flujo, --dia;
     /* Cuánto sube «Tu día» sobre el final de la portada (lo usan TuDia y CuboViajero) */
     --solape: 240px;
   }

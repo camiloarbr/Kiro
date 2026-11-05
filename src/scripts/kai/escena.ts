@@ -249,6 +249,7 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
   let ultimo = performance.now();
   let lentos = 0;
   let cuadros = 0;
+  let ultimaEntrada = performance.now(); // último mouse, toque, tecla o scroll
   let perdido = false; // el navegador quitó el contexto WebGL
 
   // ---- ¿Dónde debe estar Kai ahora? -----------------------------------------------------------
@@ -300,6 +301,12 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
   const portada = document.getElementById('inicio');
   function cuadro(ahora: number) {
     if (!corriendo) return;
+    // Si nadie interactúa hace 4 s, Kai solo respira y parpadea: basta con 30 cuadros por segundo
+    const enReposo = ahora - ultimaEntrada > 4000;
+    if (enReposo && ahora - ultimo < 31) {
+      requestAnimationFrame(cuadro);
+      return;
+    }
     // El primer cuadro puede traer una hora un poco anterior a «ultimo»: nunca un dt negativo
     const dt = Math.max(0, (ahora - ultimo) / 1000);
     ultimo = ahora;
@@ -326,8 +333,9 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
     kai.dibujar();
     if (!actual.classList.contains('kai-en-vivo')) actual.classList.add('kai-en-vivo');
 
-    // Si el equipo no da abasto (cuadros de más de 28 ms seguidos), baja la resolución
-    lentos = dt > 0.028 ? lentos + 1 : Math.max(0, lentos - 1);
+    // Si el equipo no da abasto (cuadros de más de 28 ms seguidos), baja la resolución.
+    // En reposo los cuadros duran 33 ms a propósito: esos no cuentan
+    if (!enReposo) lentos = dt > 0.028 ? lentos + 1 : Math.max(0, lentos - 1);
     if (lentos > 90 && calidad > 0.55) {
       calidad *= 0.75;
       lentos = 0;
@@ -347,6 +355,9 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
 
   // ---- Entradas --------------------------------------------------------------------------------
   const seg = () => performance.now() / 1000;
+  const actividad = () => (ultimaEntrada = performance.now());
+  for (const e of ['pointermove', 'pointerdown', 'keydown', 'scroll', 'wheel'])
+    addEventListener(e, actividad, { passive: true });
   addEventListener(
     'pointermove',
     (e) => {

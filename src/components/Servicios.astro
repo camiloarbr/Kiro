@@ -11,7 +11,7 @@ import Mascota from './Mascota.astro';
     <div class="cabeza">
       <span class="eyebrow revela items-center">Servicios</span>
       <h2 class="titulo titulo-grande revela">
-        ¿Qué podemos <span class="degradado">construir</span> para ti<span class="pregunta">?</span>
+        ¿Qué podemos <span class="acento">construir</span> para ti?
       </h2>
       <p class="revela-2">
         Partimos de módulos propios y los ajustamos a tu operación. Empiezas por lo que más te duele y sumas lo demás.
@@ -23,7 +23,6 @@ import Mascota from './Mascota.astro';
         servicios.map((s, i) => (
           <article class:list={['tarjeta', { grande: s.grande }]} data-io>
             <div class="arte" aria-hidden="true">
-              <i class="rayas" />
               <svg viewBox="0 0 300 180" set:html={s.arte} />
               {'conBot' in s && s.conBot && <Mascota ancho={118} class="asoma" />}
             </div>
@@ -43,7 +42,7 @@ import Mascota from './Mascota.astro';
     </div>
 
     <div class="revela-2 mt-14 flex justify-center">
-      <a class="btn brillo" href="#contacto" data-kai-mira>Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
+      <a class="btn" href="#contacto" data-kai-mira>Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
@@ -54,17 +53,8 @@ import Mascota from './Mascota.astro';
     overflow: hidden;
     padding: 110px 0 90px;
     color: var(--color-blanco);
-    background: radial-gradient(60% 50% at 50% 0%, #1e1233 0%, var(--color-negro) 70%);
-  }
-  /* El brillo morado del fondo nace desvanecido: así el borde superior es negro puro y
-     empata sin línea con el final de la franja <Transicion> que viene de «Tu día» */
-  .servicios::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 240px;
-    background: linear-gradient(180deg, var(--color-negro), rgb(12 10 16 / 0));
-    pointer-events: none;
+    /* Negro plano: empata sin línea con el final de la franja <Transicion> que viene de «Tu día» */
+    background: var(--color-negro);
   }
   .interior {
     position: relative;
@@ -87,24 +77,16 @@ import Mascota from './Mascota.astro';
     max-width: 52ch;
     color: var(--color-texto-oscuro);
   }
-  /* Texto con degradado: el fondo se recorta a la forma de las letras (background-clip: text) */
   .titulo-grande {
     max-width: 14ch;
     font-size: clamp(40px, 5.2vw, 78px);
     line-height: 1;
-    letter-spacing: -0.045em;
-    background: linear-gradient(180deg, var(--color-white) 30%, #b9b2c6);
-    background-clip: text;
-    color: transparent;
+    letter-spacing: -0.04em;
+    color: var(--color-white);
   }
-  .degradado {
-    background: linear-gradient(100deg, var(--color-lav-media), var(--color-violeta) 60%, var(--color-violeta-claro));
-    background-clip: text;
-    color: transparent;
-  }
-  .pregunta {
+  /* Acento sobre negro: morado claro (manual), en color plano */
+  .acento {
     color: var(--color-violeta-claro);
-    -webkit-text-fill-color: var(--color-violeta-claro);
   }
 
   /* ---------- Tarjetas ---------- */
@@ -120,7 +102,7 @@ import Mascota from './Mascota.astro';
     flex-direction: column;
     overflow: hidden;
     border-radius: 22px;
-    background: linear-gradient(180deg, #19131f, #110d17);
+    background: var(--color-grafito);
     border: 1px solid rgb(217 196 255 / 0.16);
     transform-origin: 50% 100%;
     transition:
@@ -137,20 +119,7 @@ import Mascota from './Mascota.astro';
     position: relative;
     height: 150px;
     overflow: hidden;
-    background: radial-gradient(80% 90% at 50% 100%, var(--color-profundo-1), #120a1e 70%);
-  }
-  /* Rayas de luz diagonales que se desplazan sin parar detrás de la ilustración */
-  .rayas {
-    position: absolute;
-    inset: -40%;
-    opacity: 0.7;
-    background: repeating-linear-gradient(
-      115deg,
-      rgb(176 124 255 / 0) 0 22px,
-      rgb(176 124 255 / 0.35) 23px,
-      rgb(176 124 255 / 0) 26px 60px
-    );
-    will-change: transform;
+    background: var(--color-profundo-3);
   }
   .arte svg {
     position: absolute;
@@ -158,9 +127,8 @@ import Mascota from './Mascota.astro';
     width: 100%;
     height: 100%;
     fill: none;
-    stroke: #e8d9ff;
+    stroke: var(--color-lav-media);
     stroke-width: 2.5;
-    filter: drop-shadow(0 0 10px rgb(176 124 255 / 0.7));
   }
   /* Kai se asoma desde abajo en la tarjeta de agentes de IA y sube un poco al pasar el mouse */
   .arte :global(.asoma) {
@@ -169,7 +137,8 @@ import Mascota from './Mascota.astro';
     bottom: -46px;
     width: 96px;
     height: auto;
-    filter: drop-shadow(0 10px 24px rgb(139 44 245 / 0.45));
+    /* Sombra neutra con desplazamiento: da profundidad sin halo de color */
+    filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.45));
     transition: translate 0.5s var(--ease-kairo);
   }
   .tarjeta:hover .arte :global(.asoma) {
@@ -220,13 +189,7 @@ import Mascota from './Mascota.astro';
     border: 1px solid rgb(217 196 255 / 0.22);
     border-radius: 999px;
     font-size: 13px;
-    color: #e8d9ff;
-  }
-
-  .brillo {
-    box-shadow:
-      0 0 0 1px rgb(217 196 255 / 0.3),
-      0 14px 50px rgb(139 44 245 / 0.55);
+    color: var(--color-lav-media);
   }
 
   /* ---------- Computador ---------- */
@@ -261,12 +224,6 @@ import Mascota from './Mascota.astro';
   }
 
   /* ---------- Movimiento ---------- */
-  @media (prefers-reduced-motion: no-preference) {
-    .rayas {
-      animation: rayas 6s linear infinite;
-    }
-  }
-
   /* Las tarjetas entran inclinadas hacia atrás y se enderezan; las de la derecha, un poco después */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -310,8 +267,5 @@ import Mascota from './Mascota.astro';
   @keyframes tarjeta-entra {
     from { opacity: 0; transform: translateY(90px) rotateX(38deg) scale(0.92); }
     to { opacity: 1; transform: none; }
-  }
-  @keyframes rayas {
-    to { transform: translateX(120px); }
   }
 </style>

@@ -7,8 +7,10 @@ import KaiVivo from './KaiVivo.astro';
 ---
 
 <a class="acompanante" href="#contacto">
-  <span class="globo">¿Hablamos?</span>
-  <KaiVivo lugar="acompanante" ancho={104} alt="Kai: ir a contacto" />
+  <div class="cuerpo">
+    <span class="globo">¿Hablamos?</span>
+    <KaiVivo lugar="acompanante" ancho={104} alt="Kai: ir a contacto" />
+  </div>
 </a>
 
 <style>
@@ -32,6 +34,19 @@ import KaiVivo from './KaiVivo.astro';
         animation: acompanante-aparece linear both;
         animation-timeline: --flujo;
         animation-range: cover 0% cover 100%;
+      }
+      /*
+        Mientras «Tu día» pasa por abajo, Kai taparía la hora de sus filas (empiezan en el mismo borde).
+        Aparece cuando el final de «Tu día» ya subió unos 140 px: --dia es la línea de tiempo de esa sección.
+      */
+      .cuerpo {
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+        gap: 4px;
+        animation: acompanante-tras-dia linear both;
+        animation-timeline: --dia;
+        animation-range: exit 10% exit 22%;
       }
       /* El cuadro de Kai deja aire abajo (sombra) y a los lados (giro de la cabeza): -14 px lo compensa */
       .acompanante :global(.kai-vivo) {
@@ -70,6 +85,11 @@ import KaiVivo from './KaiVivo.astro';
         scale: 1.06;
       }
     }
+  }
+
+  @keyframes acompanante-tras-dia {
+    from { opacity: 0; translate: 0 24px; visibility: hidden; }
+    to { opacity: 1; translate: 0 0; visibility: visible; }
   }
 
   /* --flujo va de «Tu día» al contacto: entra al comienzo y se apaga al final */
