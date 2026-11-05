@@ -97,7 +97,7 @@ Landing para pymes de Medellín (hoteles y consultorios). Su trabajo es dar conf
 
 ### Primary
 - **Kairo Violet** `#8b2cf5`: logo, cursor, cubo armado y botón principal. Nunca más del 10 % de la pantalla.
-- **Morado oscuro** `#5b17b8`: texto de acento sobre fondos claros (eyebrows, etiquetas).
+- **Morado oscuro** `#5b17b8`: texto de acento sobre fondos claros (etiquetas de los mini cubos).
 - **Morado claro** `#b07cff`: texto de acento sobre Kairo Black.
 
 ### Secondary
@@ -158,6 +158,7 @@ Un solo `<canvas>` que viaja entre portada, acompañante y contacto. Reglas en `
 - Texto con degradado, brillos o halos de color, rayas animadas de adorno.
 - Rosa en el logo, el cubo, los botones o junto a un bloque morado.
 - Colores escritos a mano fuera de la paleta.
+- Etiquetas en mayúsculas encima de los títulos (eyebrows) o números de sección de adorno (01, 02…).
 
 ## Pendiente (decisión de marca)
 

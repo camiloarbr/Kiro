@@ -185,25 +185,6 @@
 }
 
 @layer components {
-  /* Etiqueta en mayúsculas con la rayita violeta debajo */
-  .eyebrow {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    /* Texto de acento sobre claro: morado oscuro (manual). Las secciones oscuras lo cambian a claro */
-    color: var(--color-violeta-oscuro);
-  }
-  .eyebrow::after {
-    content: '';
-    width: 36px;
-    height: 2px;
-    background: currentColor;
-  }
-
   /* Botón píldora principal; .btn-claro es la variante blanca translúcida */
   .btn {
     display: inline-flex;

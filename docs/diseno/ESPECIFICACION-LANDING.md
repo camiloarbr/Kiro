@@ -1,6 +1,6 @@
 # Landing de Kairo — especificación del diseño final
 
-> **Audit de Impeccable (nov 2026):** se quitaron el resplandor de la portada, el texto con degradado, el botón con brillo, las rayas animadas y los halos y sombras de color, porque el manual no los permite. Detalles y valores en `DESIGN.md`.
+> **Audit de Impeccable (nov 2026):** se quitaron el resplandor de la portada, el texto con degradado, el botón con brillo, las rayas animadas y los halos y sombras de color, porque el manual no los permite. También las etiquetas en mayúsculas sobre los títulos (eyebrows) y los números 01–05 de las tarjetas: el título habla solo. Detalles y valores en `DESIGN.md`.
 
 **Fuente de verdad del diseño:**
 - `docs/diseno/referencia/landing-estatica.html`: abre este archivo en Chrome. Es la landing completa funcionando, con todas las animaciones.
@@ -66,7 +66,6 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 
 ### 3. «Tu día, con y sin Kairo» `#dia`
 - **Encabezado:**
-  - Eyebrow: UN DÍA CUALQUIERA.
   - Título: «Tu día, con y sin **Kairo.**»
   - Sub: «Baja y mira cómo las tareas que hoy haces a mano se van resolviendo solas.»
 - **Filas:** 6 filas de vidrio claro (hora · tarea de hoy · flecha · tarjeta Kairo Violet plana con «CON KAIRO» en blanco).
@@ -88,7 +87,6 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 - **Fondo:** Kairo Black plano.
 - **Olas:** a izquierda y derecha, **olas de vidrio violeta** (SVG con degradados y un borde brillante) que se mecen sin parar. Además se desplazan con el scroll (parallax).
 - **Encabezado** centrado:
-  - Eyebrow: SERVICIOS.
   - Título grande: «¿Qué podemos **construir** para ti?» (la palabra «construir» en morado claro; sin texto con degradado).
   - Sub: «Partimos de módulos propios y los ajustamos a tu operación. Empiezas por lo que más te duele y sumas lo demás.»
 - **5 tarjetas:**
@@ -132,7 +130,6 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
 
 ### 7. Contacto `#contacto`
 - **Textos:**
-  - Eyebrow: HABLEMOS.
   - Título: «¿Qué te quita **tiempo** hoy?»
   - Sub: «Cuéntanos el problema y te mostramos cómo lo resolvemos con software.»
 - **Botones:**

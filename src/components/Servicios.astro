@@ -9,7 +9,6 @@ import Mascota from './Mascota.astro';
 
   <div class="contenedor interior">
     <div class="cabeza">
-      <span class="eyebrow revela items-center">Servicios</span>
       <h2 class="titulo titulo-grande revela">
         ¿Qué podemos <span class="acento">construir</span> para ti?
       </h2>
@@ -27,7 +26,6 @@ import Mascota from './Mascota.astro';
               {'conBot' in s && s.conBot && <Mascota ancho={118} class="asoma" />}
             </div>
             <div class="cuerpo">
-              <em>{String(i + 1).padStart(2, '0')}</em>
               <h3>{s.titulo}</h3>
               <p>{s.descripcion}</p>
               <ul>
@@ -68,9 +66,6 @@ import Mascota from './Mascota.astro';
     align-items: center;
     gap: 22px;
     text-align: center;
-  }
-  .cabeza .eyebrow {
-    color: var(--color-violeta-claro);
   }
   .cabeza p {
     margin: 0;
@@ -155,13 +150,6 @@ import Mascota from './Mascota.astro';
     flex-direction: column;
     gap: 10px;
     padding: 26px 26px 28px;
-  }
-  .cuerpo em {
-    font-style: normal;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    color: var(--color-violeta-claro);
   }
   .cuerpo h3 {
     margin: 0;
