@@ -14,6 +14,10 @@
   --color-violeta-oscuro: #5b17b8;
   --color-violeta-claro: #b07cff; /* texto de acento sobre negro */
   --color-violeta-hover: #9b45f7; /* hover del botón principal (diseño aprobado) */
+  /* Rosa eléctrico: color de contraste. Una sola cosa por página (hoy, el contador del demo), máx. 4 %.
+     Nunca en el logo, el cubo, los botones ni pegado a un bloque morado. Sobre fondos claros va rosa-oscuro. */
+  --color-rosa: #ff2bd6;
+  --color-rosa-oscuro: #a1007f;
   --color-negro: #0c0a10; /* Kairo Black */
   --color-grafito: #1f1a27;
   --color-gris: #918a9e;
