@@ -10,11 +10,11 @@
   --color-*: initial;
 
   /* Paleta oficial */
-  --color-violeta: #8b2cf5; /* Kiro Violet: acento, máx. 10 % */
+  --color-violeta: #8b2cf5; /* Kairo Violet: acento, máx. 10 % */
   --color-violeta-oscuro: #5b17b8;
   --color-violeta-claro: #b07cff; /* texto de acento sobre negro */
   --color-violeta-hover: #9b45f7; /* hover del botón principal (diseño aprobado) */
-  --color-negro: #0c0a10; /* Kiro Black */
+  --color-negro: #0c0a10; /* Kairo Black */
   --color-grafito: #1f1a27;
   --color-gris: #918a9e;
   --color-blanco: #f6f4fa;
@@ -31,7 +31,7 @@
   --color-profundo-1: #3a1677;
   --color-profundo-2: #6e22d6;
   --color-profundo-3: #1a1030;
-  /* Texto sobre Kiro Black en el footer (diseño aprobado) */
+  /* Texto sobre Kairo Black en el footer (diseño aprobado) */
   --color-texto-oscuro: #c9c3d3;
   --color-texto-oscuro-2: #a39cb0;
 
@@ -42,7 +42,7 @@
   /* El diseño cambia a celular por debajo de ~900 px: md: = computador */
   --breakpoint-md: 56.25rem;
 
-  --ease-kiro: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-kairo: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @layer base {
@@ -144,8 +144,8 @@
   opacity: 0;
   transform: translateY(48px);
   transition:
-    opacity 0.8s var(--ease-kiro),
-    transform 0.8s var(--ease-kiro);
+    opacity 0.8s var(--ease-kairo),
+    transform 0.8s var(--ease-kairo);
 }
 .io .revela-2 {
   transition-delay: 0.12s;
@@ -197,7 +197,7 @@
     font-size: 16px;
     text-decoration: none;
     transition:
-      transform 0.25s var(--ease-kiro),
+      transform 0.25s var(--ease-kairo),
       background-color 0.25s;
   }
   .btn:hover {
