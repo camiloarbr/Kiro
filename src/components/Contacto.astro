@@ -1,11 +1,12 @@
 ---
 import { correoUrl } from '../data/contacto';
-import Mascota from './Mascota.astro';
+import KaiVivo from './KaiVivo.astro';
 ---
 
 <section id="contacto" class="contacto pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
   <div class="contenedor flex flex-col items-center gap-[22px] text-center">
-    <div class="bot revela" aria-hidden="true"><Mascota ancho={150} class="mascota-flota" /></div>
+    <!-- Aquí termina el recorrido de Kai: al llegar da un saltito y mira el botón del correo -->
+    <div class="bot revela" aria-hidden="true"><KaiVivo lugar="contacto" ancho={190} /></div>
     <!-- Morado oscuro: el violeta de acento sobre este lavanda no alcanza el contraste AA -->
     <span class="eyebrow revela items-center text-violeta-oscuro">Hablemos</span>
     <h2 class="titulo revela max-w-[16ch] text-[clamp(36px,4.6vw,64px)] leading-[1.04]">
@@ -15,34 +16,21 @@ import Mascota from './Mascota.astro';
       Cuéntanos el problema y te mostramos cómo lo resolvemos con software.
     </p>
     <div class="revela-2 flex justify-center">
-      <a class="btn" href={correoUrl}>Escríbenos un correo</a>
+      <a class="btn" href={correoUrl} data-kai-mira data-kai-foco>Escríbenos un correo</a>
     </div>
   </div>
 </section>
 
 <style>
+  /* El cuadro de Kai trae aire arriba (saltito) y abajo (sombra): los márgenes negativos lo compensan */
   .bot {
-    position: relative;
-    margin-bottom: 4px;
-  }
-  .bot :global(.mascota) {
-    width: 112px;
-    height: auto;
-  }
-  .bot::after {
-    content: '';
-    position: absolute;
-    left: 18%;
-    right: 18%;
-    bottom: -8px;
-    height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgb(91 23 184 / 0.3), rgb(91 23 184 / 0));
-    z-index: -1;
+    --kai-lado: 144px;
+    margin: -16px 0 -14px;
   }
   @media (width >= 56.25rem) {
-    .bot :global(.mascota) {
-      width: 150px;
+    .bot {
+      --kai-lado: 190px;
+      margin: -22px 0 -18px;
     }
   }
   .contacto {

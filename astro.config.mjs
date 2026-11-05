@@ -13,6 +13,9 @@ export default defineConfig({
       // del atajo «animation» («animation: linear both frase --hero»), que es inválido: el
       // navegador descarta la declaración y se rompen las animaciones con el scroll.
       cssMinify: 'esbuild',
+      // three.js (Kai en 3D) es un solo archivo de ~650 kB sin comprimir (~165 kB con gzip). No frena la
+      // carga: src/scripts/kai/iniciar.ts lo pide aparte, cuando el usuario interactúa. Sin esto Vite avisa.
+      chunkSizeWarningLimit: 700,
     },
   },
 });

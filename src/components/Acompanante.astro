@@ -1,13 +1,14 @@
 ---
 // Kai acompaña la lectura en computador: aparece abajo a la izquierda (en el carril libre)
-// cuando termina la portada y se va antes del contacto, donde ya está el bot grande.
+// cuando termina la portada y se va antes del contacto, donde ya está el Kai grande.
 // Sin JS: su entrada y salida van con la misma línea de tiempo --flujo que usa el cubo.
-import Mascota from './Mascota.astro';
+// Con 3D, aquí vive el mismo Kai de la portada: mira el contenido que se está leyendo y al cursor.
+import KaiVivo from './KaiVivo.astro';
 ---
 
 <a class="acompanante" href="#contacto">
   <span class="globo">¿Hablamos?</span>
-  <Mascota ancho={64} alt="Kai: ir a contacto" class="mascota-flota" />
+  <KaiVivo lugar="acompanante" ancho={104} alt="Kai: ir a contacto" />
 </a>
 
 <style>
@@ -32,11 +33,17 @@ import Mascota from './Mascota.astro';
         animation-timeline: --flujo;
         animation-range: cover 0% cover 100%;
       }
-      .acompanante :global(.mascota) {
-        width: 64px;
-        height: auto;
-        filter: drop-shadow(0 8px 18px rgb(91 23 184 / 0.35));
-        transition: scale 0.3s var(--ease-kairo);
+      /* El cuadro de Kai deja aire abajo (sombra) y a los lados (giro de la cabeza): -14 px lo compensa */
+      .acompanante :global(.kai-vivo) {
+        --kai-lado: 104px;
+        margin: -14px 0 -10px -14px;
+        transition:
+          scale 0.3s var(--ease-kairo),
+          opacity 0.3s;
+      }
+      /* Si Kai ya está en el contacto, este se aparta para que no haya dos */
+      :global(html[data-kai-en='contacto']) .acompanante :global(.kai-vivo) {
+        opacity: 0;
       }
       /* El globo solo aparece al pasar el mouse o con el teclado: no tapa nada mientras se lee */
       .globo {
@@ -59,8 +66,8 @@ import Mascota from './Mascota.astro';
         opacity: 1;
         translate: 0 0;
       }
-      .acompanante:hover :global(.mascota) {
-        scale: 1.08;
+      .acompanante:hover :global(.kai-vivo) {
+        scale: 1.06;
       }
     }
   }

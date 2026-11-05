@@ -18,7 +18,7 @@ import Mascota from './Mascota.astro';
       </p>
     </div>
 
-    <div class="tarjetas">
+    <div class="tarjetas" data-kai-foco>
       {
         servicios.map((s, i) => (
           <article class:list={['tarjeta', { grande: s.grande }]} data-io>
@@ -43,7 +43,7 @@ import Mascota from './Mascota.astro';
     </div>
 
     <div class="revela-2 mt-14 flex justify-center">
-      <a class="btn brillo" href="#contacto">Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
+      <a class="btn brillo" href="#contacto" data-kai-mira>Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>

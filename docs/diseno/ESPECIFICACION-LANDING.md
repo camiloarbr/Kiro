@@ -34,6 +34,7 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado). Sin el cursor parpadeante de la referencia (decisión de Gallo, oct 2026).
   - Sub: «Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.»
   - Botón: «Conoce más →» (56 px de alto), que lleva a `#servicios`.
+- **Kai (3D, nov 2026):** en computador, parado en la tapa del cubo inicial; se va con un saltito al empezar el scroll (3–7 %). En celular y tablet, al lado de «Conoce más». Sigue el cursor con la mirada. Detalles en `docs/diseno/KAI-3D.md`.
 - **27 bloques-cursor:** mini cubos de **62 px** con 6 caras: frente/atrás, tapa clara y costados oscuros. Sus posiciones se generan en `src/data/bloques.ts`.
 - **Cámara 3D:** perspectiva de 1500 px. Un grupo lleva todo al carril al final y una cámara gira el conjunto (`rotateX`/`rotateY`) y se aleja en el «ik».
 - **Coreografía según el avance del scroll** dentro de la portada:

@@ -2,7 +2,7 @@
 
 > Copia del manual oficial «Kairo Solutions» de Claude Design (5 nov 2026). Si el manual cambia allá, se vuelve a copiar aquí.
 > Archivos de logo, ícono, favicon y correo: `docs/marca/assets/` (SVG y PNG) y `docs/marca/assets/kairo-marca-vectores.pdf`.
-> Kai en la landing: solo las imágenes de `public/mascota/`, que salen del archivo oficial.
+> Kai en la landing: en 3D, `public/kai/kai-vivo.glb` (sale de `kai-maestro.glb`, ver `docs/diseno/KAI-3D.md`); en 2D, las imágenes de `public/mascota/`.
 
 ---
 

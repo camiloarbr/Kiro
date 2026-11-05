@@ -1,0 +1,71 @@
+---
+// Kai en vivo (3D). Primero se ve el póster: una imagen del mismo Kai 3D, quieto y con la misma cámara.
+// Después de cargar la página, src/scripts/kai/iniciar.ts trae three.js y el modelo, y un solo <canvas>
+// pasa por los lugares marcados con data-kai (portada → acompañante → contacto) según cuál se vea.
+// Sin WebGL, con «ahorro de datos» o si algo falla, queda el póster: la página se ve igual, solo que quieta.
+interface Props {
+  /** Lugar en la página: decide la prioridad cuando dos se ven a la vez. */
+  lugar: 'portada' | 'portada-movil' | 'acompanante' | 'contacto';
+  /** Ancho aproximado en pantalla (px), para elegir el tamaño del póster. El ancho real va por CSS (--kai-lado). */
+  ancho: number;
+  /** Texto alternativo. Vacío = decorativo. */
+  alt?: string;
+  /** true solo en la primera pantalla (carga sin esperar al scroll). */
+  prioridad?: boolean;
+}
+
+const { lugar, ancho, alt = '', prioridad = false } = Astro.props;
+---
+
+<div class="kai-vivo" data-kai={lugar}>
+  <img
+    class="kai-poster"
+    src="/kai/kai-3d-360.webp"
+    srcset="/kai/kai-3d-180.webp 180w, /kai/kai-3d-360.webp 360w, /kai/kai-3d-540.webp 540w"
+    sizes={`${ancho}px`}
+    width={ancho}
+    height={ancho}
+    alt={alt}
+    loading={prioridad ? 'eager' : 'lazy'}
+    decoding="async"
+    draggable="false"
+  />
+</div>
+
+<script>
+  import '../scripts/kai/iniciar';
+</script>
+
+<style>
+  /* Cuadrado: el encuadre de la cámara deja los pies al 89,9 % del alto (src/scripts/kai/forma.ts) */
+  .kai-vivo {
+    position: relative;
+    width: var(--kai-lado, 120px);
+    aspect-ratio: 1;
+    pointer-events: none;
+  }
+  .kai-poster,
+  .kai-vivo :global(.kai-canvas) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    user-select: none;
+  }
+  .kai-poster {
+    transition: opacity 0.4s;
+  }
+  /* El canvas no recibe clics: los botones y enlaces de alrededor siguen funcionando igual */
+  .kai-vivo :global(.kai-canvas) {
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .kai-en-vivo :global(.kai-canvas) {
+    opacity: 1;
+  }
+  .kai-en-vivo .kai-poster {
+    opacity: 0;
+  }
+</style>

@@ -10,6 +10,7 @@ Kairo Solutions (antes Kiro Solutions; cambió de nombre en nov 2026) es una emp
 - `docs/diseno/referencia/landing-estatica.html`: el diseño final funcionando. Ábrelo en Chrome; es la referencia visual exacta.
 - `docs/diseno/referencia/*.dc.html`: código fuente del diseño (CSS, keyframes, medidas). Es solo referencia; no copiar su sintaxis.
 - Los archivos de `docs/diseno/` son de cuando la marca era Kiro: sirven como referencia de diseño, no para el nombre ni los logos.
+- `docs/diseno/KAI-3D.md`: cómo funciona Kai en 3D (modelo, ojos, mirada, carga diferida) y sus reglas.
 - `docs/diseno/capturas/`: capturas de computador y celular. **Excepción:** la portada cambió a «bloques-cursor» (oct 2026); su referencia es `docs/diseno/referencia/portada-bloques-cursor.html` / `.dc.html` y ya no las capturas `*-01`/`*-02`/`*-03` ni los paneles de `Estilo-Glass.dc.html`.
 
 ## Stack
@@ -18,7 +19,8 @@ Kairo Solutions (antes Kiro Solutions; cambió de nombre en nov 2026) es una emp
 - **Animaciones con CSS nativo:**
   - Scroll-driven animations (`animation-timeline`, `view-timeline`, `timeline-scope`) y keyframes 3D.
   - Sin librerías de animación.
-  - JS vanilla mínimo, solo para el selector Hotel/Consultorio y la alternativa con `IntersectionObserver` en navegadores sin scroll-driven animations.
+  - JS vanilla mínimo: el selector Hotel/Consultorio, la alternativa con `IntersectionObserver` en navegadores sin scroll-driven animations y el arranque de Kai.
+- **Kai en 3D:** `three` (three.js, sin React ni otras librerías), solo para Kai. Se carga aparte (`import()` en `src/scripts/kai/iniciar.ts`) cuando la persona interactúa o 6 s después del `load`; mientras tanto se ve un póster. Detalles en `docs/diseno/KAI-3D.md`.
 - **Fuentes autoalojadas** con Fontsource, versiones variables: `@fontsource-variable/montserrat` y `@fontsource-variable/geist` (familias `'Montserrat Variable'` y `'Geist Variable'`).
 - **Gestor de paquetes:** pnpm.
 - **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build y deploy en un paso: `pnpm deploy` (`astro build` + `wrangler deploy`).
@@ -32,12 +34,15 @@ src/
   components/                     ← un componente por sección
     Header.astro  Hero.astro  CuboViajero.astro  TuDia.astro
     Servicios.astro  Olas.astro  DemoKai.astro
-    Mascota.astro  Acompanante.astro  ← Kai, la mascota
+    Mascota.astro  KaiVivo.astro  Acompanante.astro  ← Kai (imagen 2D y Kai 3D)
     ComoTrabajamos.astro  Contacto.astro  Footer.astro
   data/                           ← textos y datos (servicios, filas de «Tu día», escenarios del demo)
+  scripts/kai/                    ← Kai 3D: arranque, escena three.js, comportamiento, ojos y medidas
   styles/global.css               ← Tailwind + tokens + keyframes compartidas
   pages/index.astro
 public/                           ← favicon y logos copiados de docs/marca/assets
+  kai/                            ← kai-vivo.glb (Kai 3D para animar) y los pósters kai-3d-*.webp
+  mascota/                        ← Kai 2D (imágenes pequeñas: servicios y demo)
 ```
 
 ## Reglas de trabajo
@@ -53,7 +58,7 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - Colores, fuentes y logos solo del manual.
    - No copiar contenido de somoszora.com: se tomó solo el estilo visual.
    - No inventar clientes, cifras ni testimonios.
-   - Kai: usar solo las imágenes de `public/mascota/` (con `Mascota.astro`). No redibujarlo ni cambiarle la cara, los colores ni las proporciones (ficha técnica en el manual).
+   - Kai: en 3D, solo `public/kai/kai-vivo.glb` con `KaiVivo.astro`; en 2D, solo las imágenes de `public/mascota/` con `Mascota.astro`. No redibujarlo ni cambiarle la cara, los colores ni las proporciones (ficha técnica en el manual). En 3D nada se escala ni se deforma: solo se mueven piezas enteras y los ojos dentro de la pantalla.
    - Rosa eléctrico (`--color-rosa`): una sola cosa en toda la página, hoy el contador del demo. Nunca en el logo, el cubo, los botones ni pegado a un bloque morado.
 5. **Rendimiento y accesibilidad.**
    - Animar solo `transform` y `opacity`.
@@ -80,6 +85,7 @@ public/                           ← favicon y logos copiados de docs/marca/ass
    - «Tu día» sube `--solape` px (320 / 240 en celular, definido en `.recorrido`) sobre el final de la portada para entrar cuando el cubo llega al carril. La línea del carril usa el mismo valor.
    - Franjas claro → oscuro (`Transicion.astro`): degradado fijo y corto, con altura por instancia (160 px «Tu día» → Servicios, 72 px contacto → footer).
    - Cloudflare Web Analytics: token en `src/data/analitica.ts`; vacío = no se carga.
+   - Kai 3D: un solo `<canvas>` que viaja entre los lugares `data-kai` (contacto > acompañante > portada). Los pósters `kai-3d-*.webp` son renders de la misma cámara y pose de reposo: si cambian las luces o la cámara, se regeneran. Los ojos se dibujan en el shader (`ojos.ts`), no en la textura. Sin `RoomEnvironment` (sus reflejos parecían manchas en la pantalla). `chunkSizeWarningLimit: 700` en `astro.config.mjs` es por three.js, que va en un archivo aparte.
 8. **Pendientes conocidos:**
    - El contacto es **solo por correo** (decisión de Gallo, oct 2026): sin teléfono ni WhatsApp de Kairo en la página. El correo vive en `src/data/contacto.ts` y sigue siendo `KiroSolutionsCol@gmail.com` hasta crear el de Kairo.
    - Los pasos claro → oscuro («Tu día» → Servicios y Contacto → footer) usan `src/components/Transicion.astro`.

@@ -20,7 +20,7 @@ const personas = [
       <div class="selector" role="group" aria-label="Ver el ejemplo de">
         {
           escenarios.map((e, i) => (
-            <button type="button" class="seg" data-ver={e.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+            <button type="button" class="seg" data-kai-mira data-ver={e.id} aria-pressed={i === 0 ? 'true' : 'false'}>
               {e.boton}
             </button>
           ))
@@ -28,7 +28,7 @@ const personas = [
       </div>
     </div>
 
-    <div class="escena3d" data-io>
+    <div class="escena3d" data-io data-kai-foco>
       {
         escenarios.map((e, i) => (
           <div class="escenario" data-escenario={e.id} hidden={i !== 0}>
