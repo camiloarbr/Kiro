@@ -1,4 +1,5 @@
 // Tarjetas de la sección Servicios. «grande» ocupa 3 de las 6 columnas en computador.
+// «conBot»: Kai se asoma en esa tarjeta (solo en una, para no saturar).
 // «arte» es el contenido del SVG de la ilustración (viewBox 0 0 300 180); .fill va en violeta.
 export const servicios = [
   {
@@ -17,6 +18,7 @@ export const servicios = [
       'Te pasan los casos que necesitan a una persona',
     ],
     grande: true,
+    conBot: true,
     arte: '<rect x="70" y="40" width="120" height="34" rx="14"/><rect x="120" y="86" width="120" height="34" rx="14" class="fill"/><path d="M84 130h36" opacity=".5"/><circle cx="84" cy="57" r="3"/><circle cx="96" cy="57" r="3"/><circle cx="108" cy="57" r="3"/>',
   },
   {

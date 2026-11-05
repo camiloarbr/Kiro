@@ -212,3 +212,24 @@
     background: var(--color-white);
   }
 }
+
+/*
+  Kai (src/components/Mascota.astro): flota despacio, como si estuviera encendido.
+  Solo transform, con «translate» y «rotate» sueltos para no pisar otros transform del contenedor.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .mascota-flota {
+    animation: mascota-flota 4.8s ease-in-out infinite;
+  }
+}
+@keyframes mascota-flota {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: 0 -6px;
+    rotate: -2deg;
+  }
+}

@@ -4,7 +4,7 @@ export const filasDia = [
     hora: '7:30 a. m.',
     hora24: '07:30',
     hoy: 'Revisas los mensajes que llegaron de noche, uno por uno.',
-    conKiro: 'Kiro Bot ya los respondió y dejó las citas agendadas.',
+    conKiro: 'Kai ya los respondió y dejó las citas agendadas.',
   },
   {
     hora: '10:00 a. m.',
@@ -34,6 +34,6 @@ export const filasDia = [
     hora: '11:00 p. m.',
     hora24: '23:00',
     hoy: 'Un cliente escribe y nadie responde.',
-    conKiro: 'Kiro Bot responde y le reserva.',
+    conKiro: 'Kai responde y le reserva.',
   },
 ] as const;

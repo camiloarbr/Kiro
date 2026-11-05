@@ -1,6 +1,7 @@
 ---
 import Olas from './Olas.astro';
 import { servicios } from '../data/servicios';
+import Mascota from './Mascota.astro';
 ---
 
 <section id="servicios" class="servicios">
@@ -24,6 +25,7 @@ import { servicios } from '../data/servicios';
             <div class="arte" aria-hidden="true">
               <i class="rayas" />
               <svg viewBox="0 0 300 180" set:html={s.arte} />
+              {'conBot' in s && s.conBot && <Mascota ancho={118} class="asoma" />}
             </div>
             <div class="cuerpo">
               <em>{String(i + 1).padStart(2, '0')}</em>
@@ -160,6 +162,19 @@ import { servicios } from '../data/servicios';
     stroke-width: 2.5;
     filter: drop-shadow(0 0 10px rgb(176 124 255 / 0.7));
   }
+  /* Kai se asoma desde abajo en la tarjeta de agentes de IA y sube un poco al pasar el mouse */
+  .arte :global(.asoma) {
+    position: absolute;
+    right: 8%;
+    bottom: -46px;
+    width: 96px;
+    height: auto;
+    filter: drop-shadow(0 10px 24px rgb(139 44 245 / 0.45));
+    transition: translate 0.5s var(--ease-kiro);
+  }
+  .tarjeta:hover .arte :global(.asoma) {
+    translate: 0 -14px;
+  }
   /* El SVG llega por set:html, así que su contenido no lleva el atributo de estilos con alcance */
   .arte svg :global(.fill) {
     fill: var(--color-violeta);
@@ -238,6 +253,10 @@ import { servicios } from '../data/servicios';
     }
     .grande .arte {
       height: 220px;
+    }
+    .arte :global(.asoma) {
+      width: 118px;
+      bottom: -52px;
     }
   }
 

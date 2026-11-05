@@ -1,4 +1,4 @@
-// Textos del demo de Kiro Bot por escenario (objeto S de docs/diseno/referencia/Hero3D.dc.html).
+// Textos del demo de Kai por escenario (objeto S de docs/diseno/referencia/Hero3D.dc.html).
 // «Casa Ceiba», «Ceiba Odontología» y «Laura M.» son nombres de muestra, no clientes reales.
 
 export interface Escenario {
@@ -31,7 +31,7 @@ export const escenarios: Escenario[] = [
     id: 'hotel',
     boton: 'Hotel',
     etiquetaAccesible:
-      'Un cliente escribe por chat, Kiro Bot le reserva la habitación 8 y la reserva aparece confirmada en el panel del hotel',
+      'Un cliente escribe por chat, Kai le reserva la habitación 8 y la reserva aparece confirmada en el panel del hotel',
     cliente1: 'Hola, ¿hay habitación para el sábado?',
     bot1: '¡Hola! Sí, nos queda la habitación 8, doble. ¿Te la reservo?',
     cliente2: 'Sí, por favor',
@@ -56,7 +56,7 @@ export const escenarios: Escenario[] = [
     id: 'consultorio',
     boton: 'Consultorio',
     etiquetaAccesible:
-      'Un paciente escribe por chat, Kiro Bot le agenda una cita y la cita aparece confirmada en la agenda del consultorio',
+      'Un paciente escribe por chat, Kai le agenda una cita y la cita aparece confirmada en la agenda del consultorio',
     cliente1: 'Hola, ¿hay cita de limpieza el jueves?',
     bot1: '¡Hola! Sí, me queda un espacio a las 3:00 p. m. ¿Te lo agendo?',
     cliente2: 'Sí, gracias',
@@ -79,7 +79,7 @@ export const escenarios: Escenario[] = [
   },
 ];
 
-// Ocupación de la grilla (3 filas × 8 columnas): 0 libre, 1 ocupada, 2 la que reserva Kiro Bot.
+// Ocupación de la grilla (3 filas × 8 columnas): 0 libre, 1 ocupada, 2 la que reserva Kai.
 export const ocupacion = [
   [1, 1, 0, 1, 1, 1, 0, 1],
   [1, 1, 1, 1, 1, 1, 1, 2],

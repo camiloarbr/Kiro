@@ -16,7 +16,7 @@ const personas = [
       <h2 id="demo-t" class="titulo revela max-w-[18ch] text-[clamp(34px,4vw,56px)] leading-[1.05]">
         Del mensaje a la reserva, sin que muevas un dedo.
       </h2>
-      <p class="revela-2">Un cliente escribe, Kiro Bot responde y la reserva aparece confirmada en tu panel.</p>
+      <p class="revela-2">Un cliente escribe, Kai responde y la reserva aparece confirmada en tu panel.</p>
       <div class="selector" role="group" aria-label="Ver el ejemplo de">
         {
           escenarios.map((e, i) => (
@@ -40,9 +40,9 @@ const personas = [
                     <div class="cel-cuerpo">
                       <div class="pantalla">
                         <div class="cel-cabeza">
-                          <span class="cel-avatar">K</span>
+                          <span class="cel-avatar"><img src="/mascota/mascota-cara-64.webp" alt="" width="30" height="30" loading="lazy" decoding="async" /></span>
                           <div class="flex flex-col gap-px">
-                            <span class="text-[15px] font-semibold">Kiro Bot</span>
+                            <span class="text-[15px] font-semibold">Kai</span>
                             <span class="text-xs text-violeta-claro">en línea</span>
                           </div>
                         </div>
@@ -96,7 +96,7 @@ const personas = [
                         {e.menu.slice(1).map((m) => (
                           <div class="nav"><span>{m}</span></div>
                         ))}
-                        <div class="bot-activo"><span class="bot-ini">K</span>Kiro Bot activo</div>
+                        <div class="bot-activo"><span class="bot-ini"><img src="/mascota/mascota-cara-64.webp" alt="" width="16" height="16" loading="lazy" decoding="async" /></span>Kai activo</div>
                       </div>
 
                       <div class="principal">
@@ -364,10 +364,14 @@ const personas = [
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--color-violeta);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 16px;
+    /* Fondo lavanda para que la cabeza morada de Kai se distinga del círculo */
+    background: var(--color-lav-media);
+    overflow: hidden;
+  }
+  .cel-avatar img {
+    width: 30px;
+    height: 30px;
+    translate: 0 3px;
   }
   .mensajes {
     flex: 1;
@@ -544,11 +548,13 @@ const personas = [
     width: 18px;
     height: 18px;
     border-radius: 5px;
-    background: var(--color-violeta);
-    color: var(--color-white);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 10px;
+    background: var(--color-lav-media);
+    overflow: hidden;
+  }
+  .bot-ini img {
+    width: 16px;
+    height: 16px;
+    translate: 0 1px;
   }
   .principal {
     flex: 1;

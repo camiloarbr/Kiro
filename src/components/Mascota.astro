@@ -1,0 +1,40 @@
+---
+// Kai, la mascota oficial de la marca. Una sola imagen (public/mascota/) en tres tamaños WebP:
+// el navegador baja el que necesita según el ancho que ocupa en pantalla (sizes).
+// Es decorativa por defecto (alt vacío): el texto de al lado ya dice lo importante.
+interface Props {
+  /** Ancho en pantalla, en px. El alto sale de la proporción de la imagen (200 × 217). */
+  ancho: number;
+  /** Texto alternativo. Vacío = decorativa. */
+  alt?: string;
+  /** true solo si aparece en la primera pantalla (la portada). */
+  prioridad?: boolean;
+  class?: string;
+}
+
+const { ancho, alt = '', prioridad = false, class: clase } = Astro.props;
+const alto = Math.round((ancho * 217) / 200);
+---
+
+<img
+  src="/mascota/mascota-400.webp"
+  srcset="/mascota/mascota-200.webp 200w, /mascota/mascota-400.webp 400w, /mascota/mascota-600.webp 600w"
+  sizes={`${ancho}px`}
+  width={ancho}
+  height={alto}
+  alt={alt}
+  loading={prioridad ? 'eager' : 'lazy'}
+  fetchpriority={prioridad ? 'high' : 'auto'}
+  decoding="async"
+  draggable="false"
+  class:list={['mascota', clase]}
+/>
+
+<style>
+  .mascota {
+    display: block;
+    max-width: none;
+    height: auto;
+    user-select: none;
+  }
+</style>

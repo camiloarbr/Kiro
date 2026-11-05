@@ -1,0 +1,74 @@
+---
+// Kai acompaña la lectura en computador: aparece abajo a la izquierda (en el carril libre)
+// cuando termina la portada y se va antes del contacto, donde ya está el bot grande.
+// Sin JS: su entrada y salida van con la misma línea de tiempo --flujo que usa el cubo.
+import Mascota from './Mascota.astro';
+---
+
+<a class="acompanante" href="#contacto">
+  <span class="globo">¿Hablamos?</span>
+  <Mascota ancho={64} alt="Kai: ir a contacto" class="mascota-flota" />
+</a>
+
+<style>
+  /* Base (Firefox, celular y «reducir movimiento»): no se muestra */
+  .acompanante {
+    display: none;
+  }
+
+  @supports (animation-timeline: view()) and (timeline-scope: none) {
+    @media (prefers-reduced-motion: no-preference) and (width >= 56.25rem) {
+      .acompanante {
+        position: fixed;
+        left: max(24px, calc(50vw - 680px));
+        bottom: 24px;
+        z-index: 15;
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+        gap: 4px;
+        text-decoration: none;
+        animation: acompanante-aparece linear both;
+        animation-timeline: --flujo;
+        animation-range: cover 0% cover 100%;
+      }
+      .acompanante :global(.mascota) {
+        width: 64px;
+        height: auto;
+        filter: drop-shadow(0 8px 18px rgb(91 23 184 / 0.35));
+        transition: scale 0.3s var(--ease-kiro);
+      }
+      /* El globo solo aparece al pasar el mouse o con el teclado: no tapa nada mientras se lee */
+      .globo {
+        align-self: flex-start;
+        padding: 6px 12px;
+        border-radius: 999px 999px 999px 4px;
+        background: var(--color-negro);
+        color: var(--color-white);
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        translate: 0 6px;
+        transition:
+          opacity 0.25s,
+          translate 0.25s var(--ease-kiro);
+      }
+      .acompanante:hover .globo,
+      .acompanante:focus-visible .globo {
+        opacity: 1;
+        translate: 0 0;
+      }
+      .acompanante:hover :global(.mascota) {
+        scale: 1.08;
+      }
+    }
+  }
+
+  /* --flujo va de «Tu día» al contacto: entra al comienzo y se apaga al final */
+  @keyframes acompanante-aparece {
+    0%, 4% { opacity: 0; transform: translateY(24px); visibility: hidden; }
+    9%, 84% { opacity: 1; transform: none; visibility: visible; }
+    89%, 100% { opacity: 0; transform: translateY(24px); visibility: hidden; }
+  }
+</style>
