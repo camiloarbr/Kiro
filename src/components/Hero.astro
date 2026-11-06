@@ -409,12 +409,24 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         */
         --alto-escena: clamp(620px, 100vh - 76px, 980px);
         --kai-lado: min(var(--alto-escena) * 0.26, var(--alto-escena) * 0.525 - 183px);
-      }
-      /* Se va con un saltito apenas el cubo empieza a desarmarse */
-      .kai-ancla :global(.kai-vivo) {
-        animation: portada-kai-sale linear both;
+        /* x del vuelo: avanza parejo (ver abajo) */
+        animation: portada-kai-vuela-x linear both;
         animation-timeline: --hero;
-        animation-range: contain 3% contain 7%;
+        animation-range: contain 5% contain 18%;
+      }
+      /*
+        Cuando el cubo empieza a desarmarse (6 %), la explosión lanza a Kai: se agacha un instante, sale
+        volando hacia arriba y hacia atrás dando vueltas, y cae con los bloques hasta perderse (5–18 %).
+        Para que el vuelo sea una parábola, cada parte va en su propia propiedad: x avanza parejo (.kai-ancla),
+        y sube frenando y cae acelerando (translate) y el giro y el desvanecido van aparte (rotate).
+        Si el 3D ya cargó, además da una vuelta sobre sí mismo (escena.ts, con este mismo tramo).
+      */
+      .kai-ancla :global(.kai-vivo) {
+        animation:
+          portada-kai-vuela-y linear both,
+          portada-kai-gira linear both;
+        animation-timeline: --hero, --hero;
+        animation-range: contain 5% contain 18%;
       }
 
       .etiquetas {
@@ -601,8 +613,26 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     42%, 66% { opacity: 1; transform: translate(var(--mlx), var(--mly)); }
     72%, 100% { opacity: 0; transform: translate(var(--mlx), calc(var(--mly) - 16px)); }
   }
-  @keyframes portada-kai-sale {
-    to { opacity: 0; visibility: hidden; translate: 0 -36px; }
+  /*
+    Vuelo de Kai: del 0 al 8 % se agacha; ahí sale disparado hacia la derecha. Sube solo 40 px frenando
+    (cuadrática de salida; sobre la cabeza hay poco espacio antes del header) y cae 640 px acelerando
+    (cuadrática de entrada). Los tiempos (8 → 26 → 100 %) salen de la misma gravedad en los dos tramos:
+    bajar 640 px toma √(640 / 40) = 4 veces lo que toma subir 40.
+  */
+  @keyframes portada-kai-vuela-x {
+    0%, 8% { translate: 0 0; }
+    100% { translate: 380px 0; }
+  }
+  @keyframes portada-kai-vuela-y {
+    0% { translate: 0 0; animation-timing-function: ease-in-out; }
+    8% { translate: 0 6px; animation-timing-function: cubic-bezier(0.5, 1, 0.89, 1); }
+    26% { translate: 0 -40px; animation-timing-function: cubic-bezier(0.11, 0, 0.5, 0); }
+    100% { translate: 0 640px; }
+  }
+  @keyframes portada-kai-gira {
+    0%, 8% { rotate: 0deg; }
+    78% { opacity: 1; }
+    100% { rotate: 480deg; opacity: 0; visibility: hidden; }
   }
   @keyframes portada-frase {
     0%, 72% { opacity: 0; transform: translate(-50%, 24px); }

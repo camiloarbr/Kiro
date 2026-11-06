@@ -3,6 +3,8 @@
 // Después de cargar la página, src/scripts/kai/iniciar.ts trae three.js y el modelo, y un solo <canvas>
 // pasa por los lugares marcados con data-kai (portada → acompañante → contacto) según cuál se vea.
 // Sin WebGL, con «ahorro de datos» o si algo falla, queda el póster: la página se ve igual, solo que quieta.
+import { vistaDe } from '../scripts/kai/forma';
+
 interface Props {
   /** Lugar en la página: decide la prioridad cuando dos se ven a la vez. */
   lugar: 'portada' | 'portada-movil' | 'acompanante' | 'contacto';
@@ -15,13 +17,15 @@ interface Props {
 }
 
 const { lugar, ancho, alt = '', prioridad = false } = Astro.props;
+// El póster usa la misma vista que el 3D en ese lugar (en la portada, girado como el cubo)
+const poster = vistaDe(lugar) === 'portada' ? '/kai/kai-3d-portada' : '/kai/kai-3d';
 ---
 
 <div class="kai-vivo" data-kai={lugar}>
   <img
     class="kai-poster"
-    src="/kai/kai-3d-360.webp"
-    srcset="/kai/kai-3d-180.webp 180w, /kai/kai-3d-360.webp 360w, /kai/kai-3d-540.webp 540w"
+    src={`${poster}-360.webp`}
+    srcset={`${poster}-180.webp 180w, ${poster}-360.webp 360w, ${poster}-540.webp 540w`}
     sizes={`${ancho}px`}
     width={ancho}
     height={ancho}

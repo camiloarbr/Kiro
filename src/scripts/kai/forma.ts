@@ -27,5 +27,17 @@ export const ENTRE_OJOS = [-0.005, 0.233, 0.6] as const;
  * pies al 89,9 % del alto y la coronilla al 11,7 %. Así el CSS sabe dónde quedan los pies sin mirar el 3D
  * (Hero, Acompanante y Contacto usan ese 0,899).
  */
-export const CAMARA = { fov: 16, mira: [0, 1.02, 0] as const, distancia: 8.894, inclinacion: 7 };
+export const CAMARA = { fov: 16, distancia: 8.894, inclinacion: 7 };
 export const PIES_EN_CANVAS = 0.899;
+
+/**
+ * Vistas según el lugar. «portada» copia el giro del cubo (rotateX(-24deg) rotateY(-35deg) en Hero.astro):
+ * Kai gira con él y la cámara lo ve desde 24° arriba, así queda parado en la tapa y no pegado encima.
+ * En todas, la cámara se ajusta para que los pies sigan al 89,9 % del alto.
+ */
+export const VISTAS = {
+  frente: { giro: 0, inclinacion: CAMARA.inclinacion },
+  portada: { giro: -35, inclinacion: 24 },
+} as const;
+export type Vista = keyof typeof VISTAS;
+export const vistaDe = (lugar: string): Vista => (lugar === 'portada' ? 'portada' : 'frente');

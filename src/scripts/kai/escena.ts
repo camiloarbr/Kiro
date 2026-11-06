@@ -23,7 +23,7 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { CAMARA, CUELLO, ENTRE_OJOS, PIES } from './forma';
+import { CAMARA, CUELLO, ENTRE_OJOS, PIES, PIES_EN_CANVAS, VISTAS, vistaDe, type Vista } from './forma';
 import { ponerOjos, type UniformesOjos } from './ojos';
 import { Comportamiento, type Pose } from './comportamiento';
 
@@ -46,6 +46,10 @@ export interface EscenaKai {
   renderer: WebGLRenderer;
   aplicar(pose: Pose): void;
   dibujar(): void;
+  /** Cambia la vista (giro de Kai e inclinación de la cámara) según el lugar donde está. */
+  verDesde(vista: Vista): void;
+  /** Giro extra sobre los pies (rad), encima del de la vista: la vuelta cuando sale volando del cubo. */
+  girarExtra(rad: number): void;
   /** Dónde quedan los ojos de Kai dentro del canvas (0…1 en x e y, desde arriba a la izquierda). */
   ojosEnCanvas: { x: number; y: number };
   liberar(): void;
@@ -82,18 +86,30 @@ export function montarEstudio(renderer: WebGLRenderer) {
   escena.add(principal, relleno, contraluz);
 
   const camara = new PerspectiveCamera(CAMARA.fov, 1, 0.1, 50);
-  const inc = (CAMARA.inclinacion * Math.PI) / 180;
-  const mira = new Vector3(...CAMARA.mira);
-  camara.position.set(mira.x, mira.y + CAMARA.distancia * Math.sin(inc), mira.z + CAMARA.distancia * Math.cos(inc));
-  camara.lookAt(mira);
+  ponerCamara(camara, 'frente');
   return { escena, camara };
+}
+
+/**
+ * Cámara de una vista: mira desde `inclinacion` grados arriba y sube el punto que mira lo justo para que
+ * los pies (el origen) sigan al 89,9 % del alto. Sale de proyectar el origen: alto = −y·cos(i),
+ * profundidad = d + y·sen(i), y (1 − alto / (profundidad · tan(fov/2))) / 2 = PIES_EN_CANVAS.
+ */
+function ponerCamara(camara: PerspectiveCamera, vista: Vista) {
+  const inc = (VISTAS[vista].inclinacion * Math.PI) / 180;
+  const d = CAMARA.distancia;
+  const k = (2 * PIES_EN_CANVAS - 1) * Math.tan((CAMARA.fov * Math.PI) / 360);
+  const y = (k * d) / (Math.cos(inc) - k * Math.sin(inc));
+  camara.position.set(0, y + d * Math.sin(inc), d * Math.cos(inc));
+  camara.lookAt(0, y, 0);
+  camara.updateMatrixWorld();
 }
 
 /**
  * Arma a Kai sobre un canvas. Devuelve funciones para poner una pose y dibujar.
  * La usa iniciarKai (página) y también sirve para generar los pósters estáticos con la misma cámara.
  */
-export async function crearEscena(canvas: HTMLCanvasElement): Promise<EscenaKai> {
+export async function crearEscena(canvas: HTMLCanvasElement, vista: Vista = 'frente'): Promise<EscenaKai> {
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
   const { escena, camara } = montarEstudio(renderer);
 
@@ -117,10 +133,12 @@ export async function crearEscena(canvas: HTMLCanvasElement): Promise<EscenaKai>
   fijar(cuerpo);
   const localCabeza = fijar(cabeza);
 
-  //  raiz (pies en el piso, sube con el saltito)
-  //   └ pies (balanceo del cuerpo) → cuerpo
-  //      └ cuello (giro de la cabeza; sube y baja apenas al respirar) → cabeza
+  //  base (giro de la vista: en la portada, el mismo del cubo) → sombra
+  //   └ raiz (pies en el piso, sube con el saltito)
+  //      └ pies (balanceo del cuerpo) → cuerpo
+  //         └ cuello (giro de la cabeza; sube y baja apenas al respirar) → cabeza
   // Nada se escala: la ficha técnica no permite deformar a Kai.
+  const base = new Group();
   const raiz = new Group();
   const pies = new Group();
   const cuello = new Group();
@@ -137,7 +155,8 @@ export async function crearEscena(canvas: HTMLCanvasElement): Promise<EscenaKai>
   deshacerPies.add(cuerpo);
   cuello.add(deshacerCuello);
   deshacerCuello.add(cabeza);
-  escena.add(raiz);
+  base.add(raiz);
+  escena.add(base);
 
   // Material: el mismo del modelo; la cabeza lleva una copia con los ojos en vivo
   const matCuerpo = cuerpo.material as MeshStandardMaterial;
@@ -152,11 +171,23 @@ export async function crearEscena(canvas: HTMLCanvasElement): Promise<EscenaKai>
   );
   sombra.rotation.x = -Math.PI / 2;
   sombra.position.y = 0.003;
-  escena.add(sombra);
+  base.add(sombra);
 
-  // Dónde quedan los ojos en el canvas (para calcular hacia dónde mirar)
-  const p = new Vector3(ENTRE_OJOS[0], ENTRE_OJOS[1] - PIES[1], ENTRE_OJOS[2]).project(camara);
-  const ojosEnCanvas = { x: (p.x + 1) / 2, y: (1 - p.y) / 2 };
+  // Dónde quedan los ojos en el canvas (para calcular hacia dónde mirar). Cambia con la vista
+  const ojosEnCanvas = { x: 0.5, y: 0.5 };
+  let giroVista = 0;
+  function verDesde(v: Vista) {
+    ponerCamara(camara, v);
+    giroVista = (VISTAS[v].giro * Math.PI) / 180;
+    base.rotation.y = giroVista;
+    base.updateMatrixWorld();
+    const p = new Vector3(ENTRE_OJOS[0], ENTRE_OJOS[1] - PIES[1], ENTRE_OJOS[2])
+      .applyMatrix4(base.matrixWorld)
+      .project(camara);
+    ojosEnCanvas.x = (p.x + 1) / 2;
+    ojosEnCanvas.y = (1 - p.y) / 2;
+  }
+  verDesde(vista);
 
   function aplicar(pose: Pose) {
     raiz.position.y = pose.salto;
@@ -179,6 +210,8 @@ export async function crearEscena(canvas: HTMLCanvasElement): Promise<EscenaKai>
     renderer,
     aplicar,
     dibujar: () => renderer.render(escena, camara),
+    verDesde,
+    girarExtra: (rad) => (base.rotation.y = giroVista + rad),
     ojosEnCanvas,
     liberar() {
       renderer.dispose();
@@ -286,10 +319,11 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
     actual = destino;
     html.dataset.kaiEn = destino?.dataset.kai ?? '';
     if (!destino) return;
+    const lugar = destino.dataset.kai!;
     destino.append(canvas);
+    kai.verDesde(vistaDe(lugar));
     ajustarTamano(true);
     // Saluda al llegar a otro lugar (también al volver a la portada); en el contacto, un saltito
-    const lugar = destino.dataset.kai!;
     if (lugar !== ultimoLugar) {
       if (lugar === 'contacto') cerebro.reaccionar('salto');
       else if (ultimoLugar) cerebro.reaccionar('saludo');
@@ -299,6 +333,18 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
 
   // ---- Cuadro a cuadro -------------------------------------------------------------------------
   const portada = document.getElementById('inicio');
+  // Vuelo de Kai al explotar el cubo (Hero.astro): tramo «contain 5 %–18 %» del scroll de la portada y
+  // despegue al 8 % de ese tramo. Solo donde ese vuelo existe (scroll-driven animations y sin «reducir movimiento»)
+  const VUELO = { desde: 0.05 + 0.13 * 0.08, hasta: 0.18 };
+  const conVuelo =
+    CSS.supports('animation-timeline: view()') && matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  /** 0…1: cuánto lleva del vuelo. «contain» va de la portada arriba del todo a su final abajo del todo. */
+  function vuelo(p: HTMLElement) {
+    const recorrido = p.offsetHeight - innerHeight;
+    if (recorrido <= 0) return 0;
+    const avance = -p.getBoundingClientRect().top / recorrido;
+    return Math.min(Math.max((avance - VUELO.desde) / (VUELO.hasta - VUELO.desde), 0), 1);
+  }
   function cuadro(ahora: number) {
     if (!corriendo) return;
     // Si nadie interactúa hace 4 s, Kai solo respira y parpadea: basta con 30 cuadros por segundo
@@ -316,13 +362,17 @@ export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolea
       detener();
       return;
     }
-    if (++cuadros % 30 === 0) ajustarTamano();
+    // Girado (volando del cubo), su caja en pantalla crece con el giro y no sirve para medir la resolución
+    if (++cuadros % 30 === 0 && ['none', '0deg'].includes(getComputedStyle(actual).rotate)) ajustarTamano();
 
     // Mirar al cubo cuando empieza el scroll de la portada
     if (portada && actual.dataset.kai?.startsWith('portada')) {
       const bajado = -portada.getBoundingClientRect().top;
       cerebro.mirarAbajo(Math.min(Math.max((bajado - 8) / 110, 0), 1));
     } else cerebro.mirarAbajo(0);
+    // Lanzado por el cubo: una vuelta entera sobre los pies mientras vuela (el resto del vuelo es CSS)
+    const enVuelo = portada && conVuelo && !cerebro.reducido && actual.dataset.kai === 'portada';
+    kai.girarExtra(enVuelo ? -2 * Math.PI * vuelo(portada) : 0);
 
     const b = canvas.getBoundingClientRect();
     const pose = cerebro.paso(dt, ahora / 1000, {

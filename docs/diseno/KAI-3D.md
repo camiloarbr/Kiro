@@ -10,23 +10,24 @@ Un solo `<canvas>` con un solo Kai pasa por cuatro lugares (`data-kai`). Siempre
 | --- | --- | --- |
 | `contacto` | `Contacto.astro` | Al llegar al contacto: da un saltito y mira el botón del correo |
 | `acompanante` | `Acompanante.astro` | Computador, desde «Tu día» hasta antes del contacto, abajo a la izquierda |
-| `portada` | `Hero.astro` (`.kai-ancla`) | Computador: parado en la tapa del cubo. Se va con un saltito apenas el cubo empieza a desarmarse (3–7 % del scroll de la portada) |
+| `portada` | `Hero.astro` (`.kai-ancla`) | Computador: parado en la tapa del cubo, girado y visto desde arriba como el cubo (vista «portada»). Cuando el cubo empieza a desarmarse, la explosión lo lanza: vuela hacia la derecha dando vueltas y cae con los bloques hasta perderse (5–18 % del scroll de la portada) |
 | `portada-movil` | `Hero.astro` (`.hero-bot`) | Celular y tablet: al lado de «Conoce más»; sale de escena con el texto |
 
-En todos se ve primero el **póster**: `public/kai/kai-3d-*.webp`, un render del mismo Kai en reposo con la misma cámara. Cuando el 3D está listo, el canvas aparece encima con un fundido y el cambio no se nota. Sin WebGL, sin JavaScript, con «ahorro de datos» o si algo falla, queda el póster.
+En todos se ve primero el **póster**: `public/kai/kai-3d-*.webp`, un render del mismo Kai en reposo con la misma cámara (en la portada, `kai-3d-portada-*.webp`, con la vista del cubo). Cuando el 3D está listo, el canvas aparece encima con un fundido y el cambio no se nota. Sin WebGL, sin JavaScript, con «ahorro de datos» o si algo falla, queda el póster.
 
 ## Archivos
 
 ```
 public/kai/kai-vivo.glb          ← modelo para animar (274 kB): cabeza y cuerpo separados, pantalla sin ojos
-public/kai/kai-3d-180|360|540.webp ← pósters
+public/kai/kai-3d-180|360|540.webp ← pósters (vista de frente)
+public/kai/kai-3d-portada-180|360|540.webp ← pósters de la portada (vista del cubo)
 src/components/KaiVivo.astro     ← el lugar: póster + script de arranque
 src/scripts/kai/
   iniciar.ts        ← arranque liviano (1 kB). Carga lo demás solo cuando hace falta
   escena.ts         ← three.js: luces, cámara, modelo, articulaciones, el canvas que viaja y las entradas
   comportamiento.ts ← el «cerebro»: hacia dónde mirar, parpadeo, respiración y reacciones (sin three.js)
   ojos.ts           ← el shader que dibuja los ojos sobre la pantalla
-  forma.ts          ← medidas de Kai sacadas del modelo (ojos, pantalla, cuello, cámara)
+  forma.ts          ← medidas de Kai sacadas del modelo (ojos, pantalla, cuello, cámara y vistas)
 ```
 
 ## Cómo funciona
@@ -46,6 +47,8 @@ src/scripts/kai/
 
 **Prioridad de la mirada:** botón con el mouse encima o con el foco del teclado → toque reciente → cursor en movimiento → contenido de la sección que se lee (`data-kai-foco`) → al frente.
 
+**Vistas.** En la portada Kai está parado en la tapa del cubo, que CSS gira con `rotateX(-24deg) rotateY(-35deg)`. Kai es un dibujo plano dentro de ese 3D: CSS no puede girarlo, así que el giro va dentro de three.js. En la vista «portada» el cuerpo (con su sombra) gira −35° y la cámara lo mira desde 24° arriba, en vez de los 7° de la vista «frente» que usan los demás lugares. `ponerCamara()` sube el punto que mira la cámara lo justo para que los pies sigan al 89,9 % del alto, así el CSS de cada lugar no cambia. El canvas cambia de vista al mudarse (`verDesde`). La mirada sigue siendo relativa al cuerpo: en reposo Kai mira hacia donde mira el cubo.
+
 **Rendimiento.** Se dibuja solo mientras algún lugar se ve y la pestaña está activa. La resolución sale del tamaño real en pantalla (máx. 2,5×) y baja sola si el equipo no alcanza 35 cuadros por segundo.
 
 ## Comportamiento
@@ -57,7 +60,7 @@ src/scripts/kai/
 | Respirar | La cabeza sube y baja muy poco cada 3,8 s |
 | Quieto | Si el cursor no se mueve en 2,8 s, vuelve al frente o mira el contenido; cada tanto mira a un lado y vuelve |
 | Botones (`data-kai-mira`) | Al pasar el mouse o llegar con Tab: los mira y ladea la cabeza. Al hacer clic: saltito |
-| Scroll en la portada | Mira hacia abajo, al cubo, y se va con un saltito antes de que el cubo explote |
+| Scroll en la portada | Mira hacia abajo, al cubo. Al explotar el cubo sale volando en parábola (CSS: x, y y giro en propiedades separadas) y, si el 3D cargó, da además una vuelta sobre sí mismo (`girarExtra`, mismo tramo del scroll) |
 | Cambio de lugar | Saluda (saltito corto y parpadeo). En el contacto: saltito |
 | Celular | Mira hacia donde se toca; el resto igual |
 | «Reducir movimiento» | Solo mueve los ojos y parpadea: sin giros, respiración ni saltos |
@@ -73,5 +76,5 @@ src/scripts/kai/
 
 - **Tamaño o lugar:** `--kai-lado` en el CSS de cada componente. El cuadro es cuadrado y los pies quedan al 89,9 % de su alto.
 - **Comportamiento:** constantes de `comportamiento.ts` (`DISTANCIA`, `QUIETO`, los `Resorte` y los límites de cada parte).
-- **Luces o cámara:** `montarEstudio()` en `escena.ts` y `CAMARA` en `forma.ts`. Si cambian, hay que volver a generar los pósters con la misma pose de reposo.
+- **Luces o cámara:** `montarEstudio()` en `escena.ts`, y `CAMARA` y `VISTAS` en `forma.ts`. Si cambian (o cambia el giro del cubo de la portada en `Hero.astro`), hay que volver a generar los pósters de cada vista con la misma pose de reposo: `crearEscena(canvas, vista)`, `aplicar(POSE_REPOSO)`, `dibujar()` y `canvas.toDataURL('image/webp', 0.9)` a 180, 360 y 540 px.
 - **Modelo:** `kai-vivo.glb` se genera desde `kai-maestro.glb` con el script de la carpeta compartida (`marca/kai/3d/kai-vivo/`). No se edita a mano.
