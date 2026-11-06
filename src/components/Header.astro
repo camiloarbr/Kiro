@@ -2,18 +2,23 @@
 import { enlaces } from '../data/navegacion';
 ---
 
-<!-- Único elemento con backdrop-filter: no se anima, así que el desenfoque no cuesta en el scroll -->
-<header class="sticky top-0 z-20 bg-lav/72 backdrop-blur-[14px]">
-  <div class="contenedor flex h-[76px] items-center justify-between gap-6">
-    <a href="#inicio" aria-label="Kairo, inicio" class="flex">
+<!--
+  Único elemento con backdrop-filter: no se anima, así que el desenfoque no cuesta en el scroll.
+  Sobre las secciones oscuras (Servicios, demo, Cómo trabajamos) pasa a Kairo Black translúcido con el logo
+  y los enlaces en blanco: una capa oscura que se enciende con opacity (el script de abajo pone .sobre-oscuro).
+-->
+<header class="cabecera sticky top-0 z-20 bg-lav/72 backdrop-blur-[14px]">
+  <div class="contenedor relative flex h-16 items-center justify-between gap-6 md:h-[76px]">
+    <a href="#inicio" aria-label="Kairo, inicio" class="logo flex min-h-11 items-center">
       <!-- El SVG oficial incluye el área libre de la marca: -ml compensa ese margen para alinear la «k» -->
-      <img src="/logos/kairo-logotipo-corto.svg" alt="" width="105" height="48" class="-ml-[11px]" />
+      <img src="/logos/kairo-logotipo-corto.svg" alt="" width="105" height="48" class="logo-claro -ml-[11px]" />
+      <img src="/logos/kairo-logotipo-corto-negativo.svg" alt="" width="105" height="48" class="logo-negativo -ml-[11px]" />
     </a>
 
     <nav aria-label="Principal" class="hidden gap-[34px] md:flex">
       {
         enlaces.map((e) => (
-          <a href={e.href} class="text-base text-tinta-2 no-underline transition-colors hover:text-violeta">
+          <a href={e.href} class="enlace text-base text-tinta-2 no-underline transition-colors hover:text-violeta">
             {e.texto}
           </a>
         ))
@@ -23,3 +28,84 @@ import { enlaces } from '../data/navegacion';
     <a href="#contacto" class="btn min-h-11 px-5" data-kai-mira>Contáctanos</a>
   </div>
 </header>
+
+<script>
+  // ¿Hay una sección oscura bajo el header? Se mira una línea a media altura del header: cuando una de
+  // esas secciones la cruza, el header cambia de tono. Solo avisa al cruzar, sin trabajo en cada scroll.
+  const cabecera = document.querySelector<HTMLElement>('.cabecera');
+  const oscuras = [...document.querySelectorAll<HTMLElement>('#servicios, #demo, #como, footer')];
+  if (cabecera && oscuras.length && 'IntersectionObserver' in window) {
+    const debajo = new Set<Element>();
+    let observador: IntersectionObserver | null = null;
+    const vigilar = () => {
+      observador?.disconnect();
+      debajo.clear();
+      const linea = Math.round(cabecera.offsetHeight / 2);
+      observador = new IntersectionObserver(
+        (entradas) => {
+          for (const e of entradas) e.isIntersecting ? debajo.add(e.target) : debajo.delete(e.target);
+          cabecera.classList.toggle('sobre-oscuro', debajo.size > 0);
+        },
+        { rootMargin: `-${linea}px 0px -${Math.max(innerHeight - linea - 1, 0)}px 0px` },
+      );
+      for (const s of oscuras) observador.observe(s);
+    };
+    vigilar();
+    let espera = 0;
+    addEventListener('resize', () => {
+      clearTimeout(espera);
+      espera = window.setTimeout(vigilar, 200);
+    });
+  }
+</script>
+
+<style>
+  /* Capa oscura: Kairo Black translúcido encima del lavanda; se enciende con opacity (sin repintar) */
+  .cabecera::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(12 10 16 / 0.9);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-kairo);
+    pointer-events: none;
+  }
+  .logo {
+    position: relative;
+  }
+  /* Encima del logo claro, centrado en alto, para el fundido entre los dos */
+  .logo-negativo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin-block: auto;
+    opacity: 0;
+  }
+  .logo-claro,
+  .logo-negativo {
+    transition: opacity 0.35s var(--ease-kairo);
+  }
+  .sobre-oscuro::before,
+  .sobre-oscuro .logo-negativo {
+    opacity: 1;
+  }
+  .sobre-oscuro .logo-claro {
+    opacity: 0;
+  }
+  /* Enlaces en blanco suave sobre negro (contraste AA); al pasar el mouse, blanco */
+  .sobre-oscuro .enlace {
+    color: var(--color-texto-oscuro);
+  }
+  .sobre-oscuro .enlace:hover {
+    color: var(--color-white);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cabecera::before,
+    .logo-claro,
+    .logo-negativo {
+      transition: none;
+    }
+  }
+</style>

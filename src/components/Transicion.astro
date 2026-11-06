@@ -4,30 +4,49 @@
 interface Props {
   desde: string;
   hacia: string;
-  /** Alto de la franja en px (el mismo en todos los tamaños de pantalla) */
+  /** Alto de la franja en px en computador */
   alto: number;
+  /** Alto en celular y tablet (si no se da, el mismo) */
+  altoMovil?: number;
 }
 
-const { desde, hacia, alto } = Astro.props;
+const { desde, hacia, alto, altoMovil = alto } = Astro.props;
 ---
 
-<div class="transicion" aria-hidden="true" style={`--desde: ${desde}; --hacia: ${hacia}; height: ${alto}px;`}></div>
+<div class="transicion" aria-hidden="true" style={`--desde: ${desde}; --hacia: ${hacia}; --alto: ${alto}px; --alto-movil: ${altoMovil}px;`}></div>
 
 <style>
   /*
-    Paradas repartidas para que la luminosidad baje pareja (sin un tramo que se oscurezca de golpe),
-    pasando por los morados de la marca. «in oklab» evita el gris sucio a mitad del degradado.
+    Celular y tablet: franja más corta y sin la parada lavanda media, que en una pantalla angosta se veía
+    como una banda de brillo morado entre las dos secciones. El paso de claro a oscuro sigue siendo suave.
   */
   .transicion {
+    height: var(--alto-movil);
     background: linear-gradient(
       180deg in oklab,
       var(--desde) 0%,
-      color-mix(in oklab, var(--desde), var(--color-lav-media)) 14%,
-      var(--color-lav-media) 28%,
-      color-mix(in oklab, var(--color-lav-media), var(--color-profundo-1)) 46%,
-      var(--color-profundo-1) 64%,
-      color-mix(in oklab, var(--color-profundo-1), var(--hacia)) 82%,
+      color-mix(in oklab, var(--desde), var(--color-profundo-1) 30%) 30%,
+      var(--color-profundo-1) 70%,
       var(--hacia) 100%
     );
+  }
+  /*
+    Computador: paradas repartidas para que la luminosidad baje pareja (sin un tramo que se oscurezca de
+    golpe), pasando por los morados de la marca. «in oklab» evita el gris sucio a mitad del degradado.
+  */
+  @media (width >= 56.25rem) {
+    .transicion {
+      height: var(--alto);
+      background: linear-gradient(
+        180deg in oklab,
+        var(--desde) 0%,
+        color-mix(in oklab, var(--desde), var(--color-lav-media)) 14%,
+        var(--color-lav-media) 28%,
+        color-mix(in oklab, var(--color-lav-media), var(--color-profundo-1)) 46%,
+        var(--color-profundo-1) 64%,
+        color-mix(in oklab, var(--color-profundo-1), var(--hacia)) 82%,
+        var(--hacia) 100%
+      );
+    }
   }
 </style>

@@ -58,7 +58,7 @@ const tonosMiniCubos: Tono[] = [
 */
 const CENTROS_X = [-400, 0, 400];
 const CENTRO_Y = -20;
-const CENTRO_X_MOVIL = -90;
+const CENTRO_X_MOVIL = -115;
 const CENTROS_Y_MOVIL = [-280, 0, 280];
 
 function miniCubo(b: number) {

@@ -10,17 +10,16 @@ Un solo `<canvas>` con un solo Kai pasa por cuatro lugares (`data-kai`). Siempre
 | --- | --- | --- |
 | `contacto` | `Contacto.astro` | Al llegar al contacto: da un saltito y mira el botón del correo |
 | `acompanante` | `Acompanante.astro` | Computador, desde «Tu día» hasta antes del contacto, abajo a la izquierda |
-| `portada` | `Hero.astro` (`.kai-ancla`) | Computador: parado en la tapa del cubo, girado y visto desde arriba como el cubo (vista «portada»). Cuando el cubo empieza a desarmarse, la explosión lo lanza: vuela hacia la derecha dando vueltas y cae con los bloques hasta perderse (5–18 % del scroll de la portada) |
-| `portada-movil` | `Hero.astro` (`.hero-bot`) | Celular y tablet: al lado de «Conoce más»; sale de escena con el texto |
+| `portada` | `Hero.astro` (`.kai-ancla`) | Celular, tablet y computador: parado junto al cubo, a su derecha y en el mismo piso, un poco más alto que él (su cabeza mide lo que el cubo) y con la cabeza tapando apenas la esquina del cubo, como si se apoyara (vista «portada»). Cuando el cubo empieza a desarmarse, la explosión lo lanza: vuela hacia la derecha dando vueltas y cae con los bloques hasta perderse (5–18 % del scroll de la portada) |
 
-En todos se ve primero el **póster**: `public/kai/kai-3d-*.webp`, un render del mismo Kai en reposo con la misma cámara (en la portada, `kai-3d-portada-*.webp`, con la vista del cubo). Cuando el 3D está listo, el canvas aparece encima con un fundido y el cambio no se nota. Sin WebGL, sin JavaScript, con «ahorro de datos» o si algo falla, queda el póster.
+En todos se ve primero el **póster**: `public/kai/kai-3d-*.webp`, un render del mismo Kai en reposo con la misma cámara (en la portada, `kai-3d-portada-*.webp`, con su vista). Cuando el 3D está listo, el canvas aparece encima con un fundido y el cambio no se nota. Sin WebGL, sin JavaScript, con «ahorro de datos» o si algo falla, queda el póster.
 
 ## Archivos
 
 ```
 public/kai/kai-vivo.glb          ← modelo para animar (274 kB): cabeza y cuerpo separados, pantalla sin ojos
 public/kai/kai-3d-180|360|540.webp ← pósters (vista de frente)
-public/kai/kai-3d-portada-180|360|540.webp ← pósters de la portada (vista del cubo)
+public/kai/kai-3d-portada-270|540|810|1080.webp ← pósters de la portada (vista «portada»; en computador Kai mide hasta ~480 px)
 src/components/KaiVivo.astro     ← el lugar: póster + script de arranque
 src/scripts/kai/
   iniciar.ts        ← arranque liviano (1 kB). Carga lo demás solo cuando hace falta
@@ -47,7 +46,9 @@ src/scripts/kai/
 
 **Prioridad de la mirada:** botón con el mouse encima o con el foco del teclado → toque reciente → cursor en movimiento → contenido de la sección que se lee (`data-kai-foco`) → al frente.
 
-**Vistas.** En la portada Kai está parado en la tapa del cubo, que CSS gira con `rotateX(-24deg) rotateY(-35deg)`. Kai es un dibujo plano dentro de ese 3D: CSS no puede girarlo, así que el giro va dentro de three.js. En la vista «portada» el cuerpo (con su sombra) gira −35° y la cámara lo mira desde 24° arriba, en vez de los 7° de la vista «frente» que usan los demás lugares. `ponerCamara()` sube el punto que mira la cámara lo justo para que los pies sigan al 89,9 % del alto, así el CSS de cada lugar no cambia. El canvas cambia de vista al mudarse (`verDesde`). La mirada sigue siendo relativa al cuerpo: en reposo Kai mira hacia donde mira el cubo.
+**Vistas.** En la portada Kai está parado junto al cubo, que CSS gira con `rotateX(-24deg) rotateY(-35deg)`. Kai es un dibujo plano dentro de ese 3D: CSS no puede girarlo, así que el giro va dentro de three.js. En la vista «portada» el cuerpo (con su sombra) gira −20° hacia el cubo y el texto, y la cámara lo mira desde 12° arriba, en vez de los 7° de la vista «frente» que usan los demás lugares. El cubo se ve desde 24°: con 12° el piso se lee igual, pero Kai se ve de frente y cercano (desde 24° la cabeza lo aplastaba).
+
+**Dónde se para en la portada.** `Hero.astro` proyecta las esquinas del cubo con su giro y su escala (`--s0`) y pone los pies de Kai en el piso, a la derecha de la cara derecha del cubo (`--kx --ky --kz`). El conjunto (no solo el cubo) va centrado: en computador, en el espacio a la derecha del texto; en celular, en el espacio libre bajo el texto; en tablet, en la columna derecha. El cubo y Kai crecen juntos con la pantalla (`--s0`). Kai mide 1,15 veces el alto del cubo en computador y 1,1 en celular. `ponerCamara()` sube el punto que mira la cámara lo justo para que los pies sigan al 89,9 % del alto, así el CSS de cada lugar no cambia. El canvas cambia de vista al mudarse (`verDesde`). La mirada sigue siendo relativa al cuerpo: en reposo Kai mira hacia donde mira el cubo.
 
 **Rendimiento.** Se dibuja solo mientras algún lugar se ve y la pestaña está activa. La resolución sale del tamaño real en pantalla (máx. 2,5×) y baja sola si el equipo no alcanza 35 cuadros por segundo.
 
@@ -76,5 +77,5 @@ src/scripts/kai/
 
 - **Tamaño o lugar:** `--kai-lado` en el CSS de cada componente. El cuadro es cuadrado y los pies quedan al 89,9 % de su alto.
 - **Comportamiento:** constantes de `comportamiento.ts` (`DISTANCIA`, `QUIETO`, los `Resorte` y los límites de cada parte).
-- **Luces o cámara:** `montarEstudio()` en `escena.ts`, y `CAMARA` y `VISTAS` en `forma.ts`. Si cambian (o cambia el giro del cubo de la portada en `Hero.astro`), hay que volver a generar los pósters de cada vista con la misma pose de reposo: `crearEscena(canvas, vista)`, `aplicar(POSE_REPOSO)`, `dibujar()` y `canvas.toDataURL('image/webp', 0.9)` a 180, 360 y 540 px.
+- **Luces o cámara:** `montarEstudio()` en `escena.ts`, y `CAMARA` y `VISTAS` en `forma.ts`. Si cambian (o cambia el giro del cubo de la portada en `Hero.astro`), hay que volver a generar los pósters de cada vista con la misma pose de reposo: `crearEscena(canvas, vista)`, `aplicar(POSE_REPOSO)`, `dibujar()` y `canvas.toDataURL('image/webp', 0.9)` a 180, 360 y 540 px (los de la portada, a 270, 540, 810 y 1080 px).
 - **Modelo:** `kai-vivo.glb` se genera desde `kai-maestro.glb` con el script de la carpeta compartida (`marca/kai/3d/kai-vivo/`). No se edita a mano.

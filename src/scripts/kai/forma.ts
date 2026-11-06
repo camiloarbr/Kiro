@@ -31,13 +31,14 @@ export const CAMARA = { fov: 16, distancia: 8.894, inclinacion: 7 };
 export const PIES_EN_CANVAS = 0.899;
 
 /**
- * Vistas según el lugar. «portada» copia el giro del cubo (rotateX(-24deg) rotateY(-35deg) en Hero.astro):
- * Kai gira con él y la cámara lo ve desde 24° arriba, así queda parado en la tapa y no pegado encima.
+ * Vistas según el lugar. En la «portada» Kai está parado junto al cubo, a su derecha: gira 20° hacia el cubo
+ * y el texto, y la cámara lo ve desde 12° arriba (el cubo se ve desde 24°: así el piso se lee igual, pero Kai
+ * se ve de frente y cercano, no aplastado por la vista desde arriba).
  * En todas, la cámara se ajusta para que los pies sigan al 89,9 % del alto.
  */
 export const VISTAS = {
   frente: { giro: 0, inclinacion: CAMARA.inclinacion },
-  portada: { giro: -35, inclinacion: 24 },
+  portada: { giro: -20, inclinacion: 12 },
 } as const;
 export type Vista = keyof typeof VISTAS;
 export const vistaDe = (lugar: string): Vista => (lugar === 'portada' ? 'portada' : 'frente');

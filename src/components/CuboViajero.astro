@@ -1,5 +1,5 @@
 ---
-// Cubo de vidrio que acompaña la página desde el final de la portada hasta el contacto.
+// Cubo de vidrio que acompaña la página desde el final de la portada hasta el contacto (solo en computador).
 // Es decorativo: aria-hidden y sin eventos de mouse.
 ---
 
@@ -136,41 +136,14 @@
       }
     }
 
-    @media (prefers-reduced-motion: no-preference) and (width < 56.25rem) {
-      /* Celular: cubo de 26 px centrado en x = 100% - 18 px, pegado al borde para no tapar texto */
+    /*
+      Celular y tablet (< 900 px): no hay carril. El cubo termina su recorrido armado en la portada
+      y vuelve a aparecer armado junto a Kai en el contacto (Contacto.astro), así no pisa títulos,
+      tarjetas ni el demo.
+    */
+    @media (width < 56.25rem) {
       .riel {
-        right: -14px;
-        width: 64px;
-      }
-      .riel::before {
-        left: 31px;
-        top: calc(2600px - var(--solape));
-        height: calc(100% - 2600px + var(--solape));
-        opacity: 0.6;
-      }
-      .viajero {
-        top: calc(100vh - 150px);
-        width: 64px;
-        height: 64px;
-        perspective: 500px;
-      }
-      .viajero::before {
-        inset: -14px;
-      }
-      .cubo {
-        left: 19px;
-        top: 19px;
-        width: 26px;
-        height: 26px;
-        --mitad: 13px;
-      }
-      .cubo i {
-        border-radius: 5px;
-      }
-      .cubo b {
-        width: 8px;
-        height: 8px;
-        margin: -4px 0 0 -4px;
+        display: none;
       }
     }
   }

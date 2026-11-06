@@ -261,7 +261,7 @@ function texturaSombra() {
 // =================================================================================================
 
 /** Orden de preferencia cuando dos lugares se ven a la vez. */
-const PRIORIDAD = ['contacto', 'acompanante', 'portada', 'portada-movil'];
+const PRIORIDAD = ['contacto', 'acompanante', 'portada'];
 
 export async function iniciarKai(ranuras: HTMLElement[], reducidoInicial: boolean) {
   const canvas = document.createElement('canvas');

@@ -7,26 +7,31 @@ import { vistaDe } from '../scripts/kai/forma';
 
 interface Props {
   /** Lugar en la página: decide la prioridad cuando dos se ven a la vez. */
-  lugar: 'portada' | 'portada-movil' | 'acompanante' | 'contacto';
+  lugar: 'portada' | 'acompanante' | 'contacto';
   /** Ancho aproximado en pantalla (px), para elegir el tamaño del póster. El ancho real va por CSS (--kai-lado). */
   ancho: number;
   /** Texto alternativo. Vacío = decorativo. */
   alt?: string;
   /** true solo en la primera pantalla (carga sin esperar al scroll). */
   prioridad?: boolean;
+  /** Atributo sizes del póster cuando el tamaño cambia según la pantalla (si no, se usa `ancho`). */
+  tamanos?: string;
 }
 
-const { lugar, ancho, alt = '', prioridad = false } = Astro.props;
-// El póster usa la misma vista que el 3D en ese lugar (en la portada, girado como el cubo)
-const poster = vistaDe(lugar) === 'portada' ? '/kai/kai-3d-portada' : '/kai/kai-3d';
+const { lugar, ancho, alt = '', prioridad = false, tamanos } = Astro.props;
+// El póster usa la misma vista que el 3D en ese lugar. En la portada Kai va más grande (hasta ~550 px en
+// pantalla), así que sus pósters llegan a 1080 px para verse nítidos en pantallas de alta densidad
+const portada = vistaDe(lugar) === 'portada';
+const poster = portada ? '/kai/kai-3d-portada' : '/kai/kai-3d';
+const anchos = portada ? [270, 540, 810, 1080] : [180, 360, 540];
 ---
 
 <div class="kai-vivo" data-kai={lugar}>
   <img
     class="kai-poster"
-    src={`${poster}-360.webp`}
-    srcset={`${poster}-180.webp 180w, ${poster}-360.webp 360w, ${poster}-540.webp 540w`}
-    sizes={`${ancho}px`}
+    src={`${poster}-${anchos[1]}.webp`}
+    srcset={anchos.map((a) => `${poster}-${a}.webp ${a}w`).join(', ')}
+    sizes={tamanos ?? `${ancho}px`}
     width={ancho}
     height={ancho}
     alt={alt}

@@ -19,10 +19,11 @@ const anio = new Date().getFullYear();
         <p class="m-0">Software a la medida, agentes de IA y automatización.</p>
       </div>
 
-      <nav aria-label="Pie de página" class="col-span-12 flex flex-col gap-2 md:col-span-3 md:col-start-7">
+      <!-- Celular y tablet: cada enlace mide 44 px de alto para tocarlo cómodo con el pulgar -->
+      <nav aria-label="Pie de página" class="col-span-12 flex flex-col md:col-span-3 md:col-start-7 md:gap-2">
         {
           enlaces.map((e) => (
-            <a href={e.href} class="no-underline transition-colors hover:text-white">
+            <a href={e.href} class="flex min-h-11 items-center self-start no-underline transition-colors hover:text-white md:min-h-0">
               {e.texto}
             </a>
           ))
@@ -31,13 +32,13 @@ const anio = new Date().getFullYear();
 
       <address class="col-span-12 flex flex-col gap-2 not-italic md:col-span-3 md:col-start-10">
         <span>Medellín, Colombia</span>
-        <a href={`mailto:${correo}`} class="no-underline transition-colors hover:text-white">{correo}</a>
+        <a href={`mailto:${correo}`} class="-my-2.5 flex min-h-11 items-center self-start no-underline transition-colors hover:text-white md:my-0 md:min-h-0">{correo}</a>
       </address>
     </div>
 
     <div class="flex justify-between gap-4 text-sm text-texto-oscuro-2">
       <span>© {anio} Kairo Solutions</span>
-      <a href="#inicio" class="-my-2 inline-block py-2 no-underline transition-colors hover:text-white">Volver arriba</a>
+      <a href="#inicio" class="-my-3 inline-flex min-h-11 items-center no-underline transition-colors hover:text-white md:-my-2 md:min-h-0 md:py-2">Volver arriba</a>
     </div>
   </div>
 </footer>

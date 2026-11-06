@@ -9,7 +9,7 @@ const pasos = [
 
 <section id="como" class="como pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
   <div class="contenedor max-w-[980px]">
-    <h2 class="titulo revela text-[clamp(32px,3.8vw,52px)] leading-[1.08]">
+    <h2 class="titulo revela text-[clamp(30px,8.6vw,38px)] leading-[1.08] md:text-[clamp(32px,3.8vw,52px)]">
       No solo construimos software. Lo hacemos funcionar contigo.
     </h2>
     <ol class="pasos" data-kai-foco>
@@ -63,6 +63,13 @@ const pasos = [
   }
   .pasos span {
     color: var(--color-white);
+  }
+  /* Tablet: los cuatro pasos en una cuadrícula de 2 × 2 (en computador siguen en lista) */
+  @media (width >= 40rem) and (width < 56.25rem) {
+    .pasos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @supports (animation-timeline: view()) {

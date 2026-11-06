@@ -23,7 +23,8 @@ Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca
 ## Estructura (en orden)
 
 ### 0. Header (sticky)
-- Fondo lavanda translúcido con desenfoque.
+- Fondo lavanda translúcido con desenfoque. Sobre las secciones oscuras (Servicios, demo, Cómo trabajamos) pasa a Kairo Black translúcido con el logo negativo y los enlaces claros, con un fundido corto (nov 2026).
+- Alto: 64 px en celular y tablet, 76 px en computador.
 - Logo corto «kairo» a la izquierda.
 - Links «Tu día», «Servicios» y «Cómo trabajamos». Se ocultan en celular.
 - Botón píldora «Contáctanos», que lleva a `#contacto`.
@@ -31,12 +32,12 @@ Regla de contenido: el estilo se inspiró en somoszora.com (competidor). **Nunca
 ### 1. Portada `#inicio` — «bloques-cursor» (escena fija mientras se hace scroll)
 Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrome) y `portada-bloques-cursor.dc.html` (CSS, keyframes y posiciones). La sección «Tu día» de relleno y la etiqueta «Opción A» de esa referencia no son parte del diseño.
 
-- **Altura y escena:** la sección mide 2900 px en computador y 2600 px en celular. Dentro hay una escena `position: sticky` que se queda fija mientras se hace scroll.
+- **Altura y escena:** la sección mide 2900 px en computador y 1900 px en celular y tablet (antes 2600; nov 2026). Dentro hay una escena `position: sticky` que se queda fija mientras se hace scroll.
 - **Textos:**
   - H1: «Software a la medida que **trabaja por ti.**» (el final va en morado). Sin el cursor parpadeante de la referencia (decisión de Gallo, oct 2026).
   - Sub: «Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.»
   - Botón: «Conoce más →» (56 px de alto), que lleva a `#servicios`.
-- **Kai (3D, nov 2026):** en computador, parado en la tapa del cubo inicial; se va con un saltito al empezar el scroll (3–7 %). En celular y tablet, al lado de «Conoce más». Sigue el cursor con la mirada. Detalles en `docs/diseno/KAI-3D.md`.
+- **Kai + cubo (nov 2026):** una sola composición. Kai está parado junto al cubo inicial, a su derecha y en el mismo piso, un poco más alto que él y con la cabeza tapando apenas la esquina del cubo; los dos tienen sombra en el piso. Computador: columna derecha, junto al texto. Tablet (640–899 px): dos columnas, texto a la izquierda y la composición a la derecha. Celular: bajo el texto. Cuando el cubo explota, Kai sale lanzado. Sigue el cursor con la mirada. Detalles en `docs/diseno/KAI-3D.md`.
 - **27 bloques-cursor:** mini cubos de **62 px** con 6 caras: frente/atrás, tapa clara y costados oscuros. Sus posiciones se generan en `src/data/bloques.ts`.
 - **Cámara 3D:** perspectiva de 1500 px. Un grupo lleva todo al carril al final y una cámara gira el conjunto (`rotateX`/`rotateY`) y se aleja en el «ik».
 - **Coreografía según el avance del scroll** dentro de la portada:
@@ -53,13 +54,13 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - **72–82 %:** aparece la frase «Tecnología que se adapta **a tu negocio.**» con el sub «Automatizamos lo repetitivo para que tu equipo se enfoque en lo importante.»
   - **84–94 %:** el cubo se encoge (de 186 a 88 px) y vuela al carril derecho; la lente se acerca al carril (perspectiva 700 px).
   - **93–97 %:** el cubo de bloques se apaga mientras aparece el cubo que acompaña la página, en el mismo lugar, tamaño y pose.
-- **Celular:** la cámara va a escala 0,6, el cubo inicial sale centrado bajo el título y la nube es más compacta. Escala final 0,24, para que el cubo llegue al tamaño del cubo del carril (26 px).
+- **Celular y tablet:** la cámara va a escala 0,6, el cubo inicial sale bajo el título junto a Kai (en tablet, a la derecha del texto) y la nube es más compacta. El cubo **no viaja al carril**: termina armado bajo la frase y la portada se va con él; vuelve a aparecer armado junto a Kai en el contacto.
 - **Versión estática** (Firefox, sin scroll-driven animations o con «reducir movimiento»): título, el cubo 3×3×3 quieto, los tres pasos en lista y la frase.
 
 ### 2. Cubo que acompaña (desde el final de la portada hasta el contacto)
 - **Posición:**
   - Computador: carril fijo a la derecha, `position: sticky` centrado verticalmente, cubo de 88 px.
-  - Celular: abajo a la derecha, pegado al borde, cubo de 26 px. El contenido deja 32 px a la derecha para que el cubo no tape el final de títulos y tarjetas.
+  - Celular y tablet: no hay carril (nov 2026). Antes iba pegado al borde derecho y pisaba títulos, tarjetas y el demo. El contenido tiene márgenes parejos de 24 px.
 - **Movimiento:** gira con el scroll (~3 vueltas a lo largo de la página). Tiene un núcleo de luz que pulsa.
 - **Línea violeta:** detrás del cubo, se dibuja con el scroll.
 - **Espacio reservado:** en computador, las secciones dejan ~164 px a la derecha para que el cubo no tape texto.
@@ -100,7 +101,8 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
     3. **Automatización de procesos.** Los pasos que hoy haces a mano se hacen solos. Etiquetas: Recordatorios automáticos · Registros sin digitar · Cobros que se marcan solos.
     4. **Sistemas internos y paneles.** Tu operación y tus números en un solo lugar. Etiquetas: Indicadores del día a la vista · Accesos por rol · Reportes sin armar Excel.
     5. **Integraciones.** Conectamos lo que ya usas: facturación, pagos, calendarios y mensajería. Etiquetas: Facturación y pagos · Calendarios · Canales de mensajería.
-- **Botón:** «Cuéntanos qué necesitas ↗» (botón principal, sin brillo). Lleva a `#contacto`.
+- **Celular:** tarjeta compacta (ilustración de 96 px, menos relleno). **Tablet:** dos columnas; la última tarjeta va a lo ancho con la ilustración al lado.
+- **Botón:** «Cuéntanos qué necesitas →» (botón principal, sin brillo). Lleva a `#contacto`.
 
 ### 5. «Así se ve en tu negocio» (demo)
 - **Fondo:** degradado que va de Kairo Black a morado y vuelve a oscuro.
@@ -127,8 +129,10 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - Prototipo — Ves y pruebas una versión funcional antes de decidir.
   - Entrega — Lo ponemos a funcionar en semanas, con tu equipo.
   - Acompañamiento — Ajustamos contigo a medida que tu negocio crece.
+- **Tablet:** las 4 filas en una cuadrícula de 2 × 2.
 
 ### 7. Contacto `#contacto`
+- **Kai:** al llegar da un saltito. En celular y tablet tiene al lado el cubo armado (el de la portada en miniatura), que gira hasta su pose al entrar en pantalla.
 - **Textos:**
   - Título: «¿Qué te quita **tiempo** hoy?»
   - Sub: «Cuéntanos el problema y te mostramos cómo lo resolvemos con software.»
@@ -151,9 +155,9 @@ Referencia: `docs/diseno/referencia/portada-bloques-cursor.html` (verla en Chrom
   - Contenedor máximo de 1400 px.
   - Padding lateral de 32 px en computador y 24 px en celular.
   - Secciones con 150 px arriba y 110 px abajo en computador; 96/72 px en celular.
-- **Títulos:** H1 `clamp(44px, 5.4vw, 104px)`, line-height 1. H2 `clamp(34px, 4vw, 56px)`.
+- **Títulos:** H1 `clamp(44px, 5.4vw, 104px)`, line-height 1. H2 `clamp(34px, 4vw, 56px)`. En celular y tablet todos los H2 usan `clamp(30px, 8.6vw, 38px)` (nov 2026).
 - **Bordes:** radios de 16–26 px en tarjetas y paneles; botones en píldora (999 px).
-- **Punto de quiebre:** ~900 px. Por debajo es el diseño de celular.
+- **Puntos de quiebre:** 900 px (computador) y 640 px (tablet: portada en dos columnas, servicios en dos columnas, «Cómo trabajamos» en 2 × 2 y el demo a tamaño completo). Por debajo de 640 px es el diseño de celular.
 
 ## Reglas de rendimiento (ya probadas en el diseño)
 - **Solo `transform` y `opacity`:** anima únicamente esas dos propiedades. Nada de `filter: blur()` animado ni `backdrop-filter` en elementos que se mueven. Solo el header usa `backdrop-filter`.

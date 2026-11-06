@@ -17,14 +17,14 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         <p class="sub">Páginas web, agentes de IA y automatizaciones hechas para cómo opera tu negocio.</p>
         <div class="cta-fila">
           <a class="btn btn-hero" href="#servicios" data-kai-mira>Conoce más <span aria-hidden="true">→</span></a>
-          <!-- Celular: Kai junto al botón; sale de escena con el texto de la portada -->
-          <div class="hero-bot" aria-hidden="true"><KaiVivo lugar="portada-movil" ancho={128} prioridad /></div>
         </div>
       </div>
 
       <div class="escena">
         <div class="grupo" aria-hidden="true">
           <div class="camara">
+            <!-- Sombra del cubo en el piso (solo mientras está armado junto a Kai) -->
+            <div class="suelo"></div>
             {
               bloques.map((b) => (
                 <div class:list={['bloque', { 'con-mini': b.conMini }]} style={b.estilo}>
@@ -36,8 +36,11 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
             }
           </div>
         </div>
-        <!-- Computador: Kai parado en la tapa del cubo. Fuera de .grupo para no mezclarse con sus caras 3D -->
-        <div class="kai-ancla" aria-hidden="true"><KaiVivo lugar="portada" ancho={260} prioridad /></div>
+        <!-- Kai parado junto al cubo, en el mismo piso (celular, tablet y computador).
+             Fuera de .grupo para no mezclarse con las caras 3D del cubo -->
+        <div class="kai-ancla" aria-hidden="true">
+          <KaiVivo lugar="portada" ancho={270} tamanos="(min-width: 1500px) 425px, (min-width: 900px) 360px, 270px" prioridad />
+        </div>
         <ul class="etiquetas">
           {
             pasos.map((p) => (
@@ -91,27 +94,6 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
   .cta-fila {
     display: flex;
     align-items: center;
-    gap: 18px;
-  }
-  /*
-    Celular: Kai al lado del botón. Va en absoluto para no cambiar el alto de la fila: la coronilla
-    (11,7 % del cuadro) queda 6 px sobre el botón, sin tocar el párrafo aunque su última línea sea larga
-    (tablet), y los pies bajan un poco más que el botón, como si estuviera un paso adelante.
-  */
-  .hero-bot {
-    position: relative;
-    align-self: stretch;
-    width: 104px;
-    --kai-lado: 116px;
-  }
-  .hero-bot :global(.kai-vivo) {
-    position: absolute;
-    left: -6px;
-    top: -20px;
-  }
-  /* Computador: Kai va sobre el cubo (.kai-ancla) */
-  .kai-ancla {
-    display: none;
   }
   .btn-hero {
     min-height: 56px;
@@ -119,22 +101,67 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     font-size: 17px;
   }
 
+  /*
+    Kai y el cubo: una sola composición. Kai se para junto a la cara derecha del cubo, en el mismo piso,
+    un poco más alto que él (≈ 1,15 veces; su cabeza mide lo que el cubo) y con la cabeza tapando apenas la esquina, como si se apoyara.
+    Las medidas salen de proyectar las esquinas del cubo con su giro (rotateX -24°, rotateY -35°):
+    --kx/--ky/--kz es el punto del piso donde van los pies de Kai, relativo al centro del cubo.
+    --par-x/--par-y corren el cubo para que el conjunto (no solo el cubo) quede centrado.
+    Versión estática (sin animación con scroll o con «reducir movimiento»): cubo a 60 % y Kai al lado.
+  */
   .escena {
     position: relative;
     margin-top: 40px;
     perspective: 1500px;
+    --grupo-alto: 270px;
+    --par-x: -64px;
+    --par-y: 20px;
+    --kx: 138.3px;
+    --ky: 56.8px;
+    --kz: -58.7px;
+    --kai-lado: 242px;
   }
   .grupo {
     position: relative;
-    height: 240px;
+    height: var(--grupo-alto);
   }
   .camara {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: calc(50% + var(--par-x));
+    top: calc(50% + var(--par-y));
     transform-style: preserve-3d;
     transform: rotateX(-24deg) rotateY(-35deg);
     scale: 0.6;
+  }
+  .kai-ancla {
+    position: absolute;
+    left: calc(50% + var(--par-x));
+    top: calc(var(--grupo-alto) / 2 + var(--par-y));
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    transform: translate3d(var(--kx), var(--ky), var(--kz));
+  }
+  /* Los pies de Kai están al 89,9 % del alto de su cuadro (src/scripts/kai/forma.ts) */
+  .kai-ancla :global(.kai-vivo) {
+    position: absolute;
+    left: calc(var(--kai-lado) / -2);
+    top: calc(var(--kai-lado) * -0.899);
+  }
+  /*
+    Sombra del cubo: un plano acostado en el piso (bajo la cara de abajo, a 93 px del centro), corrido
+    un poco a la derecha porque la luz viene de arriba a la izquierda, como en Kai. Sombra neutra.
+  */
+  .suelo {
+    position: absolute;
+    left: -170px;
+    top: -170px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(12 10 16 / 0.34), rgb(12 10 16 / 0.14) 50%, rgb(12 10 16 / 0));
+    transform: translate3d(14px, var(--suelo-y, 94px), -10px) rotateX(90deg);
+    pointer-events: none;
   }
   /* Cada bloque: un cubo de 62 px con 6 caras; centrado en su punto con márgenes de -31 px */
   .bloque {
@@ -218,8 +245,9 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     max-width: 760px;
     text-align: center;
   }
+  /* Misma escala de títulos de sección que el resto de la página en celular y tablet (DESIGN.md) */
   .frase h2 {
-    font-size: 30px;
+    font-size: clamp(30px, 8.6vw, 38px);
     line-height: 1.06;
   }
   .frase p {
@@ -244,34 +272,18 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     .sub {
       font-size: clamp(20px, 1.4vw, 25px);
     }
-    .hero-bot {
-      display: none;
-    }
-    /*
-      Kai sobre la tapa del cubo quieto (versión estática): .grupo mide 340 px, su centro está a 170 px
-      y el centro de la tapa queda 85 px más arriba con el giro de la cámara (rotateX -24°).
-      El cuadro de Kai se ubica con los pies (89,9 % del alto) justo en ese punto.
-    */
-    .kai-ancla {
-      display: block;
-      position: absolute;
-      left: 50%;
-      top: 85px;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-      --kai-lado: 200px;
-    }
-    .kai-ancla :global(.kai-vivo) {
-      position: absolute;
-      left: calc(var(--kai-lado) / -2);
-      top: calc(var(--kai-lado) * -0.899);
-    }
-    .grupo {
-      height: 340px;
+    /* Versión estática en computador: cubo a 80 % bajo el texto y Kai al lado */
+    .escena {
+      --grupo-alto: 340px;
+      --par-x: -91px;
+      --par-y: 32px;
+      --kx: 187.4px;
+      --ky: 76.2px;
+      --kz: -47px;
+      --kai-lado: 335px;
     }
     .camara {
-      scale: 1;
+      scale: 0.8;
     }
     .etiquetas {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -291,6 +303,17 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
       .portada {
         height: 2900px;
         view-timeline: --hero block;
+        /* Tamaño del cubo inicial (escala de la cámara) junto a Kai: crece con la pantalla */
+        --s0: 0.65;
+        /* Computadores angostos (900–1099 px, iPad horizontal): la nube y los 3 mini cubos a 78 % para que
+           los textos de los costados no se salgan de la pantalla */
+        --k2: 0.78;
+      }
+      @media (width >= 68.75rem) {
+        .portada { --s0: 0.85; --k2: 1; }
+      }
+      @media (width >= 93.75rem) {
+        .portada { --s0: 1; }
       }
       .escena-fija {
         position: sticky;
@@ -340,9 +363,19 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
           (medido en pantallas de 1024 a 1920 px de ancho).
           Van en .escena (y no en .grupo) porque Kai, parado en la tapa, también los usa.
         */
-        --ix: calc(max(6.5 * clamp(44px, 5.2vw, 98px), 21.6 * clamp(20px, 1.4vw, 25px)) * 0.427 - 4px);
-        --iy: -17px;
+        /*
+          Junto a Kai: el conjunto Kai + cubo (no solo el cubo) va centrado en ese espacio, así que el
+          cubo se corre a la izquierda (112 px × --s0, ya descontada la perspectiva) y un poco abajo.
+          El cubo y Kai se achican con la pantalla (--s0) para que el conjunto no choque con el texto.
+        */
+        --ix: calc(max(6.5 * clamp(44px, 5.2vw, 98px), 21.6 * clamp(20px, 1.4vw, 25px)) * 0.427 - 4px - 112px * var(--s0));
+        --iy: calc(40px * var(--s0) + 10px);
         --iz: 218px;
+        /* Pies de Kai respecto al centro del cubo y tamaño de su cuadro (todo crece con --s0) */
+        --kx: calc(236px * var(--s0));
+        --ky: calc(96px * var(--s0));
+        --kz: calc(-59px * var(--s0));
+        --kai-lado: calc(425px * var(--s0));
         animation: portada-perspectiva linear both;
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
@@ -366,12 +399,19 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
       .camara {
         left: 0;
         top: 0;
+        scale: none;
         animation: portada-camara linear both;
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
       }
       .bloque {
         animation: portada-bloque linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 100%;
+      }
+      /* La sombra del piso se va apenas el cubo empieza a desarmarse */
+      .suelo {
+        animation: portada-suelo linear both;
         animation-timeline: --hero;
         animation-range: contain 0% contain 100%;
       }
@@ -393,22 +433,14 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
       }
 
       /*
-        Kai en la tapa del cubo inicial (0–6 %). Mismo traslado que .grupo y, encima, el centro de la tapa
-        ya girado por la cámara: la tapa está a 93 px del centro del cubo; con scale3d(1,35) y rotateX(-24°)
-        queda en (0, -114,7, 51,1). Como .kai-ancla es hija de .escena, recibe la misma perspectiva que el
-        cubo y cae justo en la tapa. Su tamaño sigue el alto de la escena para no chocar con el header.
+        Kai junto al cubo inicial (0–6 %). Mismo traslado que .grupo y, encima, el punto del piso donde van
+        sus pies (--kx --ky --kz, ya girado por la cámara). Como .kai-ancla es hija de .escena, recibe la
+        misma perspectiva que el cubo y queda parado en su mismo piso.
       */
       .kai-ancla {
         left: 50%;
         top: 50%;
-        transform: translate3d(var(--ix), var(--iy), var(--iz)) translate3d(0, -114.7px, 51.1px);
-        /*
-          Tamaño: 26 % del alto de la escena, pero sin que la cabeza llegue al header. El centro de la tapa
-          queda 160,5 px sobre el centro de la escena; Kai ocupa el 78,2 % del cuadro y la perspectiva lo
-          agranda 1,22 veces: (alto/2 − 160,5 − 14) / (0,782 × 1,22) = 0,525 × alto − 183 px.
-        */
-        --alto-escena: clamp(620px, 100vh - 76px, 980px);
-        --kai-lado: min(var(--alto-escena) * 0.26, var(--alto-escena) * 0.525 - 183px);
+        transform: translate3d(var(--ix), var(--iy), var(--iz)) translate3d(var(--kx), var(--ky), var(--kz));
         /* x del vuelo: avanza parejo (ver abajo) */
         animation: portada-kai-vuela-x linear both;
         animation-timeline: --hero;
@@ -440,8 +472,8 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 300px;
-        margin-left: -150px;
+        width: calc(300px - (1 - var(--k2)) * 270px);
+        margin-left: calc(-150px + (1 - var(--k2)) * 135px);
         text-align: center;
         opacity: 0;
         animation: portada-etiqueta linear both;
@@ -468,8 +500,13 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
        3. ESCENA ANIMADA EN CELULAR (< 900 px)
        ========================================================================= */
     @media (prefers-reduced-motion: no-preference) and (width < 56.25rem) {
+      /*
+        1.900 px de scroll (antes 2.600): la misma historia, más compacta para el pulgar. El cubo ya no
+        viaja al carril: termina armado aquí, bajo la frase, y vuelve a aparecer armado en el contacto.
+      */
       .portada {
-        height: 2600px;
+        height: 1900px;
+        --s0: 0.9;
       }
       .escena-fija {
         top: 64px;
@@ -483,31 +520,49 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
         transform: none;
         animation-name: portada-salida-hero-movil;
       }
+      /*
+        Kai + cubo bajo el texto. El texto termina a ~324 px del borde de arriba de la escena en todos los
+        celulares, así que el centro del espacio libre de abajo queda siempre ~162 px bajo el centro de la
+        escena: ahí va el centro del conjunto (el cubo se corre a la izquierda para dejarle sitio a Kai).
+        Sin la lente que se acerca al carril: en celular el cubo no viaja.
+      */
       .escena {
-        --cx: calc(50cqw - 18px);
-        --cy: calc(100vh - 118px - 64px - clamp(600px, 100vh - 64px, 760px) / 2);
-        /* En celular el cubo inicial ya va centrado bajo el texto (portada-bloque-movil) */
-        --ix: 0px;
-        --iy: 0px;
+        --ix: calc(-65px * var(--s0));
+        --iy: calc(162px - 46px * var(--s0));
         --iz: 0px;
+        --kx: calc(141px * var(--s0));
+        --ky: calc(128.5px * var(--s0));
+        --kz: calc(-111.6px * var(--s0));
+        --kai-lado: calc(253px * var(--s0));
+        animation: none;
+        perspective: 1500px;
       }
-      /* En celular la cámara va a 60 % (scale independiente del transform animado).
-         Escala final: 186 px × 0,6 × k = 26 px, el cubo del carril en celular. */
+      /* En celular la cámara va a 60 % (scale independiente del transform animado) */
       .camara {
         scale: 0.6;
         animation-name: portada-camara-movil;
       }
       .grupo {
-        --k: 0.24;
-        --dy: -4px;
+        animation-name: portada-grupo-movil;
       }
       .bloque {
         animation-name: portada-bloque-movil;
       }
-      /* Los mini cubos van en columna y su texto a la derecha */
+      /* El cubo inicial va 130 px más abajo (portada-bloque-movil): su piso también */
+      .suelo {
+        --suelo-y: 224px;
+      }
+      /* El cubo se queda (no se vuelve vidrio) */
+      .bloque i {
+        animation: none;
+      }
+      /*
+        Los mini cubos van en columna a la izquierda y su texto a la derecha, sin pasarse del margen:
+        el texto empieza 6 px a la izquierda del centro y llega justo hasta el margen derecho.
+      */
       .etiqueta {
-        width: 180px;
-        margin-left: 10px;
+        width: calc(50% - var(--pad) + 6px);
+        margin-left: -6px;
         text-align: left;
         animation-name: portada-etiqueta-movil;
       }
@@ -517,9 +572,51 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
       }
       .etiqueta span {
         font-size: 15px;
+        text-wrap: pretty;
       }
       .frase {
         top: 5%;
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) and (width >= 23.75rem) and (width < 40rem) {
+      .portada {
+        --s0: 1;
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) and (width >= 25.75rem) and (width < 40rem) {
+      .portada {
+        --s0: 1.08;
+      }
+    }
+    /*
+      Tablet (640–899 px): dos columnas. Texto a la izquierda, centrado en alto; Kai + cubo a la derecha.
+      Después sigue la misma historia del celular (mini cubos en columna, cubo final bajo la frase).
+    */
+    @media (prefers-reduced-motion: no-preference) and (width >= 40rem) and (width < 56.25rem) {
+      .portada {
+        --s0: 0.95;
+      }
+      /* La escena usa todo el alto de la tablet (en celular se limita a 760 px) para no dejar vacío abajo */
+      .escena-fija {
+        max-height: 1100px;
+      }
+      .texto-hero {
+        top: max(24px, 50% - 200px);
+        width: 47%;
+      }
+      /* En 3 líneas, como en computador, para que quepa en su columna */
+      .h1 {
+        font-size: clamp(40px, 6.6vw, 58px);
+        max-width: 7em;
+      }
+      .escena {
+        --ix: calc(26cqw - 65px * var(--s0));
+        --iy: calc(-46px * var(--s0) - 10px);
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) and (width >= 48rem) and (width < 56.25rem) {
+      .portada {
+        --s0: 1.15;
       }
     }
   }
@@ -545,8 +642,21 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
   */
   @keyframes portada-grupo {
     0%, 6% { transform: translate3d(var(--ix), var(--iy), var(--iz)) scale(1); }
-    20%, 84% { transform: translate3d(0, 0, 0) scale(1); }
+    20%, 84% { transform: translate3d(0, 0, 0) scale(var(--k2)); }
     92%, 100% { transform: translate3d(var(--cx), calc(var(--cy) + var(--dy)), 0) scale(var(--k)); }
+  }
+  /*
+    Celular y tablet: el cubo no viaja al carril. Arranca junto a Kai (--ix --iy), vuelve al centro
+    mientras explota y el cubo final sube un poco para quedar cerca de la frase, sin hueco debajo.
+  */
+  @keyframes portada-grupo-movil {
+    0%, 6% { transform: translate3d(var(--ix), var(--iy), var(--iz)) scale(1); }
+    20%, 64% { transform: translate3d(0, 0, 0) scale(1); }
+    76%, 100% { transform: translate3d(0, -40px, 0) scale(1); }
+  }
+  @keyframes portada-suelo {
+    0%, 5% { opacity: 1; }
+    8%, 100% { opacity: 0; }
   }
   /* Cada bloque se apaga dentro de su propio tramo (animation-range con --d) */
   @keyframes portada-a-vidrio {
@@ -555,11 +665,11 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
   }
   /*
     La cámara gira el conjunto y termina en la pose del cubo viajero.
-    0–6 %: agranda el cubo inicial 1,35 veces (lo ubica .grupo con --ix --iy --iz).
+    0–6 %: el cubo inicial a la escala --s0, junto a Kai (lo ubica .grupo con --ix --iy --iz).
     scale3d y no scale: scale() solo agranda x e y, y el cubo quedaba aplastado en profundidad.
   */
   @keyframes portada-camara {
-    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1.35, 1.35, 1.35); }
+    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(var(--s0), var(--s0), var(--s0)); }
     20% { transform: rotateX(-14deg) rotateY(-70deg) scale3d(1, 1, 1); }
     36%, 64% { transform: rotateX(-22deg) rotateY(-10deg) scale3d(1, 1, 1); }
     76% { transform: rotateX(-24deg) rotateY(55deg) scale3d(1, 1, 1); }
@@ -572,7 +682,7 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     En celular van en columna, al lado del texto: ahí se conserva el giro de -24deg, que les da volumen.
   */
   @keyframes portada-camara-movil {
-    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1.35, 1.35, 1.35); }
+    0%, 6% { transform: rotateX(-24deg) rotateY(-35deg) scale3d(var(--s0), var(--s0), var(--s0)); }
     20% { transform: rotateX(-14deg) rotateY(-70deg) scale3d(1, 1, 1); }
     36%, 64% { transform: rotateX(-22deg) rotateY(-24deg) scale3d(1, 1, 1); }
     76% { transform: rotateX(-24deg) rotateY(55deg) scale3d(1, 1, 1); }
@@ -604,9 +714,9 @@ const caras = ['frente', 'atras', 'arriba', 'abajo', 'der', 'izq'];
     76%, 100% { opacity: 0; }
   }
   @keyframes portada-etiqueta {
-    0%, 36% { opacity: 0; transform: translate(var(--lx), calc(var(--ly) + 24px)); }
-    42%, 66% { opacity: 1; transform: translate(var(--lx), var(--ly)); }
-    72%, 100% { opacity: 0; transform: translate(var(--lx), calc(var(--ly) - 16px)); }
+    0%, 36% { opacity: 0; transform: translate(calc(var(--lx) * var(--k2)), calc(var(--ly) * var(--k2) + 24px)); }
+    42%, 66% { opacity: 1; transform: translate(calc(var(--lx) * var(--k2)), calc(var(--ly) * var(--k2))); }
+    72%, 100% { opacity: 0; transform: translate(calc(var(--lx) * var(--k2)), calc(var(--ly) * var(--k2) - 16px)); }
   }
   @keyframes portada-etiqueta-movil {
     0%, 36% { opacity: 0; transform: translate(var(--mlx), calc(var(--mly) + 24px)); }

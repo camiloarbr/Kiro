@@ -5,9 +5,15 @@ import KaiVivo from './KaiVivo.astro';
 
 <section id="contacto" class="contacto pt-24 pb-18 md:pt-[150px] md:pb-[110px]">
   <div class="contenedor flex flex-col items-center gap-[22px] text-center">
-    <!-- Aquí termina el recorrido de Kai: al llegar da un saltito y mira el botón del correo -->
-    <div class="bot revela" aria-hidden="true"><KaiVivo lugar="contacto" ancho={190} /></div>
-    <h2 class="titulo revela max-w-[16ch] text-[clamp(36px,4.6vw,64px)] leading-[1.04]">
+    <!-- Aquí termina el recorrido de Kai: al llegar da un saltito y mira el botón del correo.
+         En celular y tablet el cubo vuelve a aparecer armado a su lado, como en la portada -->
+    <div class="dupla revela" aria-hidden="true">
+      <div class="cubito">
+        <div class="cubito-giro"><i class="frente"></i><i class="atras"></i><i class="arriba"></i><i class="abajo"></i><i class="der"></i><i class="izq"></i></div>
+      </div>
+      <div class="bot"><KaiVivo lugar="contacto" ancho={190} /></div>
+    </div>
+    <h2 class="titulo revela max-w-[16ch] text-[clamp(30px,8.6vw,38px)] leading-[1.04] md:text-[clamp(36px,4.6vw,64px)]">
       ¿Qué te quita <span class="text-violeta">tiempo</span> hoy?
     </h2>
     <p class="revela-2 m-0 max-w-[46ch] text-tinta-2">
@@ -20,17 +26,112 @@ import KaiVivo from './KaiVivo.astro';
 </section>
 
 <style>
+  .dupla {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    /* El cubo sobresale a la izquierda de Kai: el par se corre para quedar centrado */
+    translate: 38px 0;
+  }
   /* El cuadro de Kai trae aire arriba (saltito) y abajo (sombra): los márgenes negativos lo compensan */
   .bot {
     --kai-lado: 144px;
     margin: -16px 0 -14px;
   }
+
+  /*
+    El cubo armado (celular y tablet): el mismo cubo de la portada en miniatura, con sus 3 × 3 bloques
+    dibujados como líneas, su giro (rotateX -24°, rotateY -35°) y sus colores. Va a la izquierda de Kai,
+    con la base al nivel de sus pies y la cabeza de Kai tapando apenas su esquina, como en la portada.
+    Caja de 90 × 96 px: lo que mide en pantalla un cubo de 64 px con ese giro.
+  */
+  .cubito {
+    position: absolute;
+    right: calc(50% + 36px);
+    bottom: -4px;
+    width: 90px;
+    height: 96px;
+    perspective: 800px;
+  }
+  .cubito-giro {
+    position: absolute;
+    left: 13px;
+    top: 16px;
+    width: 64px;
+    height: 64px;
+    transform-style: preserve-3d;
+    transform: rotateX(-24deg) rotateY(-35deg);
+  }
+  .cubito i {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: 3px;
+    backface-visibility: hidden;
+    /* Las juntas de los 3 × 3 bloques */
+    background-image:
+      linear-gradient(90deg, transparent 32.5%, rgb(255 255 255 / 0.22) 32.5% 34%, transparent 34% 66%, rgb(255 255 255 / 0.22) 66% 67.5%, transparent 67.5%),
+      linear-gradient(0deg, transparent 32.5%, rgb(255 255 255 / 0.22) 32.5% 34%, transparent 34% 66%, rgb(255 255 255 / 0.22) 66% 67.5%, transparent 67.5%);
+  }
+  .cubito .frente { background-color: var(--color-violeta); transform: translateZ(32px); }
+  .cubito .atras { background-color: var(--color-violeta); transform: rotateY(180deg) translateZ(32px); }
+  .cubito .arriba { background-color: var(--color-violeta-claro); transform: rotateX(90deg) translateZ(32px); }
+  .cubito .abajo { background-color: var(--color-violeta-oscuro); transform: rotateX(-90deg) translateZ(32px); }
+  .cubito .der { background-color: var(--color-violeta-oscuro); transform: rotateY(90deg) translateZ(32px); }
+  .cubito .izq { background-color: var(--color-violeta-oscuro); transform: rotateY(-90deg) translateZ(32px); }
+  /* Sombra en el piso, neutra, como la de Kai */
+  .cubito::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    right: -8px;
+    bottom: -8px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(12 10 16 / 0.28), rgb(12 10 16 / 0));
+    z-index: -1;
+  }
+
+  /* Computador: el cubo de vidrio llega por su carril (CuboViajero), aquí solo va Kai */
   @media (width >= 56.25rem) {
+    .dupla {
+      translate: none;
+    }
+    .cubito {
+      display: none;
+    }
     .bot {
       --kai-lado: 190px;
       margin: -22px 0 -18px;
     }
   }
+
+  /* Al entrar en pantalla el cubo se arma: gira hasta su pose y crece desde lejos */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .cubito {
+        animation: contacto-cubo-aparece linear both;
+        animation-timeline: view();
+        animation-range: entry 10% entry 90%;
+      }
+      .cubito-giro {
+        animation: contacto-cubo-arma linear both;
+        animation-timeline: view();
+        animation-range: entry 10% entry 90%;
+      }
+    }
+  }
+  /* opacity va en la caja y el giro en el cubo: opacity < 1 en un elemento con preserve-3d lo aplana */
+  @keyframes contacto-cubo-aparece {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes contacto-cubo-arma {
+    from { transform: rotateX(-24deg) rotateY(-215deg) scale3d(0.4, 0.4, 0.4); }
+    to { transform: rotateX(-24deg) rotateY(-35deg) scale3d(1, 1, 1); }
+  }
+
   .contacto {
     background: linear-gradient(180deg, var(--color-violeta-claro) 0%, var(--color-lav-2) 60%, var(--color-lav) 100%);
   }

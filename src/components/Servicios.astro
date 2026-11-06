@@ -39,8 +39,8 @@ import Mascota from './Mascota.astro';
       }
     </div>
 
-    <div class="revela-2 mt-14 flex justify-center">
-      <a class="btn" href="#contacto" data-kai-mira>Cuéntanos qué necesitas <span aria-hidden="true">↗</span></a>
+    <div class="revela-2 mt-10 flex justify-center md:mt-14">
+      <a class="btn" href="#contacto" data-kai-mira>Cuéntanos qué necesitas <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -49,7 +49,7 @@ import Mascota from './Mascota.astro';
   .servicios {
     position: relative;
     overflow: hidden;
-    padding: 110px 0 90px;
+    padding: 88px 0 80px;
     color: var(--color-blanco);
     /* Negro plano: empata sin línea con el final de la franja <Transicion> que viene de «Tu día» */
     background: var(--color-negro);
@@ -74,7 +74,8 @@ import Mascota from './Mascota.astro';
   }
   .titulo-grande {
     max-width: 14ch;
-    font-size: clamp(40px, 5.2vw, 78px);
+    /* Celular y tablet: la misma escala de títulos de sección que el resto de la página (DESIGN.md) */
+    font-size: clamp(30px, 8.6vw, 38px);
     line-height: 1;
     letter-spacing: -0.04em;
     color: var(--color-white);
@@ -84,12 +85,14 @@ import Mascota from './Mascota.astro';
     color: var(--color-violeta-claro);
   }
 
-  /* ---------- Tarjetas ---------- */
+  /* ---------- Tarjetas ----------
+     Celular: tarjeta compacta (ilustración más baja, menos relleno y etiquetas más juntas) para que las
+     cinco no ocupen tres pantallas y media. Mismo contenido, mismas ilustraciones y misma jerarquía. */
   .tarjetas {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-    margin-top: 48px;
+    gap: 14px;
+    margin-top: 36px;
     perspective: 1400px; /* da profundidad al rotateX con que entran */
   }
   .tarjeta {
@@ -112,7 +115,7 @@ import Mascota from './Mascota.astro';
 
   .arte {
     position: relative;
-    height: 150px;
+    height: 96px;
     overflow: hidden;
     background: var(--color-profundo-3);
   }
@@ -129,8 +132,8 @@ import Mascota from './Mascota.astro';
   .arte :global(.asoma) {
     position: absolute;
     right: 8%;
-    bottom: -46px;
-    width: 96px;
+    bottom: -34px;
+    width: 72px;
     height: auto;
     /* Sombra neutra con desplazamiento: da profundidad sin halo de color */
     filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.45));
@@ -148,13 +151,13 @@ import Mascota from './Mascota.astro';
   .cuerpo {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 26px 26px 28px;
+    gap: 8px;
+    padding: 20px 22px 22px;
   }
   .cuerpo h3 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700; /* el preflight de Tailwind quita la negrita por defecto de h3 */
     letter-spacing: -0.02em;
     color: var(--color-white);
@@ -162,28 +165,76 @@ import Mascota from './Mascota.astro';
   .cuerpo p {
     margin: 0;
     font-size: 16px;
+    line-height: 1.5;
     color: var(--color-texto-oscuro);
   }
   .cuerpo ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 6px 0 0;
+    gap: 6px;
+    margin: 4px 0 0;
     padding: 0;
     list-style: none;
   }
   .cuerpo li {
-    padding: 4px 12px;
+    padding: 3px 11px;
     border: 1px solid rgb(217 196 255 / 0.22);
     border-radius: 999px;
     font-size: 13px;
+    line-height: 1.45;
     color: var(--color-lav-media);
+    /* Si una etiqueta parte en dos líneas, que no quede una palabra sola abajo («negocio», «persona») */
+    text-wrap: balance;
+  }
+
+  /* ---------- Tablet (640–899 px): dos columnas; la última tarjeta, a lo ancho con la ilustración al lado ---------- */
+  @media (width >= 40rem) and (width < 56.25rem) {
+    .tarjetas {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .arte {
+      height: 120px;
+    }
+    .tarjeta:last-child {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    }
+    .tarjeta:last-child .arte {
+      height: auto;
+      min-height: 140px;
+    }
   }
 
   /* ---------- Computador ---------- */
   @media (width >= 56.25rem) {
     .servicios {
       padding: 170px 0 150px;
+    }
+    .titulo-grande {
+      font-size: clamp(40px, 5.2vw, 78px);
+    }
+    .tarjetas {
+      gap: 18px;
+    }
+    .cuerpo {
+      gap: 10px;
+      padding: 26px 26px 28px;
+    }
+    .cuerpo h3 {
+      font-size: 22px;
+    }
+    .cuerpo ul {
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .cuerpo p,
+    .cuerpo li {
+      line-height: 1.55;
+    }
+    .cuerpo li {
+      padding: 4px 12px;
     }
     /* Centrada: deja el espacio del carril del cubo también a la izquierda */
     .interior {
