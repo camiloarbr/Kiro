@@ -25,8 +25,9 @@ Kairo Solutions (antes Kiro Solutions; cambió de nombre en nov 2026) es una emp
 - **Fuentes autoalojadas** con Fontsource, versiones variables: `@fontsource-variable/montserrat` y `@fontsource-variable/geist` (familias `'Montserrat Variable'` y `'Geist Variable'`).
 - **Gestor de paquetes:** pnpm.
 - **Deploy:** Cloudflare Workers con *static assets*. El sitio es 100 % estático, así que no usa el adapter `@astrojs/cloudflare`: basta un `wrangler.jsonc` con `"assets": { "directory": "./dist", "not_found_handling": "404-page" }`. Build y deploy en un paso: `pnpm deploy` (`astro build` + `wrangler deploy`).
-  - Cuenta de Cloudflare de la empresa (KiroSolutionsCol@gmail.com), Worker `kiro`, publicado en **https://kiro.kirosolutionsco.workers.dev** (`site` en `astro.config.mjs`). El Worker, la URL y el nombre del paquete siguen en «kiro» hasta tener el dominio de Kairo.
-  - Pendiente: dominio propio (Cloudflare Registrar). Al tenerlo: `"routes": [{ "pattern": "<dominio>", "custom_domain": true }]` en `wrangler.jsonc`, `site` al dominio y volver a publicar. Opcional: Workers Builds para publicar en cada push.
+  - Cuenta de Cloudflare de la empresa (KiroSolutionsCol@gmail.com), Worker `kiro`, publicado en **https://kairosolutions.dev** (dominio comprado en Cloudflare Registrar el 6 nov 2026; `site` en `astro.config.mjs` y `routes` con `custom_domain` en `wrangler.jsonc`, que también conecta `www.kairosolutions.dev`). La dirección antigua https://kiro.kirosolutionsco.workers.dev sigue activa y su canonical apunta al dominio. El nombre del Worker y del paquete siguen en «kiro».
+  - `.dev` exige HTTPS siempre (HSTS precargado): Cloudflare pone el certificado solo.
+  - Opcional: Workers Builds para publicar en cada push.
 
 ## Estructura esperada
 ```

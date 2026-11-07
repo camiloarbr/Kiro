@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  // URL pública del sitio: la usan el canonical y Open Graph (og:url, og:image).
-  // Cambiar al dominio propio cuando esté comprado y conectado.
-  site: 'https://kiro.kirosolutionsco.workers.dev',
+  // URL pública del sitio: la usan el canonical, Open Graph (og:url, og:image) y los datos de la empresa.
+  // Dominio propio desde el 6 nov 2026 (Cloudflare Registrar). Las demás direcciones apuntan aquí con el canonical.
+  site: 'https://kairosolutions.dev',
   vite: {
     plugins: [tailwindcss()],
     build: {

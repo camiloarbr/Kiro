@@ -4,7 +4,8 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "kiro",
   "compatibility_date": "2026-10-22",
-  // URL pública mientras no haya dominio propio: https://kiro.kirosolutionsco.workers.dev
+  // La dirección antigua (https://kiro.kirosolutionsco.workers.dev) sigue funcionando para no romper
+  // enlaces ya compartidos; su canonical apunta a kairosolutions.dev.
   "workers_dev": true,
   // Sin URL extra por versión: solo existe la dirección principal del sitio
   "preview_urls": false,
@@ -12,7 +13,11 @@
     "directory": "./dist",
     // Cualquier ruta que no exista responde con dist/404.html (src/pages/404.astro) y código 404.
     "not_found_handling": "404-page"
-  }
-  // Cuando haya dominio propio (comprado en Cloudflare Registrar), agregar:
-  // "routes": [{ "pattern": "<dominio>", "custom_domain": true }]
+  },
+  // Dominio propio (Cloudflare Registrar). «custom_domain» hace que wrangler cree el registro DNS y el
+  // certificado HTTPS. www sirve la misma página; el canonical le dice a Google que la principal es sin www.
+  "routes": [
+    { "pattern": "kairosolutions.dev", "custom_domain": true },
+    { "pattern": "www.kairosolutions.dev", "custom_domain": true }
+  ]
 }
